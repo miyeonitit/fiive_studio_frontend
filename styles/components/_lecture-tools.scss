@@ -1,0 +1,115 @@
+.lecture-tools {
+  display: flex;
+  flex-direction: column;
+
+  h3 {
+    flex: 0 0 auto;
+    min-height: 0;
+
+    padding: 12px;
+    margin: 0;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 18px;
+    letter-spacing: -0.4000000059604645px;
+    color: #212529;
+    border-bottom: 1px solid #f1f3f5;
+  }
+
+  ul.buttons {
+    flex: 0 0 auto;
+    min-height: 0;
+
+    list-style-type: none;
+    padding: 12px;
+    margin: 0 -3px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+
+    li {
+      flex: 0 0 auto;
+      width: 50%;
+      padding: 0px 3px;
+      margin-bottom: 6px;
+
+      button {
+        display: block;
+        width: 100%;
+        border-radius: 2px;
+        padding: 12px;
+        text-align: left;
+
+        img {
+          display: block;
+          width: 24px;
+          height: 24px;
+          margin-bottom: 14px;
+        }
+
+        span {
+          display: block;
+          font-size: 13px;
+          font-weight: 700;
+          line-height: 18px;
+          letter-spacing: -0.4000000059604645px;
+        }
+
+        &.announcement {
+          background-color: #ebf7ef;
+          color: #5fbf7c;
+        }
+
+        &.qna {
+          background-color: #edf0ff;
+          color: #6680ff;
+        }
+
+        &.timer {
+          background-color: #f2ecff;
+          color: #9966ff;
+        }
+
+        &.chat {
+          background-color: #f1f3f5;
+          color: #495057;
+        }
+      }
+    }
+  }
+
+  .add-tool-button {
+    flex: 0 0 auto;
+    min-height: 0;
+
+    padding: 12px;
+    margin-top: auto;
+    button {
+      border-radius: 2px;
+      padding: 12px;
+      background-color: #f8f9fa;
+      display: flex;
+      width: 100%;
+      align-items: center;
+      justify-content: center;
+
+      img {
+        flex: 0 0 auto;
+        display: block;
+        width: 14px;
+        height: 14px;
+        margin-right: 2px;
+      }
+
+      span {
+        flex: 0 0 auto;
+        display: block;
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 14px;
+        letter-spacing: -0.4000000059604645px;
+        color: #343a40;
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+.fiive.question-monitor.page {
+  width: 100%;
+
+  .question-monitor {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .teacher-question-item {
+    margin-bottom: 10px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+  @import "../../components/teacher-question-item";
+}

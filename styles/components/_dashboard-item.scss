@@ -1,0 +1,42 @@
+.dashboard-item {
+  border-radius: 2px;
+  padding: 4px 8px;
+  background-color: #f8f9fa;
+  width: 90px;
+
+  strong {
+    display: inline-block;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 21px;
+    letter-spacing: -0.4000000059604645px;
+    color: #212529;
+  }
+
+  span {
+    display: block;
+    font-size: 10px;
+    font-weight: 400;
+    line-height: 14px;
+    letter-spacing: -0.4000000059604645px;
+    color: #495057;
+  }
+
+  &.on {
+    strong {
+      position: relative;
+      &:after {
+        content: "";
+        display: block;
+        width: 6px;
+        height: 6px;
+        border-radius: 3px;
+        background-color: #00d870;
+        position: absolute;
+        right: 0px;
+        top: 50%;
+        transform: translate(12px, -50%);
+      }
+    }
+  }
+}

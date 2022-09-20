@@ -1,0 +1,29 @@
+.chime.page {
+  display: flex;
+  height: 100%;
+
+  & > .display {
+    flex: 1 1 auto;
+    min-width: 0;
+
+    .tile-view {
+      background-color: #000;
+    }
+  }
+
+  & > .controls {
+    flex: 0 0 300px;
+    width: 300px;
+    background-color: #ddd;
+    padding: 20px;
+
+    .btn {
+      display: block;
+      width: 100%;
+    }
+
+    .join-leave {
+      margin-bottom: 10px;
+    }
+  }
+}

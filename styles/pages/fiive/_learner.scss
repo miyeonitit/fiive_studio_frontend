@@ -1,0 +1,134 @@
+.fiive.learner.page {
+  main {
+    .video-wrapper {
+      position: relative;
+      overflow: hidden;
+      video {
+        display: block;
+        width: 100%;
+      }
+
+      .messages {
+        display: none;
+      }
+    }
+
+    @import "./session-info";
+    @import "./class-info";
+  }
+
+  aside.chat {
+    display: flex;
+    flex-direction: column;
+
+    & > header,
+    & > footer {
+      flex: 0 0 auto;
+      min-height: 0;
+    }
+
+    .chatroom {
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+
+    & > header {
+      position: relative;
+      padding: 16px;
+      border-bottom: 1px solid #f1f3f5;
+
+      h3 {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 18px;
+        letter-spacing: -0.4000000059604645px;
+        text-align: center;
+        color: #212529;
+      }
+
+      button {
+        display: block;
+        position: absolute;
+        padding: 4px;
+
+        img {
+          display: block;
+          height: 16px;
+          width: 16px;
+        }
+
+        &.arrow {
+          left: 13px;
+          top: 13px;
+        }
+
+        &.notifications {
+          right: 13px;
+          top: 13px;
+        }
+      }
+    }
+
+    .questions {
+      padding: 10px;
+      .question-item {
+        border-radius: 6px;
+        padding: 12px 40px;
+        border: 1px solid #e6d9ff;
+        background-color: #f2ecff;
+
+        h4 {
+          margin-bottom: 4px;
+          font-size: 14px;
+          font-weight: 700;
+          line-height: 18px;
+          letter-spacing: -0.4000000059604645px;
+          color: #212529;
+        }
+
+        p {
+          margin-bottom: 4px;
+          font-size: 14px;
+          font-weight: 500;
+          line-height: 18px;
+          letter-spacing: -0.4000000059604645px;
+          color: #212529;
+        }
+
+        span.timestamp {
+          display: block;
+          font-size: 12px;
+          font-weight: 400;
+          line-height: 16px;
+          letter-spacing: -0.4000000059604645px;
+          color: #adb5bd;
+        }
+      }
+    }
+
+    & > footer {
+      display: flex;
+      padding: 12px;
+      border-top: 1px solid #f1f3f5;
+      position: relative;
+
+      button {
+        flex: 0 0 auto;
+        min-width: 0;
+        padding: 6px;
+        img {
+          display: block;
+          width: 20px;
+          height: 20px;
+        }
+      }
+
+      .submit-reaction {
+        position: absolute;
+        left: 0;
+        top: -50px;
+      }
+    }
+  }
+}

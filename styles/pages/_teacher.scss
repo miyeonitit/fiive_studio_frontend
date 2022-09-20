@@ -1,0 +1,52 @@
+.teacher.page {
+  display: flex;
+  height: 100%;
+
+  & > .display {
+    flex: 1 1 auto;
+    min-width: 0;
+    position: relative;
+
+    & > video {
+      position: absolute;
+      z-index: 1;
+      width: 300px;
+      height: 200px;
+      bottom: 20px;
+      right: 20px;
+    }
+
+    .tile-view {
+      // position: absolute;
+      background-color: #000;
+    }
+
+    ul.messages {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+      color: #fff;
+      position: absolute;
+      z-index: 1;
+      top: 20px;
+      right: 20px;
+      text-align: right;
+    }
+  }
+
+  & > .controls {
+    flex: 0 0 300px;
+    width: 300px;
+    background-color: #ddd;
+    padding: 20px;
+
+    .btn {
+      display: block;
+      width: 100%;
+    }
+
+    .join-leave {
+      margin-bottom: 10px;
+    }
+  }
+}

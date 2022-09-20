@@ -1,0 +1,13 @@
+.dashboard {
+  display: flex;
+  align-items: center;
+
+  .dashboard-item {
+    margin-right: 12px;
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+
+  @import "./dashboard-item";
+}

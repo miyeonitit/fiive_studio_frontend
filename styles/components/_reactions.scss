@@ -1,0 +1,36 @@
+.reactions-component {
+  position: absolute;
+  width: 100%;
+  left: 0;
+  bottom: 0;
+
+  .item {
+    position: absolute;
+    display: none;
+    left: 10%;
+    // transition: transform ease-out 1s, opacity ease-out 1s;
+    // transform: translateY(-400px);
+    // opacity: 0;
+  }
+
+  .example-enter {
+    display: block;
+    opacity: 1;
+    transform: translateY(-0px);
+  }
+
+  .example-enter.example-enter-active {
+    display: block;
+    opacity: 0;
+    transform: translateY(-400px);
+    transition: transform ease-out 2s, opacity ease-out 2s;
+  }
+
+  .example-leave {
+    display: none;
+  }
+
+  .example-leave.example-leave-active {
+    display: none;
+  }
+}
