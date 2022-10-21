@@ -1,0 +1,9 @@
+name: CI
+on:
+  push:
+    branches: ['dev']
+jobs:
+  checkout:
+    runs-on: ubuntu-latest
+    steps:
+      - run: ls -al
