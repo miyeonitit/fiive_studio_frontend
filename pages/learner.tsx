@@ -100,7 +100,7 @@ const LearnerPage: NextPageWithLayout = () => {
             <img src='/icons/move_right.svg' alt='Arrow' />
           </button>
 
-          <h3>실시간 채팅</h3>
+          <h3>라이브 채팅</h3>
 
           <button type='button' className='notifications'>
             <img src='/icons/announce.svg' alt='Notifications' />
@@ -119,7 +119,7 @@ const LearnerPage: NextPageWithLayout = () => {
         </div>
 
         <div className='chatroom'>
-          <Chat userId='learner' />
+          <Chat userId='learne' />
         </div>
 
         <footer>
