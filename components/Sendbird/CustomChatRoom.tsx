@@ -14,7 +14,7 @@ import TypingIndicator from '@sendbird/uikit-react/Channel/components/TypingIndi
 
 import defaultProfileImage from '../../public/pages/fiive/Ellipse 8stateBadge.svg'
 
-const ChatRoom = ({ message, chainTop, chainBottom }) => {
+const CustomChatRoom = ({ message, chainTop, chainBottom }) => {
   const { currentGroupChannel, scrollToMessage } = useChannelContext()
   const globalStore = useSendbirdStateContext()
 
@@ -39,7 +39,7 @@ const ChatRoom = ({ message, chainTop, chainBottom }) => {
   }
 
   return (
-    <div className='ChatRoom'>
+    <div className='CustomChatRoom'>
       {messageInfomation.type === 'image/png' ? (
         <div className='Message_file'>
           <button
@@ -82,4 +82,4 @@ const ChatRoom = ({ message, chainTop, chainBottom }) => {
   )
 }
 
-export default ChatRoom
+export default CustomChatRoom

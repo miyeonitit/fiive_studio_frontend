@@ -4,8 +4,9 @@ import { GetStaticProps } from 'next'
 import SendbirdProvider from '@sendbird/uikit-react/SendbirdProvider'
 import { ChannelProvider } from '@sendbird/uikit-react/Channel/context'
 import ChannelUI from '@sendbird/uikit-react/Channel/components/ChannelUI'
+import Channel from '@sendbird/uikit-react/Channel'
 
-import ChatRoom from './Sendbird/ChatRoom'
+import CustomChatRoom from './Sendbird/CustomChatRoom'
 
 type props = {
   userId: string
@@ -27,8 +28,8 @@ const Chat = (props: props) => {
           <ChannelUI
             hasSeparator={true}
             isReactionEnabled={true}
-            renderHeader={() => <></>}
-            renderMessage={(message) => <ChatRoom message={message} />}
+            renderChannelHeader={() => <></>}
+            renderMessage={(message) => <CustomChatRoom message={message} />}
             // renderMessageInput={(props) => <Tester props={props} />}
             // renderTypingIndicator={(props) => <Tester props={props} />}
           />
