@@ -1,0 +1,136 @@
+.CustomChatRoom {
+  position: relative;
+  padding: 8px 12px;
+
+  @import './components/MessageTooltip.scss';
+
+  .Message_more_menu_box {
+    display: flex;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    border: 1px solid $bluegray-3;
+    border-radius: 2px;
+    background-color: white;
+
+    div {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+      cursor: pointer;
+    }
+
+    div:hover {
+      background-color: $bluegray-2;
+    }
+  }
+
+  .Message_text {
+    display: flex;
+    flex-direction: column;
+
+    .user_infomation_box {
+      display: flex;
+      align-items: center;
+
+      .user_profile_image_box {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 8px;
+
+        .defaultProfileImage {
+          border: 1px solid $bluegray-2 !important;
+          border-radius: 50px;
+        }
+      }
+
+      .user_nickname_box {
+        margin-right: 6px;
+        @include body-2-700;
+        color: $bluegray-6;
+      }
+
+      .user_nickname_box.teacher {
+        color: $fiivepurple-5;
+      }
+
+      .massage_date_time {
+        @include caption-1-400;
+        color: $bluegray-6;
+      }
+    }
+
+    .text_message_box {
+      margin-left: 32px;
+      @include body-2-400;
+      color: $bluegray-9;
+    }
+
+    .text_message_box.fail {
+      color: $bluegray-6;
+    }
+
+    .reaction_emoji_box {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+      margin-left: 32px;
+
+      .reactions_item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2px 4px;
+        margin-right: 4px;
+        border-radius: 6px;
+        background-color: $bluegray-2;
+        cursor: pointer;
+
+        .emoji_reaction {
+          width: 20px;
+          height: 20px;
+        }
+
+        .reactions_item_inner {
+          padding: 2px 2px 2px 4px;
+          font-weight: 400;
+          font-size: 12px;
+          color: $bluegray-9;
+        }
+      }
+
+      .reactions_item:hover {
+        background-color: $bluegray-3;
+      }
+
+      .reactions_item.add_emoji {
+        position: relative;
+        padding: 3px 8px;
+        border: 1px solid $bluegray-2;
+      }
+
+      .reactions_item.add_emoji:hover {
+        background-color: white;
+      }
+    }
+
+    .message_sending_status {
+      display: flex;
+      align-items: center;
+      margin-top: 6px;
+      margin-left: 32px;
+
+      .warning_text {
+        margin-left: 4px;
+        @include caption-1-400;
+        color: $red-5;
+      }
+    }
+  }
+}
+
+.CustomChatRoom:hover {
+  background-color: $bluegray-1;
+}

@@ -12,4 +12,7 @@
 @import './timer';
 @import './reactions';
 
-@import './Sendbird/CustomChatRoom';
+/* sendbird design custom css files */
+@import '../../components/Sendbird/CustomChatRoom';
+@import '../../components/Sendbird/CustomMessageInput';
+@import '../../components/Sendbird/CustomDateSeparator';

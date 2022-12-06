@@ -1,0 +1,11 @@
+.CustomDateSeparator {
+  padding: 0px 12px;
+
+  .date_separator {
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 100%;
+    letter-spacing: -0.4px;
+    color: $bluegray-6;
+  }
+}

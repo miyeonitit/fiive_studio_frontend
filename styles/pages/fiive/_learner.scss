@@ -13,8 +13,8 @@
       }
     }
 
-    @import "./session-info";
-    @import "./class-info";
+    @import './session-info';
+    @import './class-info';
   }
 
   aside.chat {
@@ -30,6 +30,22 @@
     .chatroom {
       flex: 1 1 auto;
       min-height: 0;
+
+      .sendbird-conversation {
+        .sendbird-conversation__messages {
+          .sendbird-conversation__messages-padding {
+            padding: 0px;
+          }
+
+          .sendbird-conversation__messages-padding::-webkit-scrollbar {
+            display: none;
+          }
+        }
+
+        .sendbird-conversation__messages::-webkit-scrollbar {
+          display: none;
+        }
+      }
     }
 
     & > header {
