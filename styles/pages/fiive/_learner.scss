@@ -13,10 +13,11 @@
       }
     }
 
-    @import "./session-info";
-    @import "./class-info";
+    @import './session-info';
+    @import './class-info';
   }
 
+  /* chat을 펼쳤을 때 aside bar */
   aside.chat {
     display: flex;
     flex-direction: column;
@@ -130,5 +131,25 @@
         top: -50px;
       }
     }
+  }
+
+  aside.closed_chat_sidebar {
+    height: calc(100vh - 73px);
+    padding: 16px;
+    border-left: 1px solid $bluegray-2;
+
+    .closed_chat_image_box {
+      display: flex;
+      align-items: center;
+
+      img {
+        cursor: pointer;
+      }
+    }
+  }
+
+  /* chat aside bar를 접었을 때 상태 표현 */
+  aside.chat.close {
+    display: none;
   }
 }

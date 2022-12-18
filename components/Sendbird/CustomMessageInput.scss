@@ -1,0 +1,81 @@
+.CustomMessageInput {
+  width: 100%;
+
+  .chat_frozen_status_wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0px;
+    background-color: $bluegray-9;
+
+    span {
+      margin-left: 8px;
+      @include body-2-400;
+      color: $bluegray-1;
+    }
+  }
+
+  .chat_muted_status_wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0px;
+    @include body-2-400;
+    color: $bluegray-1;
+    background-color: $red-5;
+
+    span {
+      margin-left: 8px;
+      @include body-2-400;
+      color: $bluegray-1;
+    }
+  }
+
+  .message_input_box {
+    display: flex;
+    justify-content: space-between;
+    margin: 12px;
+    padding: 12px;
+    border: 1px solid $bluegray-3;
+    border-radius: 2px;
+
+    .message_input {
+      width: 90%;
+      border: none;
+      outline: none;
+      resize: none;
+      overflow: hidden;
+    }
+
+    .message_input::placeholder {
+      position: relative;
+      top: 3px;
+      @include body-2-400;
+      color: $bluegray-6;
+    }
+
+    .message_input.nonactive {
+      background-color: $bluegray-1;
+    }
+
+    .sendMessageIcon {
+      cursor: pointer;
+    }
+  }
+
+  .message_input_box.active {
+    border: 1px solid $bluegray-8;
+  }
+
+  .message_input_box.nonactive {
+    border: none;
+    background-color: $bluegray-1;
+  }
+
+  /* typing indicator custom */
+  .sendbird-label--color-onbackground-2 {
+    margin: 0px 12px !important;
+    @include caption-1-400;
+    color: $bluegray-7 !important;
+  }
+}

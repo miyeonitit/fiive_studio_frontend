@@ -1,11 +1,19 @@
-@import "./dashboard";
-@import "./lecture-tools";
-@import "./teacher-chat-widget";
-@import "./teacher-question-widget";
-@import "./announcement-modal";
-@import "./timer-modal";
-@import "./question-modal";
-@import "./submit-reaction";
-@import "./announcements";
-@import "./timer";
-@import "./reactions";
+@import '../styleguideline';
+
+@import './dashboard';
+@import './lecture-tools';
+@import './teacher-chat-widget';
+@import './teacher-question-widget';
+@import './announcement-modal';
+@import './timer-modal';
+@import './question-modal';
+@import './submit-reaction';
+@import './announcements';
+@import './timer';
+@import './reactions';
+
+/* sendbird design custom css files */
+@import '../../components/Sendbird/CustomChatHeader';
+@import '../../components/Sendbird/CustomChatRoom';
+@import '../../components/Sendbird/CustomMessageInput';
+@import '../../components/Sendbird/CustomDateSeparator';

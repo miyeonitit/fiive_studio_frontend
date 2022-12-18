@@ -1,92 +1,92 @@
-import useStore from "../store/video";
-import { v4 as uuidv4 } from "uuid";
+import useStore from '../store/video'
+import { v4 as uuidv4 } from 'uuid'
 
 interface props {
-  toggle: () => void;
+  toggle: () => void
 }
 
 const SubmitReaction = (props: props) => {
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-  const channel = useStore((state: any) => state.channel);
+  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL
+  const channel = useStore((state: any) => state.channel)
 
   const embedMetadata = async (type: string) => {
-    if (channel === null) return;
+    if (channel === null) return
 
     const form = new URLSearchParams({
       arn: channel.arn,
       data: JSON.stringify({
-        type: "REACTION",
+        type: 'REACTION',
         message: {
           id: uuidv4(),
           type,
         },
       }),
-    });
+    })
 
-    const resp = await fetch(`${baseUrl}/demo/channel/metadata`, {
-      method: "POST",
+    const resp = await fetch(`${baseUrl}/channel/metadata`, {
+      method: 'POST',
       body: form,
-    });
-    props.toggle();
-  };
+    })
+    props.toggle()
+  }
 
   return (
-    <div className="submit-reaction">
+    <div className='submit-reaction'>
       <button
         onClick={() => {
-          embedMetadata("LIKE");
+          embedMetadata('LIKE')
         }}
-        type="button"
+        type='button'
       >
-        <img src="/components/submit-reaction/like.v2.svg" alt="Like" />
+        <img src='/components/submit-reaction/like.v2.svg' alt='Like' />
       </button>
 
       <button
         onClick={() => {
-          embedMetadata("HEART");
+          embedMetadata('HEART')
         }}
-        type="button"
+        type='button'
       >
-        <img src="/components/submit-reaction/heart.v2.svg" alt="Heart" />
+        <img src='/components/submit-reaction/heart.v2.svg' alt='Heart' />
       </button>
 
       <button
         onClick={() => {
-          embedMetadata("LIT");
+          embedMetadata('LIT')
         }}
-        type="button"
+        type='button'
       >
-        <img src="/components/submit-reaction/lit.v2.svg" alt="Lit" />
+        <img src='/components/submit-reaction/lit.v2.svg' alt='Lit' />
       </button>
 
       <button
         onClick={() => {
-          embedMetadata("SMILE");
+          embedMetadata('SMILE')
         }}
-        type="button"
+        type='button'
       >
-        <img src="/components/submit-reaction/smile.v2.svg" alt="Smile" />
+        <img src='/components/submit-reaction/smile.v2.svg' alt='Smile' />
       </button>
 
       <button
         onClick={() => {
-          embedMetadata("SHAKE");
+          embedMetadata('SHAKE')
         }}
-        type="button"
+        type='button'
       >
-        <img src="/components/submit-reaction/shake.v2.svg" alt="Shake" />
+        <img src='/components/submit-reaction/shake.v2.svg' alt='Shake' />
       </button>
 
       <button
         onClick={() => {
-          embedMetadata("FANFARE");
+          embedMetadata('FANFARE')
         }}
-        type="button"
+        type='button'
       >
-        <img src="/components/submit-reaction/fanfare.v2.svg" alt="Fanfare" />
+        <img src='/components/submit-reaction/fanfare.v2.svg' alt='Fanfare' />
       </button>
     </div>
-  );
-};
+  )
+}
 
-export default SubmitReaction;
+export default SubmitReaction

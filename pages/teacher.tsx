@@ -1,169 +1,105 @@
-import React, { useEffect, useState, ReactElement } from "react";
-import Layout from "../components/DemoLayout";
-import { NextPageWithLayout } from "../types/NextPageWithLayout";
-import Head from "next/head";
-import Video from "../components/Video";
+import React, { ReactElement, useState } from 'react'
+import Head from 'next/head'
+import Image from 'next/image'
+import { NextPageWithLayout } from '../types/NextPageWithLayout'
 
-import {
-  useMeetingManager,
-  useLocalVideo,
-  useMeetingStatus,
-  VideoTileGrid,
-} from "amazon-chime-sdk-component-library-react";
-import { MeetingSessionConfiguration } from "amazon-chime-sdk-js";
+import Layout from '../components/FiiveTeacherLayout'
+import Video from '../components/Video'
+import LectureTools from '../components/LectureTools'
+import TeacherChatWidget from '../components/TeacherChatWidget'
+import TeacherQuestionWidget from '../components/TeacherQuestionWidget'
+import AnnouncementModal from '../components/AnnouncementModal'
+import TimerModal from '../components/TimerModal'
+import Timer from '../components/Timer'
+import Reactions from '../components/Reactions'
 
-const TeacherView: NextPageWithLayout = () => {
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-  const meetingManager = useMeetingManager();
-  const meetingStatus = useMeetingStatus();
-  const { toggleVideo } = useLocalVideo();
+import class_thumbnail_image from '../public/placeholders/class_thumbnail.png'
 
-  useEffect(() => {});
-
-  const joinMeeting = async () => {
-    const meeting = await fetchMeeting();
-    const attendee = await fetchAttendee(meeting);
-
-    // Initalize the `MeetingSessionConfiguration`
-    const meetingSessionConfiguration = new MeetingSessionConfiguration(
-      meeting,
-      attendee
-    );
-
-    // Create a `MeetingSession` using `join()` function with the `MeetingSessionConfiguration`
-    await meetingManager.join(meetingSessionConfiguration);
-
-    // Start the `MeetingSession` to join the meeting
-    await meetingManager.start();
-  };
-
-  const fetchMeeting = async () => {
-    const resp = await fetch(`${baseUrl}/demo/meeting`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-    });
-
-    const { Meeting = null } = await resp.json();
-    return Meeting;
-  };
-
-  const fetchAttendee = async ({ MeetingId }) => {
-    const form = new URLSearchParams({
-      meeting_id: MeetingId,
-      user_id: "teacher",
-    });
-
-    const resp = await fetch(`${baseUrl}/demo/attendee`, {
-      method: "POST",
-      body: form,
-    });
-
-    const { Attendee = null } = await resp.json();
-    return Attendee;
-  };
-
-  const leaveMeeting = async () => {
-    await meetingManager.leave();
-  };
-
-  const fetchChannel = async () => {
-    const resp = await fetch(`${baseUrl}/demo/channel`, {
-      method: "GET",
-    });
-
-    const { channels = [] } = await resp.json();
-
-    const channel = channels.find((item: any) => {
-      return !item.authrozied;
-    });
-
-    return channel;
-  };
-
-  const [metadata, setMetadata] = useState("");
-
-  const updateMetadata = (e) => {
-    setMetadata(e.target.value);
-  };
-
-  const embedMetadata = async () => {
-    const channel = await fetchChannel();
-
-    const form = new URLSearchParams({
-      arn: channel.arn,
-      data: JSON.stringify({ message: metadata }),
-    });
-
-    const resp = await fetch(`${baseUrl}/demo/channel/metadata`, {
-      method: "POST",
-      body: form,
-    });
-
-    setMetadata("");
-  };
+const TeacherPage: NextPageWithLayout = () => {
+  const [announcementModal, toggleAnnouncementModal] = useState(false)
+  const [timerModal, toggleTimerModal] = useState(false)
 
   return (
-    <div className="teacher page">
+    <div className='fiive teacher page'>
       <Head>
-        <title>LSS Student view</title>
-        <meta name="description" content="LSS frontend student view" />
+        <title>fiive teacher</title>
+        <meta name='description' content='fiive teacher' />
       </Head>
 
-      <div className="display">
-        <Video />
-        <VideoTileGrid className="tile-view" />
-      </div>
-
-      <div className="controls">
-        <div className="row join-leave">
-          <div className="col">
-            <button
-              onClick={joinMeeting}
-              type="button"
-              className="btn btn-primary"
-            >
-              강의실 입장
-            </button>
-          </div>
-
-          <div className="col">
-            <button
-              onClick={leaveMeeting}
-              type="button"
-              className="btn btn-primary"
-            >
-              강의실 퇴장
-            </button>
-          </div>
-        </div>
-
-        <p>Meeting status: {meetingStatus}</p>
-
-        <form className="metadata">
-          <input
-            onInput={updateMetadata}
-            value={metadata}
-            type="text"
-            className="form-control mb-2"
+      <aside className='utilities'>
+        <section className='tools'>
+          <LectureTools
+            openAnnouncementModal={() => {
+              toggleAnnouncementModal(true)
+            }}
+            openTimerModal={() => {
+              toggleTimerModal(true)
+            }}
           />
+        </section>
+      </aside>
 
-          <button
-            onClick={embedMetadata}
-            type="button"
-            className="btn btn-secondary"
-          >
-            메타데이터 임베딩
-          </button>
-        </form>
-      </div>
+      <main>
+        <section className='video-wrapper'>
+          <h3>강의 화면 미리보기</h3>
+          <div className='preview'>
+            <Timer></Timer>
+            <Reactions></Reactions>
+            <Video />
+          </div>
+        </section>
+
+        <section className='class-info'>
+          <div className='class'>
+            <Image src={class_thumbnail_image} alt='Class' />
+            <div className='description'>
+              <ol className='badges'>
+                <li className='online'>온라인</li>
+
+                <li className='recording'>녹화중</li>
+              </ol>
+              <h2>1회차 - 05월 08일 일요일, 22시 30분</h2>
+              <p>비문학(기본기+훈련) + 문학(기본기+개념어 정의+유형별 접근)</p>
+            </div>
+          </div>
+
+          <a href='' target='_blank'>
+            상세 페이지 바로가기
+          </a>
+        </section>
+      </main>
+
+      <aside className='chat'>
+        {/* <section className='questions'>
+          <TeacherQuestionWidget></TeacherQuestionWidget>
+        </section> */}
+
+        <section className='chat'>
+          <TeacherChatWidget></TeacherChatWidget>
+        </section>
+      </aside>
+
+      {announcementModal && (
+        <AnnouncementModal
+          toggle={() => {
+            toggleAnnouncementModal(!announcementModal)
+          }}
+        ></AnnouncementModal>
+      )}
+
+      {timerModal && (
+        <TimerModal
+          toggle={() => {
+            toggleTimerModal(!timerModal)
+          }}
+        ></TimerModal>
+      )}
     </div>
-  );
-};
+  )
+}
 
-TeacherView.getLayout = (page: ReactElement) => {
-  return <Layout>{page}</Layout>;
-};
+TeacherPage.getLayout = (page: ReactElement) => {
+  return <Layout>{page}</Layout>
+}
 
-export default TeacherView;
+export default TeacherPage
