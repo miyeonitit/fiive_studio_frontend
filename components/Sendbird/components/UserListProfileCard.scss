@@ -1,0 +1,113 @@
+.UserListProfileCard {
+  /* blocked, muted 된 user 아이콘 설명 툴팁 boolean state */
+  @import './MessageTooltip.scss';
+
+  .user_list_box {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 12px;
+
+    .user_infomation_box {
+      display: flex;
+
+      .user_profile_box {
+        display: flex;
+        align-items: center;
+        margin-right: 6px;
+
+        img {
+          width: 32px;
+          height: 32px;
+          border-radius: 50px;
+          border: 1px solid $bluegray-2 !important;
+        }
+      }
+
+      .user_infomation_box {
+        display: flex;
+        flex-direction: column;
+
+        .user_infomations {
+          display: flex;
+          align-items: center;
+
+          .user_nickname_box {
+            @include body-2-700;
+            color: $bluegray-8;
+          }
+
+          .user_online_status_box {
+            display: flex;
+            align-items: center;
+            margin: 0px 6px;
+          }
+
+          .user_name_box {
+            @include caption-1-400;
+            color: $bluegray-8;
+          }
+
+          .user_blocked_status_box,
+          .user_muted_status_box {
+            position: relative;
+            margin-left: 8px;
+          }
+        }
+
+        .user_role {
+          @include caption-1-400;
+          color: $bluegray-6;
+        }
+      }
+    }
+
+    .more_menu_box {
+      display: flex;
+      align-items: center;
+      padding: 8px;
+      border: 1px solid $bluegray-3;
+      border-radius: 2px;
+      background-color: white;
+      cursor: pointer;
+    }
+
+    .more_mini_menu_wrapper {
+      position: absolute;
+      top: 55px;
+      right: 12px;
+      width: 180px;
+      padding: 8px;
+      border-radius: 4px;
+      background-color: white;
+      box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.08),
+        0px 16px 30px 4px rgba(0, 0, 0, 0.1);
+      z-index: 9999;
+
+      .more_mini_menu {
+        .list_in_menu {
+          display: flex;
+          align-items: center;
+          padding: 12px;
+          @include body-2-400;
+          list-style-type: none;
+          color: $bluegray-10;
+          cursor: pointer;
+
+          span {
+            margin-left: 8px;
+          }
+        }
+
+        .list_in_menu:hover {
+          background-color: $bluegray-2;
+        }
+      }
+    }
+  }
+
+  .user_list_box:hover {
+    background-color: $bluegray-1;
+  }
+}

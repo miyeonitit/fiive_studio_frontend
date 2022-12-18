@@ -70,9 +70,9 @@ const TeacherPage: NextPageWithLayout = () => {
       </main>
 
       <aside className='chat'>
-        <section className='questions'>
+        {/* <section className='questions'>
           <TeacherQuestionWidget></TeacherQuestionWidget>
-        </section>
+        </section> */}
 
         <section className='chat'>
           <TeacherChatWidget></TeacherChatWidget>

@@ -1,0 +1,44 @@
+.EmojiContainerBox {
+  .emojis_container_wrapper {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 0px;
+    padding: 8px 16px;
+    border: 1px solid $bluegray-4;
+    border-radius: 6px;
+    background-color: white;
+    z-index: 9999;
+
+    .close_button {
+      text-align: right;
+      cursor: pointer;
+    }
+
+    .devider {
+      margin: 6px 0px;
+      border-bottom: 1px solid $bluegray-4;
+    }
+
+    .emoji_outer_box {
+      display: flex;
+
+      .emoji_inner_box {
+        display: flex;
+        align-items: center;
+        padding: 6px;
+        border-radius: 4px;
+        cursor: pointer;
+
+        img {
+          width: 22px;
+          height: 22px;
+        }
+      }
+
+      .emoji_inner_box:hover {
+        background-color: $bluegray-2;
+      }
+    }
+  }
+}

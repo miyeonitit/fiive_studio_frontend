@@ -1,0 +1,156 @@
+.CustomChatHeader {
+  .chat_header_wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    border-bottom: 1px solid $bluegray-2;
+
+    .control_chat_size_box {
+      display: flex;
+      align-items: center;
+
+      img {
+        cursor: pointer;
+      }
+    }
+
+    .chat_title_box {
+      @include body-2-700;
+    }
+
+    .chat_the_more_box {
+      position: relative;
+
+      img {
+        cursor: pointer;
+      }
+
+      .more_mini_menu {
+        position: absolute;
+        top: 25px;
+        right: 0px;
+        width: 180px;
+        padding: 8px;
+        border-radius: 4px;
+        background-color: white;
+        box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.08),
+          0px 16px 30px 4px rgba(0, 0, 0, 0.1);
+        z-index: 9999;
+
+        .list_in_menu {
+          display: flex;
+          align-items: center;
+          padding: 12px;
+          @include body-2-400;
+          list-style-type: none;
+          color: $bluegray-10;
+          cursor: pointer;
+
+          span {
+            margin-left: 8px;
+          }
+        }
+
+        .list_in_menu:hover {
+          background-color: $bluegray-2;
+        }
+      }
+    }
+  }
+
+  /* 라이브 참여자 UI */
+  .chat_user_list_wrapper {
+    height: calc(100vh - 110px);
+    overflow-y: scroll;
+
+    .user_list_header_box {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      padding: 16px;
+      border-bottom: 1px solid $bluegray-2;
+
+      .user_filter_mini_menu_box {
+        position: absolute;
+        top: 40px;
+        left: 0px;
+        width: 180px;
+        padding: 8px;
+        border-radius: 4px;
+        background-color: white;
+        box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.08),
+          0px 16px 30px 4px rgba(0, 0, 0, 0.1);
+        z-index: 9999;
+
+        .list_in_menu {
+          display: flex;
+          align-items: center;
+          padding: 12px 12px 12px 0px;
+          @include body-2-400;
+          list-style-type: none;
+          color: $bluegray-10;
+          cursor: pointer;
+
+          span {
+            margin-left: 8px;
+          }
+        }
+
+        .list_in_menu:hover {
+          background-color: $bluegray-2;
+        }
+
+        .list_in_menu.active {
+          color: $fiivepurple-5;
+        }
+      }
+
+      .user_list_title {
+        display: flex;
+        align-items: center;
+        @include body-2-700;
+        color: $bluegray-10;
+        cursor: pointer;
+
+        .all_user_number {
+          margin: 0px 6px;
+          color: $bluegray-6;
+        }
+
+        .list_filter_img_box {
+          display: flex;
+          align-items: center;
+        }
+      }
+
+      .cancel_button {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+      }
+    }
+
+    .user_list_wrapper {
+      padding: 12px 0px;
+
+      /* user list에 map 메서드로 돌린 user card UI */
+      @import './components/UserListProfileCard.scss';
+    }
+  }
+
+  .chat_user_list_wrapper::-webkit-scrollbar {
+    width: 8px;
+    padding: 1px;
+    background-clip: padding-box;
+    background-color: white;
+  }
+
+  .chat_user_list_wrapper::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-clip: padding-box;
+    border-right: 2px solid white;
+
+    background-color: $bluegray-4;
+  }
+}
