@@ -1,0 +1,50 @@
+.EmojiIcon {
+  position: relative;
+
+  .reacted_user_list_tooltip {
+    position: absolute;
+    bottom: 40px;
+    left: -10px;
+    width: max-content;
+    max-width: 200px;
+    padding: 12px;
+    @include caption-1-500;
+    border-radius: 4px;
+    border: 1px solid $bluegray-2;
+    color: $bluegray-10;
+    background-color: white;
+  }
+
+  .reactions_item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 4px;
+    margin-right: 4px;
+    border-radius: 6px;
+    background-color: $bluegray-2;
+    cursor: pointer;
+
+    .emoji_reaction {
+      width: 20px;
+      height: 20px;
+    }
+
+    .reactions_item_inner {
+      padding: 2px 2px 2px 4px;
+      font-weight: 400;
+      font-size: 12px;
+      color: $bluegray-9;
+    }
+  }
+
+  .reactions_item:hover {
+    background-color: $bluegray-3;
+  }
+
+  .reactions_item.active {
+    border: 1px solid;
+    color: $fiivepurple-4;
+    background-color: $fiivepurple-1;
+  }
+}

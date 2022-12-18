@@ -3,8 +3,8 @@ import React from 'react'
 type props = {
   topHeight: string
   rightWidth: string
-  width?: string
   tooltipText: string
+  width?: string
 }
 
 const MessageTooltip = (props: props) => {

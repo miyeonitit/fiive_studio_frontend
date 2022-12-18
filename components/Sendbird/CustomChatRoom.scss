@@ -1,136 +1,232 @@
 .CustomChatRoom {
-  position: relative;
-  padding: 8px 12px;
-
-  @import './components/MessageTooltip.scss';
-
-  .Message_more_menu_box {
-    display: flex;
-    position: absolute;
-    top: -8px;
-    right: 12px;
-    border: 1px solid $bluegray-3;
-    border-radius: 2px;
-    background-color: white;
-
-    div {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 8px;
-      cursor: pointer;
-    }
-
-    div:hover {
-      background-color: $bluegray-2;
-    }
+  .date_separator {
+    padding: 0px 12px;
+    @include btn-sm-500;
+    color: $bluegray-6;
   }
 
-  .Message_text {
-    display: flex;
-    flex-direction: column;
+  .message_wrapper {
+    position: relative;
+    padding: 8px 12px;
 
-    .user_infomation_box {
+    /* 반응 추가하기, 삭제와 같은 메시지 안내 toolip css */
+    @import './components/MessageTooltip.scss';
+
+    .Message_more_menu_box {
       display: flex;
-      align-items: center;
+      position: absolute;
+      top: -8px;
+      right: 12px;
+      border: 1px solid $bluegray-3;
+      border-radius: 2px;
+      background-color: white;
 
-      .user_profile_image_box {
+      div {
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-right: 8px;
-
-        .defaultProfileImage {
-          border: 1px solid $bluegray-2 !important;
-          border-radius: 50px;
-        }
-      }
-
-      .user_nickname_box {
-        margin-right: 6px;
-        @include body-2-700;
-        color: $bluegray-6;
-      }
-
-      .user_nickname_box.teacher {
-        color: $fiivepurple-5;
-      }
-
-      .massage_date_time {
-        @include caption-1-400;
-        color: $bluegray-6;
-      }
-    }
-
-    .text_message_box {
-      margin-left: 32px;
-      @include body-2-400;
-      color: $bluegray-9;
-    }
-
-    .text_message_box.fail {
-      color: $bluegray-6;
-    }
-
-    .reaction_emoji_box {
-      display: flex;
-      align-items: center;
-      margin-top: 10px;
-      margin-left: 32px;
-
-      .reactions_item {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 2px 4px;
-        margin-right: 4px;
-        border-radius: 6px;
-        background-color: $bluegray-2;
+        padding: 8px;
         cursor: pointer;
-
-        .emoji_reaction {
-          width: 20px;
-          height: 20px;
-        }
-
-        .reactions_item_inner {
-          padding: 2px 2px 2px 4px;
-          font-weight: 400;
-          font-size: 12px;
-          color: $bluegray-9;
-        }
       }
 
-      .reactions_item:hover {
-        background-color: $bluegray-3;
-      }
-
-      .reactions_item.add_emoji {
-        position: relative;
-        padding: 3px 8px;
-        border: 1px solid $bluegray-2;
-      }
-
-      .reactions_item.add_emoji:hover {
-        background-color: white;
+      div:hover {
+        background-color: $bluegray-2;
       }
     }
 
-    .message_sending_status {
-      display: flex;
-      align-items: center;
-      margin-top: 6px;
-      margin-left: 32px;
+    /* emoji를 고를 수 있는 emoji contaioner box css */
+    @import './components/EmojiContainerBox.scss';
 
-      .warning_text {
-        margin-left: 4px;
-        @include caption-1-400;
-        color: $red-5;
+    .more_mini_menu_wrapper {
+      position: absolute;
+      top: 30px;
+      right: 12px;
+      width: 180px;
+      padding: 8px;
+      border-radius: 4px;
+      background-color: white;
+      box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.08),
+        0px 16px 30px 4px rgba(0, 0, 0, 0.1);
+      z-index: 9999;
+
+      .more_mini_menu {
+        .list_in_menu {
+          display: flex;
+          align-items: center;
+          padding: 12px;
+          @include body-2-400;
+          list-style-type: none;
+          color: $bluegray-10;
+          cursor: pointer;
+
+          span {
+            margin-left: 8px;
+          }
+
+          .delete_message {
+            color: $red-5;
+          }
+        }
+
+        .list_in_menu:hover {
+          background-color: $bluegray-2;
+        }
+      }
+    }
+
+    .more_mini_menu_wrapper.top {
+      top: -115px;
+    }
+
+    .Message_text {
+      display: flex;
+      flex-direction: column;
+
+      .user_infomation_box {
+        display: flex;
+        align-items: center;
+
+        .user_profile_image_box {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-right: 8px;
+
+          .defaultProfileImage {
+            border: 1px solid $bluegray-2 !important;
+            border-radius: 50px;
+          }
+        }
+
+        .user_nickname_box {
+          margin-right: 6px;
+          @include body-2-700;
+          color: $bluegray-6;
+        }
+
+        .user_nickname_box.teacher {
+          color: $fiivepurple-5;
+        }
+
+        .massage_date_time {
+          @include caption-1-400;
+          color: $bluegray-6;
+        }
+      }
+
+      .edited_message_box {
+        margin-top: 8px;
+
+        .edit_message_input {
+          width: 284px;
+          padding: 16px;
+          margin-left: 32px;
+          @include body-2-400;
+          border: 1px solid $bluegray-4;
+          border-radius: 2px;
+          outline: none;
+          height: auto;
+          resize: none;
+          overflow-y: hidden;
+          color: $bluegray-10;
+          background-color: white;
+        }
+
+        .edited_button_box {
+          display: flex;
+          justify-content: flex-end;
+          margin-top: 8px;
+
+          .cancel_edit_button {
+            padding: 10px 12px;
+            @include btn-sm-500;
+            border: 1px solid $bluegray-4;
+            border-radius: 2px;
+            color: $bluegray-9;
+          }
+
+          .save_edit_button {
+            padding: 10px 12px;
+            margin-left: 6px;
+            @include btn-sm-500;
+            border-radius: 2px;
+            color: white;
+            background-color: $fiivepurple-5;
+          }
+        }
+      }
+
+      .text_message_box {
+        display: flex;
+        margin-left: 32px;
+        @include body-2-400;
+        color: $bluegray-9;
+
+        .edited_message_status {
+          display: flex;
+          align-items: flex-end;
+          margin-left: 2px;
+          @include body-3-400;
+          color: $bluegray-6;
+        }
+      }
+
+      .text_message_box.fail {
+        color: $bluegray-6;
+      }
+
+      .reaction_emoji_wrapper {
+        display: flex;
+        align-items: center;
+        margin-top: 10px;
+        margin-left: 32px;
+
+        /* Emoji Icon div 영역 */
+        @import './components/EmojiIcon.scss';
+
+        .reactions_item.add_emoji {
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 3px 8px;
+          margin-right: 4px;
+          border-radius: 6px;
+          border: 1px solid $bluegray-2;
+          background-color: $bluegray-2;
+          cursor: pointer;
+        }
+
+        .reactions_item.add_emoji:hover {
+          background-color: white;
+        }
+      }
+
+      .reaction_emoji_box.edit {
+        display: none;
+      }
+
+      .message_sending_status {
+        display: flex;
+        align-items: center;
+        margin-top: 6px;
+        margin-left: 32px;
+
+        .warning_text {
+          margin-left: 4px;
+          @include caption-1-400;
+          color: $red-5;
+        }
       }
     }
   }
-}
 
-.CustomChatRoom:hover {
-  background-color: $bluegray-1;
+  .message_wrapper:hover {
+    background-color: $bluegray-1;
+  }
+
+  .message_wrapper.edit {
+    padding-bottom: 12px;
+    background-color: $fiivepurple-1;
+  }
 }

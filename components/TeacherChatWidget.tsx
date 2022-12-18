@@ -8,7 +8,7 @@ const Chat = dynamic(() => import('../components/Chat'), {
 const TeacherChatWidget = () => {
   return (
     <div className='teacher-chat-widget'>
-      <h3>
+      {/* <h3>
         <span>강의실 채팅</span>
 
         <button type='button'>
@@ -17,7 +17,7 @@ const TeacherChatWidget = () => {
             alt='Members'
           />
         </button>
-      </h3>
+      </h3> */}
 
       <Chat userId='teacher' />
     </div>

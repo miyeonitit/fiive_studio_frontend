@@ -13,6 +13,8 @@ import Timer from '../components/Timer'
 import Reactions from '../components/Reactions'
 import useStore from '../store/video'
 
+import chatOpenIcon from '../public/pages/fiive/move_left.svg'
+
 const Chat = dynamic(() => import('../components/Chat'), {
   ssr: false,
   loading: () => <div>Loading...</div>,
@@ -21,12 +23,18 @@ const Chat = dynamic(() => import('../components/Chat'), {
 const LearnerPage: NextPageWithLayout = () => {
   const [questionModal, toggleQuestionModal] = useState(false)
   const [reactions, toggleReactions] = useState(false)
+
+  // chat 접기, 펼치기 boolean state
+  const [isCloseChat, setIsCloseChat] = useState(false)
+
   const questions = useStore((state: any) => state.questions)
 
   const question = () => {
     const [question = null] = questions
     return question
   }
+
+  console.log(isCloseChat, 'isCloseChat 꾸앙')
 
   return (
     <div className='fiive learner page'>
@@ -94,8 +102,24 @@ const LearnerPage: NextPageWithLayout = () => {
         </section>
       </main>
 
-      <aside className='chat'>
-        <header>
+      {/* chat을 접었을 때 aside bar */}
+      {isCloseChat && (
+        <aside className='closed_chat_sidebar'>
+          <div className='closed_chat_image_box'>
+            <Image
+              src={chatOpenIcon}
+              onClick={() => setIsCloseChat(false)}
+              width={20}
+              height={20}
+              alt=''
+            />
+          </div>
+        </aside>
+      )}
+
+      {/* chat을 펼쳤을 때 aside bar */}
+      <aside className={`chat ${isCloseChat && 'close'}`}>
+        {/* <header>
           <button type='button' className='arrow'>
             <img src='/icons/move_right.svg' alt='Arrow' />
           </button>
@@ -105,7 +129,7 @@ const LearnerPage: NextPageWithLayout = () => {
           <button type='button' className='notifications'>
             <img src='/icons/announce.svg' alt='Notifications' />
           </button>
-        </header>
+        </header> */}
         {/* 
         <div className='questions'>
           {question() && (
@@ -117,11 +141,13 @@ const LearnerPage: NextPageWithLayout = () => {
           )} */}
         {/* Swiper */}
         {/* </div> */}
-
         <div className='chatroom'>
-          <Chat userId='learne' />
+          <Chat
+            userId='learne'
+            isCloseChat={isCloseChat}
+            setIsCloseChat={setIsCloseChat}
+          />
         </div>
-
         <footer>
           <button
             onClick={() => {
