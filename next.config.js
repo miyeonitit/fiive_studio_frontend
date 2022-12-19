@@ -6,6 +6,10 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-}
+  images: {
+    loader: "akamai",
+    path: "",
+  },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
