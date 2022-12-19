@@ -46,7 +46,7 @@ const LearnerPage: NextPageWithLayout = () => {
           <Announcements></Announcements>
           <Timer></Timer>
           <Reactions></Reactions>
-          <Video />
+          {/* <Video /> */}
         </section>
 
         <section className='session-info'>
