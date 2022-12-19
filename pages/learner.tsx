@@ -34,8 +34,6 @@ const LearnerPage: NextPageWithLayout = () => {
     return question
   }
 
-  console.log(isCloseChat, 'isCloseChat 꾸앙')
-
   return (
     <div className='fiive learner page'>
       <Head>
