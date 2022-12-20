@@ -49,7 +49,7 @@ const LectureTools = (props: props) => {
             className='announcement'
           >
             <Image
-              src='/components/lecture-tools/announce.svg'
+              src='/announce.svg'
               alt='Announcement'
               width='24'
               height='24'
@@ -61,7 +61,7 @@ const LectureTools = (props: props) => {
         <li>
           <button onClick={openQuestionMonitor} type='button' className='qna'>
             <Image
-              src='/components/lecture-tools/qna_outlined.svg'
+              src='/qna_outlined.svg'
               alt='Q&amp;A'
               width='24'
               height='24'
@@ -78,12 +78,7 @@ const LectureTools = (props: props) => {
             type='button'
             className='timer'
           >
-            <Image
-              src='/components/lecture-tools/timer.svg'
-              alt='Timer'
-              width='24'
-              height='24'
-            ></Image>
+            <Image src='/timer.svg' alt='Timer' width='24' height='24'></Image>
             <span>타이머</span>
           </button>
         </li>
@@ -91,7 +86,7 @@ const LectureTools = (props: props) => {
         <li>
           <button onClick={openChatMonitor} type='button' className='chat'>
             <Image
-              src='/components/lecture-tools/comment_outlined.svg'
+              src='/comment_outlined.svg'
               alt='Chat'
               width='24'
               height='24'

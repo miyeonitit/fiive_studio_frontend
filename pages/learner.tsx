@@ -13,8 +13,6 @@ import Timer from '../components/Timer'
 import Reactions from '../components/Reactions'
 import useStore from '../store/video'
 
-import chatOpenIcon from '../public/pages/fiive/move_left.svg'
-
 const Chat = dynamic(() => import('../components/Chat'), {
   ssr: false,
   loading: () => <div>Loading...</div>,
@@ -46,7 +44,7 @@ const LearnerPage: NextPageWithLayout = () => {
           <Announcements></Announcements>
           <Timer></Timer>
           <Reactions></Reactions>
-          {/* <Video /> */}
+          <Video />
         </section>
 
         <section className='session-info'>
@@ -87,7 +85,7 @@ const LearnerPage: NextPageWithLayout = () => {
 
         <section className='class-info'>
           <div className='class'>
-            <img src='/placeholders/Ratio.jpg' alt='Class' />
+            {/* <img src='/placeholders/Ratio.jpg' alt='Class' /> */}
             <div className='description'>
               <h2>1회차 - 05월 08일 일요일, 22시 30분</h2>
               <p>비문학(기본기+훈련) + 문학(기본기+개념어 정의+유형별 접근)</p>
@@ -105,7 +103,7 @@ const LearnerPage: NextPageWithLayout = () => {
         <aside className='closed_chat_sidebar'>
           <div className='closed_chat_image_box'>
             <Image
-              src={chatOpenIcon}
+              src='/move_left.svg'
               onClick={() => setIsCloseChat(false)}
               width={20}
               height={20}

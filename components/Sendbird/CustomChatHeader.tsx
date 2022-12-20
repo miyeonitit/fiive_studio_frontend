@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  Dispatch,
+  SetStateAction,
+} from 'react'
 import Image from 'next/image'
 
 import { useChannelContext } from '@sendbird/uikit-react/Channel/context'
@@ -6,20 +12,11 @@ import { useChannelContext } from '@sendbird/uikit-react/Channel/context'
 import UserListProfileCard from './components/UserListProfileCard'
 import useStore from '../../store/Sendbird'
 
-import moreButton from '../../public/pages/fiive/more_button.svg'
-import chatCloseIcon from '../../public/icons/move_right.svg'
-import lockIcon from '../../public/pages/fiive/lock_icon.svg'
-import membersIcon from '../../public/pages/fiive/members_icon.svg'
-import shareIcon from '../../public/pages/fiive/share_chatting_icon.svg'
-import clearIcon from '../../public/pages/fiive/clear_button.svg'
-import listUpIcon from '../../public/pages/fiive/list_up_icon.svg'
-import listDownIcon from '../../public/pages/fiive/list_down_icon.svg'
-
 type props = {
   userId: string
   userRole: string
   isCloseChat: boolean
-  setIsCloseChat: React.Dispatch<React.SetStateAction<boolean>>
+  setIsCloseChat: Dispatch<SetStateAction<boolean>>
 }
 
 const CustomChatHeader = (props: props) => {
@@ -182,7 +179,7 @@ const CustomChatHeader = (props: props) => {
         <div className='chat_header_wrapper'>
           <div className='control_chat_size_box'>
             <Image
-              src={chatCloseIcon}
+              src='/move_right.svg'
               onClick={() => props.setIsCloseChat(!props.isCloseChat)}
               width={20}
               height={20}
@@ -192,7 +189,7 @@ const CustomChatHeader = (props: props) => {
           <div className='chat_title_box'>라이브 채팅</div>
           <div className='chat_the_more_box'>
             <Image
-              src={moreButton}
+              src='/more_button.svg'
               onClick={() => setIsMoreMiniMenu(!isMoreMiniMenu)}
               width={20}
               height={20}
@@ -208,7 +205,7 @@ const CustomChatHeader = (props: props) => {
                   }}
                 >
                   <Image
-                    src={membersIcon}
+                    src='/members_icon.svg'
                     width={16}
                     height={16}
                     alt='membersIcon'
@@ -223,7 +220,7 @@ const CustomChatHeader = (props: props) => {
                     }}
                   >
                     <Image
-                      src={lockIcon}
+                      src='/lock_icon.svg'
                       width={16}
                       height={16}
                       alt='lockIcon'
@@ -238,7 +235,7 @@ const CustomChatHeader = (props: props) => {
                     }}
                   >
                     <Image
-                      src={lockIcon}
+                      src='/lock_icon.svg'
                       width={16}
                       height={16}
                       alt='lockIcon'
@@ -254,7 +251,7 @@ const CustomChatHeader = (props: props) => {
                   // }}
                 >
                   <Image
-                    src={shareIcon}
+                    src='/share_chatting_icon.svg'
                     width={16}
                     height={16}
                     alt='shareIcon'
@@ -314,14 +311,14 @@ const CustomChatHeader = (props: props) => {
               <div className='list_filter_img_box'>
                 {isUserFilterMiniMenu ? (
                   <Image
-                    src={listDownIcon}
+                    src='/list_down_icon.svg'
                     width={16}
                     height={16}
                     alt='listDownIcon'
                   />
                 ) : (
                   <Image
-                    src={listUpIcon}
+                    src='/list_up_icon.svg'
                     width={16}
                     height={16}
                     alt='listUpIcon'
@@ -331,7 +328,7 @@ const CustomChatHeader = (props: props) => {
             </div>
             <div className='cancel_button'>
               <Image
-                src={clearIcon}
+                src='/clear_button.svg'
                 onClick={() => {
                   setIsUserList(false)
                 }}
