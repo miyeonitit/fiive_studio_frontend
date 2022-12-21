@@ -9,7 +9,7 @@ const nextConfig = {
   },
   images: {
     loader: 'akamai',
-    path: '/pages/fiive/',
+    path: '/pages',
   },
 }
 

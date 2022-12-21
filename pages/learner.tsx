@@ -50,15 +50,20 @@ const LearnerPage: NextPageWithLayout = () => {
         <section className='session-info'>
           <div className='profile'>
             <div className='img'>
-              <img
-                src='/pages/fiive/Ellipse 8stateBadge.svg'
-                alt='Profile'
+              <Image
                 className='profile'
+                src='/Sendbird/Ellipse 8stateBadge.svg'
+                width={64}
+                height={64}
+                alt='teacher_profile_img'
               />
-              <img
-                src='/pages/fiive/iconBadge.svg'
-                alt='Live'
+
+              <Image
                 className='live'
+                src='/Sendbird/iconBadge.svg'
+                width={24}
+                height={24}
+                alt='live_status'
               />
             </div>
 
@@ -69,16 +74,24 @@ const LearnerPage: NextPageWithLayout = () => {
           </div>
 
           <div className='status'>
-            <img
-              src='/pages/fiive/person.svg'
-              alt='viewers'
+            <Image
               className='viewers'
+              src='/Sendbird/person.svg'
+              width={14}
+              height={14}
+              alt='viewers'
             />
             <span className='viewer-count'>n</span>
             <span className='timestamp'>00:00:00</span>
 
             <button type='button' className='more'>
-              <img src='/pages/fiive/more-button.svg' alt='More' />
+              <Image
+                className='more'
+                src='/Sendbird/more-button.svg'
+                width={24}
+                height={24}
+                alt='More'
+              />
             </button>
           </div>
         </section>
@@ -103,11 +116,11 @@ const LearnerPage: NextPageWithLayout = () => {
         <aside className='closed_chat_sidebar'>
           <div className='closed_chat_image_box'>
             <Image
-              src='/move_left.svg'
+              src='/Sendbird/move_left.svg'
               onClick={() => setIsCloseChat(false)}
               width={20}
               height={20}
-              alt=''
+              alt='closed_chat'
             />
           </div>
         </aside>

@@ -75,7 +75,7 @@ const UserListProfileCard = (props: props) => {
         toast.success(
           <div className='toast_success_box'>
             <Image
-              src='/toast_success_icon.svg'
+              src='/Sendbird/toast_success_icon.svg'
               width={16}
               height={16}
               alt='toastSuccessIcon'
@@ -94,7 +94,7 @@ const UserListProfileCard = (props: props) => {
         toast.error(
           <div className='toast_error_box'>
             <Image
-              src='/toast_warning_icon.svg'
+              src='/Sendbird/toast_warning_icon.svg'
               width={16}
               height={16}
               alt='toastWarningIcon'
@@ -126,7 +126,7 @@ const UserListProfileCard = (props: props) => {
         toast.success(
           <div className='toast_success_box'>
             <Image
-              src='/toast_success_icon.svg'
+              src='/Sendbird/toast_success_icon.svg'
               width={16}
               height={16}
               alt='toastSuccessIcon'
@@ -145,7 +145,7 @@ const UserListProfileCard = (props: props) => {
         toast.error(
           <div className='toast_error_box'>
             <Image
-              src='/toast_warning_icon.svg'
+              src='/Sendbird/toast_warning_icon.svg'
               width={16}
               height={16}
               alt='toastWarningIcon'
@@ -177,7 +177,7 @@ const UserListProfileCard = (props: props) => {
         toast.success(
           <div className='toast_success_box'>
             <Image
-              src='/toast_success_icon.svg'
+              src='/Sendbird/toast_success_icon.svg'
               width={16}
               height={16}
               alt='toastSuccessIcon'
@@ -196,7 +196,7 @@ const UserListProfileCard = (props: props) => {
         toast.error(
           <div className='toast_error_box'>
             <Image
-              src='/toast_warning_icon.svg'
+              src='/Sendbird/toast_warning_icon.svg'
               width={16}
               height={16}
               alt='toastWarningIcon'
@@ -228,7 +228,7 @@ const UserListProfileCard = (props: props) => {
         toast.success(
           <div className='toast_success_box'>
             <Image
-              src='/toast_success_icon.svg'
+              src='/Sendbird/toast_success_icon.svg'
               width={16}
               height={16}
               alt='toastSuccessIcon'
@@ -247,7 +247,7 @@ const UserListProfileCard = (props: props) => {
         toast.error(
           <div className='toast_error_box'>
             <Image
-              src='/toast_warning_icon.svg'
+              src='/Sendbird/toast_warning_icon.svg'
               width={16}
               height={16}
               alt='toastWarningIcon'
@@ -343,7 +343,7 @@ const UserListProfileCard = (props: props) => {
               src={
                 props.user.plainProfileUrl
                   ? props.user.plainProfileUrl
-                  : '/user_list_fiive_default_img.svg'
+                  : '/Sendbird/user_list_fiive_default_img.svg'
               }
               width={32}
               height={32}
@@ -357,8 +357,8 @@ const UserListProfileCard = (props: props) => {
                 <Image
                   src={
                     props.user.connectionStatus === 'online'
-                      ? '/online_status.svg'
-                      : '/offline_status.svg'
+                      ? '/Sendbird/online_status.svg'
+                      : '/Sendbird/offline_status.svg'
                   }
                   width={6}
                   height={6}
@@ -373,7 +373,7 @@ const UserListProfileCard = (props: props) => {
               {isBlockUser && (
                 <div className='user_blocked_status_box'>
                   <Image
-                    src='/blocked_user_by_me.svg'
+                    src='/Sendbird/blocked_user_by_me.svg'
                     onMouseOver={() => setIsBlockedUserTooltip(true)}
                     onMouseOut={() => setIsBlockedUserTooltip(false)}
                     width={14}
@@ -394,7 +394,7 @@ const UserListProfileCard = (props: props) => {
               {isMutedUser && (
                 <div className='user_muted_status_box'>
                   <Image
-                    src='/muted_user_by_me.svg'
+                    src='/Sendbird/muted_user_by_me.svg'
                     onMouseOver={() => setIsMutedUserTooltip(true)}
                     onMouseOut={() => setIsMutedUserTooltip(false)}
                     width={14}
@@ -423,7 +423,7 @@ const UserListProfileCard = (props: props) => {
         {isHoverMoreMenu && (
           <div className='more_menu_box'>
             <Image
-              src='/more_button.svg'
+              src='/Sendbird/more_button.svg'
               onClick={() => handleMoreMenuButton()}
               width={16}
               height={16}
@@ -445,7 +445,7 @@ const UserListProfileCard = (props: props) => {
                     }}
                   >
                     <Image
-                      src='/mute_outlined.svg'
+                      src='/Sendbird/mute_outlined.svg'
                       width={16}
                       height={16}
                       alt='mutedButton'
@@ -460,7 +460,7 @@ const UserListProfileCard = (props: props) => {
                     }}
                   >
                     <Image
-                      src='/mute_outlined.svg'
+                      src='/Sendbird/mute_outlined.svg'
                       width={16}
                       height={16}
                       alt='mutedButton'
@@ -475,7 +475,7 @@ const UserListProfileCard = (props: props) => {
                   onClick={() => unblockUser(props.user.userId)}
                 >
                   <Image
-                    src='/learner_uncert.svg'
+                    src='/Sendbird/learner_uncert.svg'
                     width={16}
                     height={16}
                     alt='blockButton'
@@ -488,7 +488,7 @@ const UserListProfileCard = (props: props) => {
                   onClick={() => blockUser(props.user.userId)}
                 >
                   <Image
-                    src='/learner_uncert.svg'
+                    src='/Sendbird/learner_uncert.svg'
                     width={16}
                     height={16}
                     alt='blockButton'

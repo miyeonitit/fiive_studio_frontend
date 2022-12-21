@@ -179,7 +179,7 @@ const CustomChatHeader = (props: props) => {
         <div className='chat_header_wrapper'>
           <div className='control_chat_size_box'>
             <Image
-              src='/move_right.svg'
+              src='/Sendbird/move_right.svg'
               onClick={() => props.setIsCloseChat(!props.isCloseChat)}
               width={20}
               height={20}
@@ -189,7 +189,7 @@ const CustomChatHeader = (props: props) => {
           <div className='chat_title_box'>라이브 채팅</div>
           <div className='chat_the_more_box'>
             <Image
-              src='/more_button.svg'
+              src='/Sendbird/more_button.svg'
               onClick={() => setIsMoreMiniMenu(!isMoreMiniMenu)}
               width={20}
               height={20}
@@ -205,7 +205,7 @@ const CustomChatHeader = (props: props) => {
                   }}
                 >
                   <Image
-                    src='/members_icon.svg'
+                    src='/Sendbird/members_icon.svg'
                     width={16}
                     height={16}
                     alt='membersIcon'
@@ -220,7 +220,7 @@ const CustomChatHeader = (props: props) => {
                     }}
                   >
                     <Image
-                      src='/lock_icon.svg'
+                      src='/Sendbird/lock_icon.svg'
                       width={16}
                       height={16}
                       alt='lockIcon'
@@ -235,7 +235,7 @@ const CustomChatHeader = (props: props) => {
                     }}
                   >
                     <Image
-                      src='/lock_icon.svg'
+                      src='/Sendbird/lock_icon.svg'
                       width={16}
                       height={16}
                       alt='lockIcon'
@@ -251,7 +251,7 @@ const CustomChatHeader = (props: props) => {
                   // }}
                 >
                   <Image
-                    src='/share_chatting_icon.svg'
+                    src='/Sendbird/share_chatting_icon.svg'
                     width={16}
                     height={16}
                     alt='shareIcon'
@@ -311,14 +311,14 @@ const CustomChatHeader = (props: props) => {
               <div className='list_filter_img_box'>
                 {isUserFilterMiniMenu ? (
                   <Image
-                    src='/list_down_icon.svg'
+                    src='/Sendbird/list_down_icon.svg'
                     width={16}
                     height={16}
                     alt='listDownIcon'
                   />
                 ) : (
                   <Image
-                    src='/list_up_icon.svg'
+                    src='/Sendbird/list_up_icon.svg'
                     width={16}
                     height={16}
                     alt='listUpIcon'
@@ -328,7 +328,7 @@ const CustomChatHeader = (props: props) => {
             </div>
             <div className='cancel_button'>
               <Image
-                src='/clear_button.svg'
+                src='/Sendbird/clear_button.svg'
                 onClick={() => {
                   setIsUserList(false)
                 }}
