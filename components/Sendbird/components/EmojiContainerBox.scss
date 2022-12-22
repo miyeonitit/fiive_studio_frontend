@@ -4,21 +4,13 @@
     flex-direction: column;
     position: absolute;
     top: 0px;
-    padding: 8px 16px;
+    padding: 4px;
     border: 1px solid $bluegray-4;
     border-radius: 6px;
     background-color: white;
+    box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.08),
+      0px 4px 10px rgba(0, 0, 0, 0.06);
     z-index: 9999;
-
-    .close_button {
-      text-align: right;
-      cursor: pointer;
-    }
-
-    .devider {
-      margin: 6px 0px;
-      border-bottom: 1px solid $bluegray-4;
-    }
 
     .emoji_outer_box {
       display: flex;
