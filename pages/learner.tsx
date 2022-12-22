@@ -28,6 +28,9 @@ const LearnerPage: NextPageWithLayout = (props) => {
 
   const questions = useStore((state: any) => state.questions)
 
+  const test = props
+  console.log(test, 'learner 페이지로 넘어오는 test')
+
   const question = () => {
     const [question = null] = questions
     return question
@@ -205,25 +208,25 @@ LearnerPage.getLayout = (page: ReactElement) => {
   return <Layout>{page}</Layout>
 }
 
-// export const getStaticProps: GetStaticProps = async (context) => {
-//   const res = await fetch(
-//     `https://api-${process.env.APP_ID}.sendbird.com/v3/emojis`,
-//     {
-//       method: 'GET',
-//       headers: {
-//         'Content-Type': 'application/json; charset=utf8',
-//         Accept: 'application/json',
-//         'Api-Token': process.env.NEXT_PUBLIC_SENDBIRD_API_TOKEN,
-//       },
-//     }
-//   )
-//   const data = await res.json()
+export const getStaticProps: GetStaticProps = async (context) => {
+  const res = await fetch(
+    `https://api-${process.env.APP_ID}.sendbird.com/v3/emojis`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json; charset=utf8',
+        Accept: 'application/json',
+        'Api-Token': process.env.NEXT_PUBLIC_SENDBIRD_API_TOKEN,
+      },
+    }
+  )
+  const data = await res.json()
 
-//   return {
-//     props: {
-//       data: data,
-//     }, // will be passed to the page component as props
-//   }
-// }
+  return {
+    props: {
+      data: data,
+    }, // will be passed to the page component as props
+  }
+}
 
 export default LearnerPage
