@@ -17,20 +17,6 @@ import MessageTooltip from './components/MessageTooltip'
 import EmojiIcon from './components/EmojiIcon'
 import EmojiContainerBox from './components/EmojiContainerBox'
 
-import defaultProfileImage from '../../public/pages/fiive/Ellipse 8stateBadge.svg'
-import reactionTopButton from '../../public/pages/fiive/add_reaction_emoji.svg'
-import reactionBottomButton from '../../public/pages/fiive/add_reaction_emoji_bottom.svg'
-import moreButton from '../../public/pages/fiive/more_button.svg'
-import retryButton from '../../public/pages/fiive/retry_button.svg'
-import clearButton from '../../public/pages/fiive/clear_button.svg'
-import mutedButton from '../../public/pages/fiive/mute_outlined.svg'
-import blockButton from '../../public/pages/fiive/learner_uncert.svg'
-import deleteButton from '../../public/pages/fiive/delete_button.svg'
-import warningIcon from '../../public/pages/fiive/warning_icon.svg'
-import editIcon from '../../public/pages/fiive/edit_icon.svg'
-import toastSuccessIcon from '../../public/pages/fiive/toast_success_icon.svg'
-import toastWarningIcon from '../../public/pages/fiive/toast_warning_icon.svg'
-
 const CustomChatRoom = ({ message, userId, emojiContainer }) => {
   const addMessageInfomation = useStore(
     (state: any) => state.addMessageInfomation
@@ -170,7 +156,12 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
         console.log('성공:', data)
         toast.success(
           <div className='toast_success_box'>
-            <Image src={toastSuccessIcon} alt='toastSuccessIcon' />
+            <Image
+              src='/Sendbird/toast_success_icon.svg'
+              width={16}
+              height={16}
+              alt='toastSuccessIcon'
+            />
             <span className='toast_success_text'>
               {senderId} 님을 차단했어요.
             </span>
@@ -184,7 +175,12 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
         console.error('실패:', error)
         toast.error(
           <div className='toast_error_box'>
-            <Image src={toastWarningIcon} alt='toastWarningIcon' />
+            <Image
+              src='/Sendbird/toast_warning_icon.svg'
+              width={16}
+              height={16}
+              alt='toastWarningIcon'
+            />
             <span className='toast_error_text'>
               네트워크 문제로 차단하지 못했어요.
             </span>
@@ -211,7 +207,12 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
         console.log('성공:', data)
         toast.success(
           <div className='toast_success_box'>
-            <Image src={toastSuccessIcon} alt='toastSuccessIcon' />
+            <Image
+              src='/Sendbird/toast_success_icon.svg'
+              width={16}
+              height={16}
+              alt='toastSuccessIcon'
+            />
             <span className='toast_success_text'>
               {senderId} 님을 차단 해제했어요.
             </span>
@@ -225,7 +226,12 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
         console.error('실패:', error)
         toast.error(
           <div className='toast_error_box'>
-            <Image src={toastWarningIcon} alt='toastWarningIcon' />
+            <Image
+              src='/Sendbird/toast_warning_icon.svg'
+              width={16}
+              height={16}
+              alt='toastWarningIcon'
+            />
             <span className='toast_error_text'>
               네트워크 문제로 차단 해제 못했어요.
             </span>
@@ -256,7 +262,12 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
         console.log('성공:', data)
         toast.success(
           <div className='toast_success_box'>
-            <Image src={toastSuccessIcon} alt='toastSuccessIcon' />
+            <Image
+              src='/Sendbird/toast_success_icon.svg'
+              width={16}
+              height={16}
+              alt='toastSuccessIcon'
+            />
             <span className='toast_success_text'>
               {senderId} 님을 채팅 일시정지 했어요.
             </span>
@@ -270,7 +281,12 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
         console.error('실패:', error)
         toast.error(
           <div className='toast_error_box'>
-            <Image src={toastWarningIcon} alt='toastWarningIcon' />
+            <Image
+              src='/Sendbird/toast_warning_icon.svg'
+              width={16}
+              height={16}
+              alt='toastWarningIcon'
+            />
             <span className='toast_error_text'>
               네트워크 문제로 채팅 일시정지를 못했어요.
             </span>
@@ -297,7 +313,12 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
         console.log('성공:', data)
         toast.success(
           <div className='toast_success_box'>
-            <Image src={toastSuccessIcon} alt='toastSuccessIcon' />
+            <Image
+              src='/Sendbird/toast_success_icon.svg'
+              width={16}
+              height={16}
+              alt='toastSuccessIcon'
+            />
             <span className='toast_success_text'>
               {senderId} 님의 채팅 일시정지를 해제했어요.
             </span>
@@ -311,7 +332,12 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
         console.error('실패:', error)
         toast.error(
           <div className='toast_error_box'>
-            <Image src={toastWarningIcon} alt='toastWarningIcon' />
+            <Image
+              src='/Sendbird/toast_warning_icon.svg'
+              width={16}
+              height={16}
+              alt='toastWarningIcon'
+            />
             <span className='toast_error_text'>
               네트워크 문제로 채팅 일시정지 해제를 못했어요.
             </span>
@@ -325,7 +351,12 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
     if (editMessageValue === '' || editMessageValue.length < 1) {
       toast.error(
         <div className='toast_error_box'>
-          <Image src={toastWarningIcon} alt='toastWarningIcon' />
+          <Image
+            src='/Sendbird/toast_warning_icon.svg'
+            width={16}
+            height={16}
+            alt='toastWarningIcon'
+          />
           <span className='toast_error_text'>
             수정할 메시지를 입력해 주세요.
           </span>
@@ -356,7 +387,12 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
         console.error('실패:', error)
         toast.error(
           <div className='toast_error_box'>
-            <Image src={toastWarningIcon} alt='toastWarningIcon' />
+            <Image
+              src='/Sendbird/toast_warning_icon.svg'
+              width={16}
+              height={16}
+              alt='toastWarningIcon'
+            />
             <span className='toast_error_text'>
               네트워크 문제로 메시지 수정을 못했어요.
             </span>
@@ -434,7 +470,7 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
   // console.log(sender, 'sender')
   // console.log(messageInfomation, 'info')
   // console.log(emojiContainer, 'emojiContainer')
-  // console.log(allMessages, 'allMessages')
+  // console.log(reactedEmojis, 'reactedEmojis')
   // console.log(currentGroupChannel, 'currentGroupChannel')
 
   return (
@@ -502,7 +538,7 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
                     onMouseOut={() => setIsReactionTopTooltip(false)}
                   >
                     <Image
-                      src={reactionTopButton}
+                      src='/Sendbird/add_reaction_emoji.svg'
                       width={16}
                       height={16}
                       alt='reactionButton'
@@ -510,7 +546,7 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
                   </div>
                   <div className='more_button'>
                     <Image
-                      src={moreButton}
+                      src='/Sendbird/more_button.svg'
                       onClick={() => clickMiniMenu()}
                       width={16}
                       height={16}
@@ -526,7 +562,7 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
                     onMouseOut={() => setIsReactionTopTooltip(false)}
                   >
                     <Image
-                      src={retryButton}
+                      src='/Sendbird/retry_button.svg'
                       onClick={() => resendMessage()}
                       width={16}
                       height={16}
@@ -539,7 +575,7 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
                     onMouseOut={() => setIsMessageDeleteTooltip(false)}
                   >
                     <Image
-                      src={clearButton}
+                      src='/Sendbird/clear_button.svg'
                       onClick={() => deleteMessage()}
                       width={16}
                       height={16}
@@ -555,8 +591,8 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
             {isReactionTopBox && (
               <EmojiContainerBox
                 userId={userId}
-                topHeight='30'
-                rightWidth='0'
+                topHeight='-55'
+                rightWidth='12'
                 emojiContainer={emojiContainer}
                 setIsReactionBox={setIsReactionTopBox}
                 messageInfomation={messageInfomation}
@@ -578,7 +614,7 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
                       }}
                     >
                       <Image
-                        src={editIcon}
+                        src='/Sendbird/edit_icon.svg'
                         width={16}
                         height={16}
                         alt='editIcon'
@@ -591,7 +627,7 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
                       onClick={() => deleteMessage()}
                     >
                       <Image
-                        src={deleteButton}
+                        src='/Sendbird/delete_button.svg'
                         width={16}
                         height={16}
                         alt='deleteButton'
@@ -615,7 +651,7 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
                           }}
                         >
                           <Image
-                            src={mutedButton}
+                            src='/Sendbird/mute_outlined.svg'
                             width={16}
                             height={16}
                             alt='mutedButton'
@@ -630,7 +666,7 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
                           }}
                         >
                           <Image
-                            src={mutedButton}
+                            src='/Sendbird/mute_outlined.svg'
                             width={16}
                             height={16}
                             alt='mutedButton'
@@ -645,7 +681,7 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
                         onClick={() => unblockUser(sender.userId)}
                       >
                         <Image
-                          src={blockButton}
+                          src='/Sendbird/learner_uncert.svg'
                           width={16}
                           height={16}
                           alt='blockButton'
@@ -658,7 +694,7 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
                         onClick={() => blockUser(sender.userId)}
                       >
                         <Image
-                          src={blockButton}
+                          src='/Sendbird/learner_uncert.svg'
                           width={16}
                           height={16}
                           alt='blockButton'
@@ -673,7 +709,7 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
                         onClick={() => deleteMessage()}
                       >
                         <Image
-                          src={deleteButton}
+                          src='/Sendbird/delete_button.svg'
                           width={16}
                           height={16}
                           alt='deleteButton'
@@ -693,7 +729,7 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
                     src={
                       sender.plainProfileUrl
                         ? sender.plainProfileUrl
-                        : defaultProfileImage
+                        : '/Sendbird/Ellipse 8stateBadge.svg'
                     }
                     width={24}
                     height={24}
@@ -769,7 +805,7 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
               {messageInfomation.sendingStatus === 'failed' && (
                 <div className='message_sending_status'>
                   <Image
-                    src={warningIcon}
+                    src='/Sendbird/warning_icon.svg'
                     width={12}
                     height={12}
                     alt='warningIcon'
@@ -781,7 +817,7 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
               )}
 
               {/* reaction emoji 노출 영역 */}
-              {reactedEmojis.length > 0 && (
+              {reactedEmojis.length >= 1 && (
                 <>
                   <div
                     className={`reaction_emoji_wrapper ${
@@ -797,7 +833,6 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
                         messageInfomation={messageInfomation}
                       />
                     ))}
-
                     <div
                       className='reactions_item add_emoji'
                       onClick={() =>
@@ -816,7 +851,7 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
                       )}
 
                       <Image
-                        src={reactionBottomButton}
+                        src='/Sendbird/add_reaction_emoji_bottom.svg'
                         onClick={() =>
                           setIsReactionBottomBox(!isReactionBottomBox)
                         }
@@ -830,8 +865,8 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
                   {isReactionBottomBox && (
                     <EmojiContainerBox
                       userId={userId}
-                      topHeight='-35'
-                      rightWidth='0'
+                      topHeight='12'
+                      rightWidth='20'
                       emojiContainer={emojiContainer}
                       setIsReactionBox={setIsReactionBottomBox}
                       messageInfomation={messageInfomation}

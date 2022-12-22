@@ -9,17 +9,6 @@ import { useChannelContext } from '@sendbird/uikit-react/Channel/context'
 
 import MessageTooltip from './MessageTooltip'
 
-import fiiveDefaultImg from '../../../public/pages/fiive/user_list_fiive_default_img.svg'
-import onlineStatus from '../../../public/pages/fiive/online_status.svg'
-import offlineStatus from '../../../public/pages/fiive/offline_status.svg'
-import moreButton from '../../../public/pages/fiive/more_button.svg'
-import blockedIcon from '../../../public/pages/fiive/blocked_user_by_me.svg'
-import mutedIcon from '../../../public/pages/fiive/muted_user_by_me.svg'
-import mutedButton from '../../../public/pages/fiive/mute_outlined.svg'
-import blockButton from '../../../public/pages/fiive/learner_uncert.svg'
-import toastSuccessIcon from '../../../public/pages/fiive/toast_success_icon.svg'
-import toastWarningIcon from '../../../public/pages/fiive/toast_warning_icon.svg'
-
 type props = {
   user: any
   index: number
@@ -85,7 +74,12 @@ const UserListProfileCard = (props: props) => {
         console.log('성공:', data)
         toast.success(
           <div className='toast_success_box'>
-            <Image src={toastSuccessIcon} alt='toastSuccessIcon' />
+            <Image
+              src='/Sendbird/toast_success_icon.svg'
+              width={16}
+              height={16}
+              alt='toastSuccessIcon'
+            />
             <span className='toast_success_text'>
               {senderId} 님을 채팅 일시정지 했어요.
             </span>
@@ -99,7 +93,12 @@ const UserListProfileCard = (props: props) => {
         console.error('실패:', error)
         toast.error(
           <div className='toast_error_box'>
-            <Image src={toastWarningIcon} alt='toastWarningIcon' />
+            <Image
+              src='/Sendbird/toast_warning_icon.svg'
+              width={16}
+              height={16}
+              alt='toastWarningIcon'
+            />
             <span className='toast_error_text'>
               네트워크 문제로 채팅 일시정지를 못했어요.
             </span>
@@ -126,7 +125,12 @@ const UserListProfileCard = (props: props) => {
         console.log('성공:', data)
         toast.success(
           <div className='toast_success_box'>
-            <Image src={toastSuccessIcon} alt='toastSuccessIcon' />
+            <Image
+              src='/Sendbird/toast_success_icon.svg'
+              width={16}
+              height={16}
+              alt='toastSuccessIcon'
+            />
             <span className='toast_success_text'>
               {senderId} 님의 채팅 일시정지를 해제했어요.
             </span>
@@ -140,7 +144,12 @@ const UserListProfileCard = (props: props) => {
         console.error('실패:', error)
         toast.error(
           <div className='toast_error_box'>
-            <Image src={toastWarningIcon} alt='toastWarningIcon' />
+            <Image
+              src='/Sendbird/toast_warning_icon.svg'
+              width={16}
+              height={16}
+              alt='toastWarningIcon'
+            />
             <span className='toast_error_text'>
               네트워크 문제로 채팅 일시정지 해제를 못했어요.
             </span>
@@ -167,7 +176,12 @@ const UserListProfileCard = (props: props) => {
         console.log('성공:', data)
         toast.success(
           <div className='toast_success_box'>
-            <Image src={toastSuccessIcon} alt='toastSuccessIcon' />
+            <Image
+              src='/Sendbird/toast_success_icon.svg'
+              width={16}
+              height={16}
+              alt='toastSuccessIcon'
+            />
             <span className='toast_success_text'>
               {senderId} 님을 차단했어요.
             </span>
@@ -181,7 +195,12 @@ const UserListProfileCard = (props: props) => {
         console.error('실패:', error)
         toast.error(
           <div className='toast_error_box'>
-            <Image src={toastWarningIcon} alt='toastWarningIcon' />
+            <Image
+              src='/Sendbird/toast_warning_icon.svg'
+              width={16}
+              height={16}
+              alt='toastWarningIcon'
+            />
             <span className='toast_error_text'>
               네트워크 문제로 차단하지 못했어요.
             </span>
@@ -208,7 +227,12 @@ const UserListProfileCard = (props: props) => {
         console.log('성공:', data)
         toast.success(
           <div className='toast_success_box'>
-            <Image src={toastSuccessIcon} alt='toastSuccessIcon' />
+            <Image
+              src='/Sendbird/toast_success_icon.svg'
+              width={16}
+              height={16}
+              alt='toastSuccessIcon'
+            />
             <span className='toast_success_text'>
               {senderId} 님을 차단 해제했어요.
             </span>
@@ -222,7 +246,12 @@ const UserListProfileCard = (props: props) => {
         console.error('실패:', error)
         toast.error(
           <div className='toast_error_box'>
-            <Image src={toastWarningIcon} alt='toastWarningIcon' />
+            <Image
+              src='/Sendbird/toast_warning_icon.svg'
+              width={16}
+              height={16}
+              alt='toastWarningIcon'
+            />
             <span className='toast_error_text'>
               네트워크 문제로 차단 해제 못했어요.
             </span>
@@ -314,7 +343,7 @@ const UserListProfileCard = (props: props) => {
               src={
                 props.user.plainProfileUrl
                   ? props.user.plainProfileUrl
-                  : fiiveDefaultImg
+                  : '/Sendbird/user_list_fiive_default_img.svg'
               }
               width={32}
               height={32}
@@ -328,8 +357,8 @@ const UserListProfileCard = (props: props) => {
                 <Image
                   src={
                     props.user.connectionStatus === 'online'
-                      ? onlineStatus
-                      : offlineStatus
+                      ? '/Sendbird/online_status.svg'
+                      : '/Sendbird/offline_status.svg'
                   }
                   width={6}
                   height={6}
@@ -344,7 +373,7 @@ const UserListProfileCard = (props: props) => {
               {isBlockUser && (
                 <div className='user_blocked_status_box'>
                   <Image
-                    src={blockedIcon}
+                    src='/Sendbird/blocked_user_by_me.svg'
                     onMouseOver={() => setIsBlockedUserTooltip(true)}
                     onMouseOut={() => setIsBlockedUserTooltip(false)}
                     width={14}
@@ -365,7 +394,7 @@ const UserListProfileCard = (props: props) => {
               {isMutedUser && (
                 <div className='user_muted_status_box'>
                   <Image
-                    src={mutedIcon}
+                    src='/Sendbird/muted_user_by_me.svg'
                     onMouseOver={() => setIsMutedUserTooltip(true)}
                     onMouseOut={() => setIsMutedUserTooltip(false)}
                     width={14}
@@ -394,7 +423,7 @@ const UserListProfileCard = (props: props) => {
         {isHoverMoreMenu && (
           <div className='more_menu_box'>
             <Image
-              src={moreButton}
+              src='/Sendbird/more_button.svg'
               onClick={() => handleMoreMenuButton()}
               width={16}
               height={16}
@@ -416,7 +445,7 @@ const UserListProfileCard = (props: props) => {
                     }}
                   >
                     <Image
-                      src={mutedButton}
+                      src='/Sendbird/mute_outlined.svg'
                       width={16}
                       height={16}
                       alt='mutedButton'
@@ -431,7 +460,7 @@ const UserListProfileCard = (props: props) => {
                     }}
                   >
                     <Image
-                      src={mutedButton}
+                      src='/Sendbird/mute_outlined.svg'
                       width={16}
                       height={16}
                       alt='mutedButton'
@@ -446,7 +475,7 @@ const UserListProfileCard = (props: props) => {
                   onClick={() => unblockUser(props.user.userId)}
                 >
                   <Image
-                    src={blockButton}
+                    src='/Sendbird/learner_uncert.svg'
                     width={16}
                     height={16}
                     alt='blockButton'
@@ -459,7 +488,7 @@ const UserListProfileCard = (props: props) => {
                   onClick={() => blockUser(props.user.userId)}
                 >
                   <Image
-                    src={blockButton}
+                    src='/Sendbird/learner_uncert.svg'
                     width={16}
                     height={16}
                     alt='blockButton'

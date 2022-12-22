@@ -2,6 +2,7 @@ import React, { useState, ReactElement } from 'react'
 import Head from 'next/head'
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
+import type { GetStaticProps } from 'next'
 import { NextPageWithLayout } from '../types/NextPageWithLayout'
 
 import Layout from '../components/FiiveLearnerLayout'
@@ -13,14 +14,12 @@ import Timer from '../components/Timer'
 import Reactions from '../components/Reactions'
 import useStore from '../store/video'
 
-import chatOpenIcon from '../public/pages/fiive/move_left.svg'
-
 const Chat = dynamic(() => import('../components/Chat'), {
   ssr: false,
   loading: () => <div>Loading...</div>,
 })
 
-const LearnerPage: NextPageWithLayout = () => {
+const LearnerPage: NextPageWithLayout = (props) => {
   const [questionModal, toggleQuestionModal] = useState(false)
   const [reactions, toggleReactions] = useState(false)
 
@@ -28,6 +27,11 @@ const LearnerPage: NextPageWithLayout = () => {
   const [isCloseChat, setIsCloseChat] = useState(false)
 
   const questions = useStore((state: any) => state.questions)
+
+  const test = props
+  const [testState, settestState] = useState(test)
+  console.log(test, 'learner 페이지로 넘어오는 test')
+  console.log(testState, 'state로 담아봄')
 
   const question = () => {
     const [question = null] = questions
@@ -46,21 +50,26 @@ const LearnerPage: NextPageWithLayout = () => {
           <Announcements></Announcements>
           <Timer></Timer>
           <Reactions></Reactions>
-          {/* <Video /> */}
+          <Video />
         </section>
 
         <section className='session-info'>
           <div className='profile'>
             <div className='img'>
-              <img
-                src='/pages/fiive/Ellipse 8stateBadge.svg'
-                alt='Profile'
+              <Image
                 className='profile'
+                src='/Sendbird/Ellipse 8stateBadge.svg'
+                width={64}
+                height={64}
+                alt='teacher_profile_img'
               />
-              <img
-                src='/pages/fiive/iconBadge.svg'
-                alt='Live'
+
+              <Image
                 className='live'
+                src='/Sendbird/iconBadge.svg'
+                width={24}
+                height={24}
+                alt='live_status'
               />
             </div>
 
@@ -71,23 +80,31 @@ const LearnerPage: NextPageWithLayout = () => {
           </div>
 
           <div className='status'>
-            <img
-              src='/pages/fiive/person.svg'
-              alt='viewers'
+            <Image
               className='viewers'
+              src='/Sendbird/person.svg'
+              width={14}
+              height={14}
+              alt='viewers'
             />
             <span className='viewer-count'>n</span>
             <span className='timestamp'>00:00:00</span>
 
             <button type='button' className='more'>
-              <img src='/pages/fiive/more-button.svg' alt='More' />
+              <Image
+                className='more'
+                src='/Sendbird/more-button.svg'
+                width={24}
+                height={24}
+                alt='More'
+              />
             </button>
           </div>
         </section>
 
         <section className='class-info'>
           <div className='class'>
-            <img src='/placeholders/Ratio.jpg' alt='Class' />
+            {/* <img src='/placeholders/Ratio.jpg' alt='Class' /> */}
             <div className='description'>
               <h2>1회차 - 05월 08일 일요일, 22시 30분</h2>
               <p>비문학(기본기+훈련) + 문학(기본기+개념어 정의+유형별 접근)</p>
@@ -105,11 +122,11 @@ const LearnerPage: NextPageWithLayout = () => {
         <aside className='closed_chat_sidebar'>
           <div className='closed_chat_image_box'>
             <Image
-              src={chatOpenIcon}
+              src='/Sendbird/move_left.svg'
               onClick={() => setIsCloseChat(false)}
               width={20}
               height={20}
-              alt=''
+              alt='closed_chat'
             />
           </div>
         </aside>
@@ -191,6 +208,27 @@ const LearnerPage: NextPageWithLayout = () => {
 
 LearnerPage.getLayout = (page: ReactElement) => {
   return <Layout>{page}</Layout>
+}
+
+export const getStaticProps: GetStaticProps = async (context) => {
+  const res = await fetch(
+    `https://api-${process.env.APP_ID}.sendbird.com/v3/emojis`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json; charset=utf8',
+        Accept: 'application/json',
+        'Api-Token': process.env.NEXT_PUBLIC_SENDBIRD_API_TOKEN,
+      },
+    }
+  )
+  const data = await res.json()
+
+  return {
+    props: {
+      data: data,
+    }, // will be passed to the page component as props
+  }
 }
 
 export default LearnerPage

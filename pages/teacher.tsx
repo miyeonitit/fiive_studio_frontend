@@ -51,7 +51,7 @@ const TeacherPage: NextPageWithLayout = () => {
 
         <section className='class-info'>
           <div className='class'>
-            <Image src={class_thumbnail_image} alt='Class' />
+            {/* <Image src={class_thumbnail_image} alt='Class' /> */}
             <div className='description'>
               <ol className='badges'>
                 <li className='online'>온라인</li>

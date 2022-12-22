@@ -16,11 +16,6 @@ import {
   FileMessageCreateParams,
 } from '@sendbird/chat/message'
 
-import lockIcon from '../../public/pages/fiive/lock_white_icon.svg'
-import activeSendIcon from '../../public/pages/fiive/active_send_message_icon.svg'
-import nonActiveSendIcon from '../../public/pages/fiive/non_active_send_message_icon.svg'
-import toastWarningIcon from '../../public/pages/fiive/toast_warning_icon.svg'
-
 const CustomMessageInput = ({ userId, userRole }) => {
   const { currentGroupChannel } = useChannelContext()
   const globalStore = useSendbirdStateContext()
@@ -90,7 +85,12 @@ const CustomMessageInput = ({ userId, userRole }) => {
 
       toast.error(
         <div className='toast_error_box'>
-          <Image src={toastWarningIcon} alt='toastWarningIcon' />
+          <Image
+            src='/Sendbird/toast_warning_icon.svg'
+            width={16}
+            height={16}
+            alt='toastWarningIcon'
+          />
           <span className='toast_error_text'>
             커뮤니티 가이드 위반으로 채팅을 일시정지 했어요.
           </span>
@@ -112,7 +112,12 @@ const CustomMessageInput = ({ userId, userRole }) => {
           console.log(error, message, 'error')
           toast.error(
             <div className='toast_error_box'>
-              <Image src={toastWarningIcon} alt='toastWarningIcon' />
+              <Image
+                src='/Sendbird/toast_warning_icon.svg'
+                width={16}
+                height={16}
+                alt='toastWarningIcon'
+              />
               <span className='toast_error_text'>
                 네트워크 문제로 메세지를 보내지 못했어요.
               </span>
@@ -195,7 +200,12 @@ const CustomMessageInput = ({ userId, userRole }) => {
       {/* freezeing chat status bottom bar */}
       {currentGroupChannel.isFrozen && (
         <div className='chat_frozen_status_wrapper'>
-          <Image src={lockIcon} width={18} height={18} alt='lockIcon' />
+          <Image
+            src='/Sendbird/lock_white_icon.svg'
+            width={18}
+            height={18}
+            alt='lockIcon'
+          />
           <span className='chat_frozen_status'>잠시 채팅방을 얼렸어요</span>
         </div>
       )}
@@ -203,9 +213,9 @@ const CustomMessageInput = ({ userId, userRole }) => {
       {currentGroupChannel.myMutedState === 'muted' && (
         <div className='chat_muted_status_wrapper'>
           <Image
-            src={toastWarningIcon}
-            width={18}
-            height={18}
+            src='/Sendbird/toast_warning_icon.svg'
+            width={16}
+            height={16}
             alt='toastWarningIcon'
           />
           <span className='chat_muted_status'>
@@ -246,7 +256,11 @@ const CustomMessageInput = ({ userId, userRole }) => {
         />
         <Image
           className='sendMessageIcon'
-          src={messageText !== '' ? activeSendIcon : nonActiveSendIcon}
+          src={
+            messageText !== ''
+              ? '/Sendbird/active_send_message_icon.svg'
+              : '/Sendbird/non_active_send_message_icon.svg'
+          }
           onClick={() => handleSendMessage()}
           width={24}
           height={24}

@@ -41,7 +41,7 @@ const Chat = (props: props) => {
   const apiToken = process.env.NEXT_PUBLIC_SENDBIRD_API_TOKEN
 
   useLayoutEffect(() => {
-    fetch(`https://api-${appId}.sendbird.com/v3/emojis`, {
+    fetch(`https://api-${appId}.sendbird.com/v3/emoji_categories/53`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json; charset=utf8',
