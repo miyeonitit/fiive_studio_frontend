@@ -2,7 +2,6 @@ import React, { useState, ReactElement } from 'react'
 import Head from 'next/head'
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
-import type { GetStaticProps } from 'next'
 import { NextPageWithLayout } from '../types/NextPageWithLayout'
 
 import Layout from '../components/FiiveLearnerLayout'
@@ -19,7 +18,7 @@ const Chat = dynamic(() => import('../components/Chat'), {
   loading: () => <div>Loading...</div>,
 })
 
-const LearnerPage: NextPageWithLayout = (props) => {
+const LearnerPage: NextPageWithLayout = () => {
   const [questionModal, toggleQuestionModal] = useState(false)
   const [reactions, toggleReactions] = useState(false)
 
@@ -27,11 +26,6 @@ const LearnerPage: NextPageWithLayout = (props) => {
   const [isCloseChat, setIsCloseChat] = useState(false)
 
   const questions = useStore((state: any) => state.questions)
-
-  const test = props
-  const [testState, settestState] = useState(test)
-  console.log(test, 'learner 페이지로 넘어오는 test')
-  console.log(testState, 'state로 담아봄')
 
   const question = () => {
     const [question = null] = questions
@@ -208,27 +202,6 @@ const LearnerPage: NextPageWithLayout = (props) => {
 
 LearnerPage.getLayout = (page: ReactElement) => {
   return <Layout>{page}</Layout>
-}
-
-export const getStaticProps: GetStaticProps = async (context) => {
-  const res = await fetch(
-    `https://api-${process.env.APP_ID}.sendbird.com/v3/emojis`,
-    {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json; charset=utf8',
-        Accept: 'application/json',
-        'Api-Token': process.env.NEXT_PUBLIC_SENDBIRD_API_TOKEN,
-      },
-    }
-  )
-  const data = await res.json()
-
-  return {
-    props: {
-      data: data,
-    }, // will be passed to the page component as props
-  }
 }
 
 export default LearnerPage
