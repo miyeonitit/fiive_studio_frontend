@@ -27,13 +27,13 @@ const Home: NextPage = (props) => {
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const res = await fetch(
-    `https://api-${process.env.SENDBIRD_APP_ID}.sendbird.com/v3/emoji_categories/53`,
+    `https://api-${process.env.NEXT_PUBLIC_SENDBIRD_APP_ID}.sendbird.com/v3/emoji_categories/53`,
     {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json; charset=utf8',
         Accept: 'application/json',
-        'Api-Token': process.env.SENDBIRD_APP_ID,
+        'Api-Token': process.env.NEXT_PUBLIC_SENDBIRD_API_TOKEN,
       },
     }
   )
