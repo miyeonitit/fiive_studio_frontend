@@ -36,12 +36,9 @@ const CustomDateSeparator = (props) => {
         compareMessageDate(allMessages[allMessages.length - 1].createdAt) !==
         compareMessageDate(allMessages[allMessages.length - 2].createdAt)
       ) {
-        console.log('삑')
       }
     }
   }, [allMessages, messageInfomation])
-
-  console.log(channelInfomation, '후하하')
 
   return (
     <div className='CustomDateSeparator'>
