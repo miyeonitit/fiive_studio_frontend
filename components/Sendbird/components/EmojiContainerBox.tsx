@@ -48,15 +48,6 @@ const EmojiContainerBox = (props: props) => {
   return (
     <div className='EmojiContainerBox'>
       <div className='emojis_container_wrapper' style={boxStyle}>
-        <div
-          className='close_button'
-          onClick={() => props.setIsReactionBox(false)}
-        >
-          X
-        </div>
-
-        <div className='devider' />
-
         <div className='emoji_outer_box'>
           {props.emojiContainer.map((emoji: any) => (
             <div

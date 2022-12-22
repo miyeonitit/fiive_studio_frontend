@@ -25,7 +25,7 @@ const EmojiIcon = (props: props) => {
       (emoji: any) => emoji.key === emojiIcon.key
     )
 
-    return reaction.url
+    return reaction ? reaction.url : <></>
   }
 
   const clickEmojiReaction = (react: {}, stringKey: string) => {

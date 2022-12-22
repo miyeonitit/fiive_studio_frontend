@@ -470,7 +470,7 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
   // console.log(sender, 'sender')
   // console.log(messageInfomation, 'info')
   // console.log(emojiContainer, 'emojiContainer')
-  // console.log(allMessages, 'allMessages')
+  // console.log(reactedEmojis, 'reactedEmojis')
   // console.log(currentGroupChannel, 'currentGroupChannel')
 
   return (
@@ -591,8 +591,8 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
             {isReactionTopBox && (
               <EmojiContainerBox
                 userId={userId}
-                topHeight='30'
-                rightWidth='0'
+                topHeight='-55'
+                rightWidth='12'
                 emojiContainer={emojiContainer}
                 setIsReactionBox={setIsReactionTopBox}
                 messageInfomation={messageInfomation}
@@ -817,7 +817,7 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
               )}
 
               {/* reaction emoji 노출 영역 */}
-              {reactedEmojis.length > 0 && (
+              {reactedEmojis.length >= 1 && (
                 <>
                   <div
                     className={`reaction_emoji_wrapper ${
@@ -833,7 +833,6 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
                         messageInfomation={messageInfomation}
                       />
                     ))}
-
                     <div
                       className='reactions_item add_emoji'
                       onClick={() =>
@@ -866,8 +865,8 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
                   {isReactionBottomBox && (
                     <EmojiContainerBox
                       userId={userId}
-                      topHeight='-35'
-                      rightWidth='0'
+                      topHeight='12'
+                      rightWidth='20'
                       emojiContainer={emojiContainer}
                       setIsReactionBox={setIsReactionBottomBox}
                       messageInfomation={messageInfomation}

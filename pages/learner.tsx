@@ -2,6 +2,7 @@ import React, { useState, ReactElement } from 'react'
 import Head from 'next/head'
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
+import type { GetStaticProps } from 'next'
 import { NextPageWithLayout } from '../types/NextPageWithLayout'
 
 import Layout from '../components/FiiveLearnerLayout'
@@ -18,7 +19,7 @@ const Chat = dynamic(() => import('../components/Chat'), {
   loading: () => <div>Loading...</div>,
 })
 
-const LearnerPage: NextPageWithLayout = () => {
+const LearnerPage: NextPageWithLayout = (props) => {
   const [questionModal, toggleQuestionModal] = useState(false)
   const [reactions, toggleReactions] = useState(false)
 
@@ -203,5 +204,26 @@ const LearnerPage: NextPageWithLayout = () => {
 LearnerPage.getLayout = (page: ReactElement) => {
   return <Layout>{page}</Layout>
 }
+
+// export const getStaticProps: GetStaticProps = async (context) => {
+//   const res = await fetch(
+//     `https://api-${process.env.APP_ID}.sendbird.com/v3/emojis`,
+//     {
+//       method: 'GET',
+//       headers: {
+//         'Content-Type': 'application/json; charset=utf8',
+//         Accept: 'application/json',
+//         'Api-Token': process.env.NEXT_PUBLIC_SENDBIRD_API_TOKEN,
+//       },
+//     }
+//   )
+//   const data = await res.json()
+
+//   return {
+//     props: {
+//       data: data,
+//     }, // will be passed to the page component as props
+//   }
+// }
 
 export default LearnerPage
