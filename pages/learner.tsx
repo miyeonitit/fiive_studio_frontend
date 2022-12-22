@@ -29,7 +29,9 @@ const LearnerPage: NextPageWithLayout = (props) => {
   const questions = useStore((state: any) => state.questions)
 
   const test = props
+  const [testState, settestState] = useState(test)
   console.log(test, 'learner 페이지로 넘어오는 test')
+  console.log(testState, 'state로 담아봄')
 
   const question = () => {
     const [question = null] = questions
