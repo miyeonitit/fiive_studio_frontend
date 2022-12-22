@@ -1,4 +1,4 @@
-import React, { useState, Dispatch, SetStateAction } from 'react'
+import React, { useState, Dispatch, SetStateAction, Ref } from 'react'
 
 type props = {
   userId: string
@@ -7,6 +7,9 @@ type props = {
   emojiContainer: Array<any>
   setIsReactionBox: Dispatch<SetStateAction<boolean>>
   messageInfomation: any
+  refName: string
+  reactionTopRef?: React.RefObject<HTMLDivElement>
+  reactionBottomRef?: React.RefObject<HTMLDivElement>
 }
 
 const EmojiContainerBox = (props: props) => {
@@ -46,7 +49,12 @@ const EmojiContainerBox = (props: props) => {
   }
 
   return (
-    <div className='EmojiContainerBox'>
+    <div
+      className='EmojiContainerBox'
+      ref={
+        props.refName === 'top' ? props.reactionTopRef : props.reactionBottomRef
+      }
+    >
       <div className='emojis_container_wrapper' style={boxStyle}>
         <div className='emoji_outer_box'>
           {props.emojiContainer.map((emoji: any) => (

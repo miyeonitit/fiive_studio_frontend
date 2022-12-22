@@ -68,6 +68,8 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
 
   const miniMenuRef = useRef<HTMLButtonElement>(null)
   const editInputRef = useRef<HTMLTextAreaElement>(null)
+  const reactionTopRef = useRef<HTMLDivElement>(null)
+  const reactionBottomRef = useRef<HTMLDivElement>(null)
 
   const appId = process.env.NEXT_PUBLIC_SENDBIRD_APP_ID
   const apiToken = process.env.NEXT_PUBLIC_SENDBIRD_API_TOKEN
@@ -435,6 +437,14 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
     if (isMoreMiniMenu && !miniMenuRef.current.contains(e.target)) {
       setIsMoreMiniMenu(false)
     }
+
+    if (isReactionTopBox && !reactionTopRef.current.contains(e.target)) {
+      setIsReactionTopBox(false)
+    }
+
+    if (isReactionBottomBox && !reactionBottomRef.current.contains(e.target)) {
+      setIsReactionBottomBox(false)
+    }
   }
 
   useEffect(() => {
@@ -443,7 +453,7 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
     return () => {
       document.removeEventListener('mousedown', clickModalOutside)
     }
-  }, [isMoreMiniMenu])
+  }, [isMoreMiniMenu, isReactionTopBox, isReactionBottomBox])
 
   // allMessagesLength가 증가할 때마다 (로드되는 message가 많아질 때마다) Date Separator의 노출 여부 설정
   useEffect(() => {
@@ -593,6 +603,8 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
                 userId={userId}
                 topHeight='-55'
                 rightWidth='12'
+                refName='top'
+                reactionTopRef={reactionTopRef}
                 emojiContainer={emojiContainer}
                 setIsReactionBox={setIsReactionTopBox}
                 messageInfomation={messageInfomation}
@@ -865,6 +877,8 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
                   {isReactionBottomBox && (
                     <EmojiContainerBox
                       userId={userId}
+                      reactionBottomRef={reactionBottomRef}
+                      refName='bottom'
                       topHeight='12'
                       rightWidth='20'
                       emojiContainer={emojiContainer}

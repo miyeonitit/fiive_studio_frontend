@@ -1,4 +1,5 @@
 import React, { useState, ReactElement } from 'react'
+import type { GetStaticProps } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
@@ -18,7 +19,7 @@ const Chat = dynamic(() => import('../components/Chat'), {
   loading: () => <div>Loading...</div>,
 })
 
-const LearnerPage: NextPageWithLayout = () => {
+const LearnerPage: NextPageWithLayout = (props) => {
   const [questionModal, toggleQuestionModal] = useState(false)
   const [reactions, toggleReactions] = useState(false)
 
@@ -26,6 +27,7 @@ const LearnerPage: NextPageWithLayout = () => {
   const [isCloseChat, setIsCloseChat] = useState(false)
 
   const questions = useStore((state: any) => state.questions)
+  console.log(props, 'props.data')
 
   const question = () => {
     const [question = null] = questions
@@ -68,8 +70,8 @@ const LearnerPage: NextPageWithLayout = () => {
             </div>
 
             <div className='txt'>
-              <h2>&#123;teacher_name&#125;</h2>
-              <p>&#123;class_name&#125;</p>
+              <h2>&#123;teacher_names&#125;</h2>
+              <p>&#123;class_names&#125;</p>
             </div>
           </div>
 
@@ -82,7 +84,7 @@ const LearnerPage: NextPageWithLayout = () => {
               alt='viewers'
             />
             <span className='viewer-count'>n</span>
-            <span className='timestamp'>00:00:00</span>
+            <span className='timestamp'>00:00:10</span>
 
             <button type='button' className='more'>
               <Image
@@ -100,7 +102,7 @@ const LearnerPage: NextPageWithLayout = () => {
           <div className='class'>
             {/* <img src='/placeholders/Ratio.jpg' alt='Class' /> */}
             <div className='description'>
-              <h2>1회차 - 05월 08일 일요일, 22시 30분</h2>
+              <h2>1회차 - 12월 23일 일요일, 22시 30분</h2>
               <p>비문학(기본기+훈련) + 문학(기본기+개념어 정의+유형별 접근)</p>
             </div>
           </div>
@@ -202,6 +204,27 @@ const LearnerPage: NextPageWithLayout = () => {
 
 LearnerPage.getLayout = (page: ReactElement) => {
   return <Layout>{page}</Layout>
+}
+
+export const getStaticProps: GetStaticProps = async (context) => {
+  const res = await fetch(
+    `https://api-${process.env.NEXT_PUBLIC_SENDBIRD_APP_ID}.sendbird.com/v3/emoji_categories/53`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json; charset=utf8',
+        Accept: 'application/json',
+        'Api-Token': process.env.NEXT_PUBLIC_SENDBIRD_API_TOKEN,
+      },
+    }
+  )
+  const data = await res.json()
+
+  return {
+    props: {
+      data: data,
+    }, // will be passed to the page component as props
+  }
 }
 
 export default LearnerPage

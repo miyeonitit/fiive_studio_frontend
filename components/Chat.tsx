@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react'
-import { GetStaticProps } from 'next'
 import kr from 'date-fns/locale/ko'
 
 import SendbirdProvider from '@sendbird/uikit-react/SendbirdProvider'
@@ -41,14 +40,17 @@ const Chat = (props: props) => {
   const apiToken = process.env.NEXT_PUBLIC_SENDBIRD_API_TOKEN
 
   useLayoutEffect(() => {
-    fetch(`https://api-${appId}.sendbird.com/v3/emoji_categories/53`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json; charset=utf8',
-        Accept: 'application/json',
-        'Api-Token': apiToken,
-      },
-    })
+    fetch(
+      `https://api-${appId}.sendbird.com/v3/emoji_categories/${process.env.NEXT_PUBLIC_SENDBIRD_EMOJI_CATEGORY_ID}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json; charset=utf8',
+          Accept: 'application/json',
+          'Api-Token': apiToken,
+        },
+      }
+    )
       .then((response) => response.json())
       .then((data) => {
         console.log('성공:', data)
@@ -103,15 +105,6 @@ const Chat = (props: props) => {
       </SendbirdProvider>
     </>
   )
-}
-
-export const getStaticprops: GetStaticProps = async () => {
-  return {
-    props: {
-      SENDBIRD_APP_ID: process.env.NEXT_PUBLIC_SENDBIRD_APP_ID,
-      SENDBIRD_CHANNEL_ID: process.env.NEXT_PUBLIC_SENDBIRD_TEST_CHANNEL_ID,
-    },
-  }
 }
 
 export default Chat
