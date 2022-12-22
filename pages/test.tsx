@@ -26,11 +26,22 @@ const Home: NextPage = (props) => {
 // }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const test = process.env.APP_ID
+  const res = await fetch(
+    `https://api-${process.env.SENDBIRD_APP_ID}.sendbird.com/v3/emoji_categories/53`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json; charset=utf8',
+        Accept: 'application/json',
+        'Api-Token': process.env.SENDBIRD_APP_ID,
+      },
+    }
+  )
+  const data = await res.json()
 
   return {
     props: {
-      data: test,
+      data: data,
     }, // will be passed to the page component as props
   }
 }
