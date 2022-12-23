@@ -1,4 +1,5 @@
 import type { GetServerSideProps, NextPage, GetStaticProps } from 'next'
+import axios from 'axios'
 
 // ### 브라우저 실행 환경(리액트 컴포넌트)
 const Home: NextPage = (props) => {
@@ -26,18 +27,18 @@ const Home: NextPage = (props) => {
 // }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const res = await fetch(
-    `https://api-${process.env.NEXT_PUBLIC_SENDBIRD_APP_ID}.sendbird.com/v3/emoji_categories/53`,
+  const appId = process.env.NEXT_PUBLIC_SENDBIRD_APP_ID
+  const apiToken = process.env.NEXT_PUBLIC_SENDBIRD_API_TOKEN
+
+  const resonse = await axios.get(
+    `https://api-${appId}.sendbird.com/v3/emoji_categories/53`,
     {
-      method: 'GET',
       headers: {
-        'Content-Type': 'application/json; charset=utf8',
-        Accept: 'application/json',
-        'Api-Token': process.env.NEXT_PUBLIC_SENDBIRD_API_TOKEN,
+        'Api-Token': apiToken,
       },
     }
   )
-  const data = await res.json()
+  const data = await resonse.data
 
   return {
     props: {
