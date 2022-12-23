@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect } from 'react'
+import { useEffect, useState, useLayoutEffect } from 'react'
 
 import SendbirdProvider from '@sendbird/uikit-react/SendbirdProvider'
 import { OpenChannelProvider } from '@sendbird/uikit-react/OpenChannel/context'
@@ -8,6 +8,13 @@ import useSendbirdStateContext from '@sendbird/uikit-react/useSendbirdStateConte
 import { OpenChannelHandler } from '@sendbird/chat/openChannel'
 import { BaseChannel } from '@sendbird/chat'
 import { BaseMessage } from '@sendbird/chat/message'
+
+import useStore from '../store/Sendbird'
+
+import { ChannelProvider } from '@sendbird/uikit-react/Channel/context'
+import ChannelUI from '@sendbird/uikit-react/Channel/components/ChannelUI'
+import GroupMessageList from '@sendbird/uikit-react/Channel/components/MessageList'
+import CustomChatRoom from './Sendbird/CustomChatRoom'
 
 type props = {
   userId: string
@@ -59,14 +66,33 @@ const MessageList = () => {
 }
 
 const ChatMonitor = (props: props) => {
+  // emojiContainer를 전역적으로 관리하기 위한 state
+  const contextEmojiContainer = useStore((state: any) => state.emojiContainer)
+
+  console.log(contextEmojiContainer, 'contextEmojiContainer')
+
   const appId = process.env.NEXT_PUBLIC_SENDBIRD_APP_ID
+  const currentChannelUrl = process.env.NEXT_PUBLIC_SENDBIRD_TEST_CHANNEL_ID
 
   return (
     <div className='chat-monitor'>
       <SendbirdProvider appId={appId} userId={props.userId}>
-        <OpenChannelProvider channelUrl='demo'>
-          <MessageList></MessageList>
-        </OpenChannelProvider>
+        <ChannelProvider channelUrl={currentChannelUrl}>
+          <ChannelUI
+            renderChannelHeader={() => <></>}
+            renderMessage={(message: {}) => (
+              <CustomChatRoom
+                message={message}
+                userId={props.userId}
+                emojiContainer={contextEmojiContainer}
+              />
+            )}
+            renderMessageInput={() => <></>}
+            renderCustomSeparator={() => <></>}
+          >
+            {/* <GroupMessageList /> */}
+          </ChannelUI>
+        </ChannelProvider>
       </SendbirdProvider>
     </div>
   )

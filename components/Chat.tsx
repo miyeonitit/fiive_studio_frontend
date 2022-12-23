@@ -25,6 +25,11 @@ const Chat = (props: props) => {
   // 라이브 참여자 목록 on, off에 따라 typing input을 숨기기 위한 state
   const isUserList = useStore((state: any) => state.isUserList)
 
+  // emojiContainer를 전역적으로 관리하기 위한 state
+  const contextAddEmojiContainer = useStore(
+    (state: any) => state.addEmojiContainer
+  )
+
   const [emojiContainer, setEmojiContaioner] = useState([])
   const [stringSet] = useState({
     TYPING_INDICATOR__AND: '님, ',
@@ -55,6 +60,7 @@ const Chat = (props: props) => {
       .then((data) => {
         console.log('성공:', data)
         setEmojiContaioner(data.emojis)
+        contextAddEmojiContainer(data.emojis)
       })
       .catch((error) => {
         console.error('실패:', error)
