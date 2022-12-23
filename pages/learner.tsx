@@ -3,8 +3,9 @@ import type { GetStaticProps } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
-import { NextPageWithLayout } from '../types/NextPageWithLayout'
+import axios from 'axios'
 
+import { NextPageWithLayout } from '../types/NextPageWithLayout'
 import Layout from '../components/FiiveLearnerLayout'
 import Video from '../components/Video'
 import Announcements from '../components/Announcements'
@@ -27,6 +28,7 @@ const LearnerPage: NextPageWithLayout = (props) => {
   const [isCloseChat, setIsCloseChat] = useState(false)
 
   const questions = useStore((state: any) => state.questions)
+
   console.log(props, 'props.data')
 
   const question = () => {
@@ -207,18 +209,19 @@ LearnerPage.getLayout = (page: ReactElement) => {
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const res = await fetch(
-    `https://api-${process.env.NEXT_PUBLIC_SENDBIRD_APP_ID}.sendbird.com/v3/emoji_categories/53`,
+  const appId = process.env.NEXT_PUBLIC_SENDBIRD_APP_ID
+  const apiToken = process.env.NEXT_PUBLIC_SENDBIRD_API_TOKEN
+  const emojiCategoryId = process.env.NEXT_PUBLIC_SENDBIRD_EMOJI_CATEGORY_ID
+
+  const resonse = await axios.get(
+    `https://api-${appId}.sendbird.com/v3/emoji_categories/${emojiCategoryId}`,
     {
-      method: 'GET',
       headers: {
-        'Content-Type': 'application/json; charset=utf8',
-        Accept: 'application/json',
-        'Api-Token': process.env.NEXT_PUBLIC_SENDBIRD_API_TOKEN,
+        'Api-Token': apiToken,
       },
     }
   )
-  const data = await res.json()
+  const data = await resonse.data
 
   return {
     props: {
