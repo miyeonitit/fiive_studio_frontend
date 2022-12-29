@@ -2,25 +2,26 @@ import React, { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { ToastContainer, toast, cssTransition } from 'react-toastify'
 
-import 'animate.css'
-import '../../node_modules/react-toastify/dist/ReactToastify.css'
-
 import { useChannelContext } from '@sendbird/uikit-react/Channel/context'
 import useSendbirdStateContext from '@sendbird/uikit-react/useSendbirdStateContext'
 import sendbirdSelectors from '@sendbird/uikit-react/sendbirdSelectors'
 import DateSeparator from '@sendbird/uikit-react/ui/DateSeparator'
 import ImageRenderer from '@sendbird/uikit-react/ui/ImageRenderer'
 
+import 'animate.css'
+import '../../node_modules/react-toastify/dist/ReactToastify.css'
 import { config } from '../../utils/HeaderConfig'
-import useStore from '../../store/Sendbird'
+import fiiveStudioUseStore from '../../store/FiiveStudio'
+
 import MessageTooltip from './components/MessageTooltip'
 import EmojiIcon from './components/EmojiIcon'
 import EmojiContainerBox from './components/EmojiContainerBox'
+import ResponsiveEmojiContainerBox from './ResponsiveComponents/ResponsiveEmojiContainerBox'
+import ResponsiveHandleErrorMessage from './ResponsiveComponents/ResponsiveHandleErrorMessage'
 
 const CustomChatRoom = ({ message, userId, emojiContainer }) => {
-  const addMessageInfomation = useStore(
-    (state: any) => state.addMessageInfomation
-  )
+  // 반응형 미디어쿼리 스타일 지정을 위한 브라우저 넓이 측정 전역 state
+  const offsetX = fiiveStudioUseStore((state: any) => state.offsetX)
 
   const { currentGroupChannel, allMessages } = useChannelContext()
   const globalStore = useSendbirdStateContext()
@@ -28,10 +29,30 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
 
   const messageInfomation = message.message
   const sender = messageInfomation.sender
-  const reactedEmojis = messageInfomation.reactions
+    ? messageInfomation.sender
+    : {
+        _iid: 'su-4db6ffdd-dfb9-49c3-9bcd-df9c1b8acd68',
+        userId: 'teacher',
+        nickname: '',
+        plainProfileUrl: '',
+        requireAuth: false,
+        metaData: {},
+        connectionStatus: 'nonavailable',
+        isActive: true,
+        lastSeenAt: null,
+        preferredLanguages: null,
+        friendDiscoveryKey: null,
+        friendName: null,
+        role: 'none',
+        isBlockedByMe: false,
+      }
+
+  const [reactedEmojis, setReactedEmojis] = useState(
+    messageInfomation.reactions ? messageInfomation.reactions : []
+  )
 
   const [userRole, setUserRole] = useState(
-    sender.role === 'operator' ? sender.role : 'learner'
+    sender?.role === 'operator' ? sender.role : 'learner'
   )
 
   const [allMessagesLength, setAllMessagesLength] = useState(allMessages.length)
@@ -46,7 +67,7 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
     (user: any) => user.userId === sender.userId
   )
   const [isMutedUser, setIsMutedUser] = useState(findMutedUser.isMuted)
-  const [isBlockUser, setIsBlockUser] = useState(sender.isBlockedByMe)
+  const [isBlockUser, setIsBlockUser] = useState(sender?.isBlockedByMe)
 
   // 이모티콘 툴팁 노출 boolean state
   const [isReactionTopTooltip, setIsReactionTopTooltip] = useState(false)
@@ -65,6 +86,10 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
   // 수정할 메시지 text value와 메시지가 수정 중에 있는지 여부 boolean state
   const [editMessageValue, setEditMessageValue] = useState('')
   const [isEditedMessage, setIsEditedMessage] = useState(false)
+
+  // 반응형(tablet, mobile size)일 때, error message를 다시 보내거나 삭제할 수 있는 반응형 모달 on,off boolean state
+  const [isResponsiveErrorMsgModal, setIsResponsiveErrorMsgModal] =
+    useState(false)
 
   const miniMenuRef = useRef<HTMLButtonElement>(null)
   const editInputRef = useRef<HTMLTextAreaElement>(null)
@@ -384,7 +409,9 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
       }
     )
       .then((response) => response.json())
-      .then((data) => {})
+      .then((data) => {
+        console.log('성공:', data)
+      })
       .catch((error) => {
         console.error('실패:', error)
         toast.error(
@@ -428,22 +455,24 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
     }
   }
 
-  // useEffect(() => {
-  //   addMessageInfomation(message.message)
-  // }, [message.message])
-
   // 더보기 미니 메뉴 outside click
   const clickModalOutside = (e) => {
     if (isMoreMiniMenu && !miniMenuRef.current.contains(e.target)) {
       setIsMoreMiniMenu(false)
     }
 
-    if (isReactionTopBox && !reactionTopRef.current.contains(e.target)) {
-      setIsReactionTopBox(false)
-    }
+    // 반응형 emoji modal (ResponsiveEmojiContainerBox)에서는 작동하지 않게 if문 처리
+    if (offsetX >= 1023) {
+      if (isReactionTopBox && !reactionTopRef.current.contains(e.target)) {
+        setIsReactionTopBox(false)
+      }
 
-    if (isReactionBottomBox && !reactionBottomRef.current.contains(e.target)) {
-      setIsReactionBottomBox(false)
+      if (
+        isReactionBottomBox &&
+        !reactionBottomRef.current.contains(e.target)
+      ) {
+        setIsReactionBottomBox(false)
+      }
     }
   }
 
@@ -493,8 +522,14 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
 
       <div
         className={`message_wrapper ${isEditedMessage && 'edit'}`}
-        onMouseOver={() => setIsHoverMoreMenu(true)}
-        onMouseOut={() => setIsHoverMoreMenu(false)}
+        onClick={() =>
+          offsetX < 1023 &&
+          (messageInfomation.sendingStatus === 'failed'
+            ? setIsResponsiveErrorMsgModal(true)
+            : setIsHoverMoreMenu(!isHoverMoreMenu))
+        }
+        onMouseOver={() => offsetX >= 1023 && setIsHoverMoreMenu(true)}
+        onMouseOut={() => offsetX >= 1023 && setIsHoverMoreMenu(false)}
       >
         {messageInfomation.type === 'image/png' ? (
           <div className='Message_file'>
@@ -517,7 +552,7 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
           </div>
         ) : (
           <>
-            {isReactionTopTooltip && (
+            {offsetX >= 1023 && isReactionTopTooltip && (
               <MessageTooltip
                 topHeight='-60'
                 rightWidth='18'
@@ -529,7 +564,7 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
               />
             )}
 
-            {isMessageDeleteTooltip && (
+            {offsetX >= 1023 && isMessageDeleteTooltip && (
               <MessageTooltip
                 topHeight='-60'
                 rightWidth='5'
@@ -540,9 +575,15 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
             {!isEditedMessage &&
               isHoverMoreMenu &&
               (messageInfomation.sendingStatus === 'succeeded' ? (
-                <div className='Message_more_menu_box'>
+                <div
+                  className={`Message_more_menu_box ${
+                    isReactionTopBox || (isMoreMiniMenu && 'active')
+                  }`}
+                >
                   <div
-                    className='reaction_emoji_button'
+                    className={`reaction_emoji_button ${
+                      isReactionTopBox && 'active'
+                    }`}
                     onClick={() => setIsReactionTopBox(!isReactionTopBox)}
                     onMouseOver={() => setIsReactionTopTooltip(true)}
                     onMouseOut={() => setIsReactionTopTooltip(false)}
@@ -554,7 +595,7 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
                       alt='reactionButton'
                     />
                   </div>
-                  <div className='more_button'>
+                  <div className={`more_button ${isMoreMiniMenu && 'active'}`}>
                     <Image
                       src='/Sendbird/more_button.svg'
                       onClick={() => clickMiniMenu()}
@@ -598,18 +639,30 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
               ))}
 
             {/* emoji contaioner box */}
-            {isReactionTopBox && (
-              <EmojiContainerBox
-                userId={userId}
-                topHeight='-55'
-                rightWidth='12'
-                refName='top'
-                reactionTopRef={reactionTopRef}
-                emojiContainer={emojiContainer}
-                setIsReactionBox={setIsReactionTopBox}
-                messageInfomation={messageInfomation}
-              />
-            )}
+            {/* pc 버전일 때는 EmojiContainerBox를, tablet과 mobile 버전일 때는 ResponsiveEmojiContainerBox 모달을 띄움 */}
+            {isReactionTopBox &&
+              (offsetX > 1023 ? (
+                <EmojiContainerBox
+                  userId={userId}
+                  topHeight='-55'
+                  rightWidth='12'
+                  refName='top'
+                  reactedEmojis={reactedEmojis}
+                  reactionTopRef={reactionTopRef}
+                  emojiContainer={emojiContainer}
+                  setIsReactionBox={setIsReactionTopBox}
+                  messageInfomation={messageInfomation}
+                />
+              ) : (
+                <ResponsiveEmojiContainerBox
+                  userId={userId}
+                  emojiContainer={emojiContainer}
+                  isReactionBox={isReactionTopBox}
+                  setIsReactionBox={setIsReactionTopBox}
+                  messageInfomation={messageInfomation}
+                  reactedEmojis={reactedEmojis}
+                />
+              ))}
 
             {/* 더보기 버튼의 미니 메뉴 */}
             {isMoreMiniMenu &&
@@ -841,6 +894,7 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
                         key={idx + emoji.key}
                         emoji={emoji}
                         userId={userId}
+                        reactedEmojis={reactedEmojis}
                         emojiContainer={emojiContainer}
                         messageInfomation={messageInfomation}
                       />
@@ -853,7 +907,7 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
                       onMouseOver={() => setIsReactionBottomTooltip(true)}
                       onMouseOut={() => setIsReactionBottomTooltip(false)}
                     >
-                      {isReactionBottomTooltip && (
+                      {offsetX >= 1023 && isReactionBottomTooltip && (
                         <MessageTooltip
                           topHeight='-52'
                           rightWidth='-26'
@@ -874,23 +928,44 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
                     </div>
                   </div>
 
-                  {isReactionBottomBox && (
-                    <EmojiContainerBox
-                      userId={userId}
-                      reactionBottomRef={reactionBottomRef}
-                      refName='bottom'
-                      topHeight='12'
-                      rightWidth='20'
-                      emojiContainer={emojiContainer}
-                      setIsReactionBox={setIsReactionBottomBox}
-                      messageInfomation={messageInfomation}
-                    />
-                  )}
+                  {/* pc 버전일 때는 EmojiContainerBox를, tablet과 mobile 버전일 때는 ResponsiveEmojiContainerBox 모달을 띄움 */}
+                  {isReactionBottomBox &&
+                    (offsetX > 1023 ? (
+                      <EmojiContainerBox
+                        userId={userId}
+                        topHeight='12'
+                        rightWidth='20'
+                        refName='bottom'
+                        reactedEmojis={reactedEmojis}
+                        reactionBottomRef={reactionBottomRef}
+                        emojiContainer={emojiContainer}
+                        setIsReactionBox={setIsReactionBottomBox}
+                        messageInfomation={messageInfomation}
+                      />
+                    ) : (
+                      <ResponsiveEmojiContainerBox
+                        userId={userId}
+                        emojiContainer={emojiContainer}
+                        isReactionBox={isReactionBottomBox}
+                        setIsReactionBox={setIsReactionBottomBox}
+                        messageInfomation={messageInfomation}
+                        reactedEmojis={reactedEmojis}
+                      />
+                    ))}
                 </>
               )}
 
+              {/* tablet과 mobile 버전일 때는 ResponsiveHandleErrorMessage 모달을 띄움 */}
+              {offsetX < 1023 && isResponsiveErrorMsgModal && (
+                <ResponsiveHandleErrorMessage
+                  messageInfomation={messageInfomation}
+                  isResponsiveErrorMsgModal={isResponsiveErrorMsgModal}
+                  setIsResponsiveErrorMsgModal={setIsResponsiveErrorMsgModal}
+                />
+              )}
+
               <ToastContainer
-                position='bottom-right'
+                position={offsetX > 1023 ? 'bottom-right' : 'bottom-center'}
                 autoClose={2000}
                 hideProgressBar
                 newestOnTop={false}
