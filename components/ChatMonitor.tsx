@@ -1,4 +1,6 @@
 import { useEffect, useState, useLayoutEffect } from 'react'
+import kr from 'date-fns/locale/ko'
+import { v4 as uuidv4 } from 'uuid'
 
 import SendbirdProvider from '@sendbird/uikit-react/SendbirdProvider'
 import { OpenChannelProvider } from '@sendbird/uikit-react/OpenChannel/context'
@@ -6,15 +8,19 @@ import OpenChannelMessageList from '@sendbird/uikit-react/OpenChannel/components
 import sendbirdSelectors from '@sendbird/uikit-react/sendbirdSelectors'
 import useSendbirdStateContext from '@sendbird/uikit-react/useSendbirdStateContext'
 import { OpenChannelHandler } from '@sendbird/chat/openChannel'
+import {
+  GroupChannel,
+  GroupChannelHandler,
+  SendbirdGroupChat,
+} from '@sendbird/chat/groupChannel'
+
 import { BaseChannel } from '@sendbird/chat'
 import { BaseMessage } from '@sendbird/chat/message'
-
-import useStore from '../store/Sendbird'
 
 import { ChannelProvider } from '@sendbird/uikit-react/Channel/context'
 import ChannelUI from '@sendbird/uikit-react/Channel/components/ChannelUI'
 import GroupMessageList from '@sendbird/uikit-react/Channel/components/MessageList'
-import CustomChatRoom from './Sendbird/CustomChatRoom'
+import CustomTeacherPopupChat from './Sendbird/CustomTeacherPopupChat'
 
 type props = {
   userId: string
@@ -24,7 +30,9 @@ const MessageList = () => {
   const context = useSendbirdStateContext()
   const sdk = sendbirdSelectors.getSdk(context)
 
-  useLayoutEffect(() => {
+  useEffect(() => {
+    const channelHandlerId = uuidv4()
+
     const intvl = window.setInterval(() => {
       if (window.scrollY + window.innerHeight === document.body.scrollHeight) {
         window.clearInterval(intvl)
@@ -33,10 +41,24 @@ const MessageList = () => {
       }
     }, 1000)
 
+    // if (sdk?.groupChannel?.addGroupChannelHandler) {
+    //   const groupChannelHandler: GroupChannelHandler = new GroupChannelHandler({
+    //     onMessageReceived: (channel: BaseChannel, message: BaseMessage) => {
+    //       window.setTimeout(() => {
+    //         window.scrollTo(0, document.body.scrollHeight)
+    //       }, 100)
+    //     },
+    //   })
+
+    //   sdk.groupChannel.addGroupChannelHandler(
+    //     channelHandlerId,
+    //     groupChannelHandler
+    //   )
+    // }
+
     if (sdk?.openChannel?.addOpenChannelHandler) {
       const openChannelHandler = new OpenChannelHandler({
         onMessageReceived: (channel: BaseChannel, message: BaseMessage) => {
-          // console.log(channel, message);
           window.setTimeout(() => {
             window.scrollTo(0, document.body.scrollHeight)
           }, 100)
@@ -60,38 +82,43 @@ const MessageList = () => {
 
   return (
     <>
-      <OpenChannelMessageList></OpenChannelMessageList>
+      <ChannelUI
+        hasSeparator={false}
+        isReactionEnabled={false}
+        renderChannelHeader={() => <></>}
+        renderMessage={(message: {}) => (
+          <CustomTeacherPopupChat message={message} userId='learner' />
+        )}
+        renderMessageInput={() => <></>}
+        renderCustomSeparator={() => <div></div>}
+      ></ChannelUI>
     </>
   )
 }
 
 const ChatMonitor = (props: props) => {
-  // emojiContainer를 전역적으로 관리하기 위한 state
-  const contextEmojiContainer = useStore((state: any) => state.emojiContainer)
-
-  console.log(contextEmojiContainer, 'contextEmojiContainer')
+  const [stringSet] = useState({
+    TYPING_INDICATOR__AND: '님, ',
+    TYPING_INDICATOR__IS_TYPING: '님이 입력 중이에요.',
+    TYPING_INDICATOR__ARE_TYPING: '님이 입력 중이에요.',
+    TYPING_INDICATOR__MULTIPLE_TYPING: '여러 명이 입력 중이에요.',
+    CHANNEL__MESSAGE_LIST__NOTIFICATION__NEW_MESSAGE: '개의 새로운 메시지',
+    CHANNEL__MESSAGE_LIST__NOTIFICATION__ON: '도착',
+  })
 
   const appId = process.env.NEXT_PUBLIC_SENDBIRD_APP_ID
   const currentChannelUrl = process.env.NEXT_PUBLIC_SENDBIRD_TEST_CHANNEL_ID
 
   return (
     <div className='chat-monitor'>
-      <SendbirdProvider appId={appId} userId={props.userId}>
+      <SendbirdProvider
+        appId={appId}
+        userId={props.userId}
+        stringSet={stringSet}
+        dateLocale={kr}
+      >
         <ChannelProvider channelUrl={currentChannelUrl}>
-          <ChannelUI
-            renderChannelHeader={() => <></>}
-            renderMessage={(message: {}) => (
-              <CustomChatRoom
-                message={message}
-                userId={props.userId}
-                emojiContainer={contextEmojiContainer}
-              />
-            )}
-            renderMessageInput={() => <></>}
-            renderCustomSeparator={() => <></>}
-          >
-            {/* <GroupMessageList /> */}
-          </ChannelUI>
+          <MessageList></MessageList>
         </ChannelProvider>
       </SendbirdProvider>
     </div>

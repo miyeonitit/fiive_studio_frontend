@@ -1,9 +1,20 @@
-import React, { useState, ReactElement } from 'react'
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useLayoutEffect,
+  ReactElement,
+} from 'react'
 import type { GetStaticProps } from 'next'
+import { NextPageWithLayout } from '../types/NextPageWithLayout'
 import Head from 'next/head'
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
-import { NextPageWithLayout } from '../types/NextPageWithLayout'
+import { CSSProperties } from 'styled-components'
+import axios from 'axios'
+
+import sendbirdUseStore from '../store/Sendbird'
+import fiiveStudioUseStore from '../store/FiiveStudio'
 
 import Layout from '../components/FiiveLearnerLayout'
 import Video from '../components/Video'
@@ -14,25 +25,64 @@ import Timer from '../components/Timer'
 import Reactions from '../components/Reactions'
 import useStore from '../store/video'
 
+type props = {
+  emoji_data: { id: number; key: string; url: string }
+}
+
 const Chat = dynamic(() => import('../components/Chat'), {
   ssr: false,
   loading: () => <div>Loading...</div>,
 })
 
-const LearnerPage: NextPageWithLayout = (props) => {
+const LearnerPage: NextPageWithLayout = (props: props) => {
+  // 반응형 미디어쿼리 스타일 지정을 위한 브라우저 넓이 측정 전역 state
+  const offsetX = fiiveStudioUseStore((state: any) => state.offsetX)
+
   const [questionModal, toggleQuestionModal] = useState(false)
   const [reactions, toggleReactions] = useState(false)
+
+  const [chatOffsetHeight, setChatOffsetHeight] = useState(0)
 
   // chat 접기, 펼치기 boolean state
   const [isCloseChat, setIsCloseChat] = useState(false)
 
+  // custom reaction emoji list state
+  const [emojiContainer, setEmojiContaioner] = useState(props.emoji_data)
+
   const questions = useStore((state: any) => state.questions)
-  console.log(props, 'props.data')
+
+  const playerHeightRef = useRef<HTMLElement>(null)
 
   const question = () => {
     const [question = null] = questions
     return question
   }
+
+  const chatHeightStyle: CSSProperties =
+    offsetX < 1023
+      ? {
+          // height: `calc(100vh - 73px - ${chatOffsetHeight}px)`,
+        }
+      : {}
+
+  const reset = () => {
+    // if (playerHeightRef) {
+    setChatOffsetHeight(playerHeightRef.current?.offsetHeight)
+    // }
+  }
+
+  useEffect(() => {
+    window.addEventListener('resize', reset)
+
+    // clean up function
+    return () => {
+      window.removeEventListener('resize', reset)
+    }
+  })
+
+  useEffect(() => {
+    reset()
+  }, [])
 
   return (
     <div className='fiive learner page'>
@@ -42,7 +92,7 @@ const LearnerPage: NextPageWithLayout = (props) => {
       </Head>
 
       <main>
-        <section className='video-wrapper'>
+        <section className='video-wrapper' ref={playerHeightRef}>
           <Announcements></Announcements>
           <Timer></Timer>
           <Reactions></Reactions>
@@ -129,7 +179,10 @@ const LearnerPage: NextPageWithLayout = (props) => {
       )}
 
       {/* chat을 펼쳤을 때 aside bar */}
-      <aside className={`chat ${isCloseChat && 'close'}`}>
+      <aside
+        className={`chat ${isCloseChat && 'close'}`}
+        style={chatHeightStyle}
+      >
         {/* <header>
           <button type='button' className='arrow'>
             <img src='/icons/move_right.svg' alt='Arrow' />
@@ -157,6 +210,7 @@ const LearnerPage: NextPageWithLayout = (props) => {
             userId='learne'
             isCloseChat={isCloseChat}
             setIsCloseChat={setIsCloseChat}
+            emojiContainer={emojiContainer}
           />
         </div>
         <footer>
@@ -166,7 +220,12 @@ const LearnerPage: NextPageWithLayout = (props) => {
             }}
             type='button'
           >
-            <img src='/icons/question.svg' alt='Question' />
+            <Image
+              src='../icons/question.svg'
+              width={20}
+              height={20}
+              alt='Question'
+            />
           </button>
 
           <button
@@ -175,11 +234,21 @@ const LearnerPage: NextPageWithLayout = (props) => {
             }}
             type='button'
           >
-            <img src='/icons/reaction.svg' alt='Reactions' />
+            <Image
+              src='../icons/reaction.svg'
+              width={20}
+              height={20}
+              alt='Reactions'
+            />
           </button>
 
           <button type='button'>
-            <img src='/icons/setting.svg' alt='Settings' />
+            <Image
+              src='../icons/setting.svg'
+              width={20}
+              height={20}
+              alt='Settings'
+            />
           </button>
           {reactions && (
             <SubmitReaction
@@ -207,23 +276,24 @@ LearnerPage.getLayout = (page: ReactElement) => {
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const res = await fetch(
-    `https://api-${process.env.NEXT_PUBLIC_SENDBIRD_APP_ID}.sendbird.com/v3/emoji_categories/53`,
+  const appId = process.env.NEXT_PUBLIC_SENDBIRD_APP_ID
+  const apiToken = process.env.NEXT_PUBLIC_SENDBIRD_API_TOKEN
+  const emojiCategoryId = process.env.NEXT_PUBLIC_SENDBIRD_EMOJI_CATEGORY_ID
+
+  const emojiResonse = await axios.get(
+    `https://api-${appId}.sendbird.com/v3/emoji_categories/${emojiCategoryId}`,
     {
-      method: 'GET',
       headers: {
-        'Content-Type': 'application/json; charset=utf8',
-        Accept: 'application/json',
-        'Api-Token': process.env.NEXT_PUBLIC_SENDBIRD_API_TOKEN,
+        'Api-Token': apiToken,
       },
     }
   )
-  const data = await res.json()
+  const emojiData = await emojiResonse.data.emojis
 
   return {
     props: {
-      data: data,
-    }, // will be passed to the page component as props
+      emoji_data: emojiData,
+    },
   }
 }
 

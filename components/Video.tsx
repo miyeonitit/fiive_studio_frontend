@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from 'react'
 // import Messages from "../components/Messages";
 import useStore from '../store/video'
 
-const Video = () => {
+const Video = ({}) => {
   const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL
   const ivsPlayer = useRef<HTMLVideoElement>(null)
   const [init, setInit] = useState(false)

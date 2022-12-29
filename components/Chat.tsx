@@ -17,6 +17,7 @@ type props = {
   userId: string
   isCloseChat: boolean
   setIsCloseChat: React.Dispatch<React.SetStateAction<boolean>>
+  emojiContainer: object
 }
 
 const Chat = (props: props) => {
@@ -30,7 +31,6 @@ const Chat = (props: props) => {
     (state: any) => state.addEmojiContainer
   )
 
-  const [emojiContainer, setEmojiContaioner] = useState([])
   const [stringSet] = useState({
     TYPING_INDICATOR__AND: '님, ',
     TYPING_INDICATOR__IS_TYPING: '님이 입력 중이에요.',
@@ -42,29 +42,9 @@ const Chat = (props: props) => {
 
   const appId = process.env.NEXT_PUBLIC_SENDBIRD_APP_ID
   const currentChannelUrl = process.env.NEXT_PUBLIC_SENDBIRD_TEST_CHANNEL_ID
-  const apiToken = process.env.NEXT_PUBLIC_SENDBIRD_API_TOKEN
 
-  useLayoutEffect(() => {
-    fetch(
-      `https://api-${appId}.sendbird.com/v3/emoji_categories/${process.env.NEXT_PUBLIC_SENDBIRD_EMOJI_CATEGORY_ID}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json; charset=utf8',
-          Accept: 'application/json',
-          'Api-Token': apiToken,
-        },
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        console.log('성공:', data)
-        setEmojiContaioner(data.emojis)
-        contextAddEmojiContainer(data.emojis)
-      })
-      .catch((error) => {
-        console.error('실패:', error)
-      })
+  useEffect(() => {
+    contextAddEmojiContainer(props.emojiContainer)
   }, [])
 
   return (
@@ -94,7 +74,7 @@ const Chat = (props: props) => {
               <CustomChatRoom
                 message={message}
                 userId={userId}
-                emojiContainer={emojiContainer}
+                emojiContainer={props.emojiContainer}
               />
             )}
             renderMessageInput={() =>

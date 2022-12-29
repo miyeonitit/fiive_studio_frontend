@@ -1,11 +1,16 @@
 import dynamic from 'next/dynamic'
+import { SetStateAction } from 'react'
+
+type props = {
+  emojiContainer: { id: number; key: string; url: string }
+}
 
 const Chat = dynamic(() => import('../components/Chat'), {
   ssr: false,
   loading: () => <div>Loading...</div>,
 })
 
-const TeacherChatWidget = () => {
+const TeacherChatWidget = (props: props) => {
   return (
     <div className='teacher-chat-widget'>
       {/* <h3>
@@ -19,7 +24,7 @@ const TeacherChatWidget = () => {
         </button>
       </h3> */}
 
-      <Chat userId='teacher' />
+      <Chat userId='teacher' emojiContainer={props.emojiContainer} />
     </div>
   )
 }

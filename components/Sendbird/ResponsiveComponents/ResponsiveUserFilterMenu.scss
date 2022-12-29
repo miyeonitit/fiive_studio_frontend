@@ -1,0 +1,62 @@
+.ResponsiveUserFilterMenu {
+  @include responsive_modal_wrapper;
+  overflow: hidden;
+
+  .user_filter_modal_wrapper {
+    @include responsive_modal_box;
+    @include responsive_modal_slideUp;
+
+    .responsive_modal_title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 0px;
+
+      .add_reaction_title_text {
+        @include head-1;
+      }
+
+      .close_modal_image_box {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+      }
+    }
+
+    .responsive_modal_container {
+      display: flex;
+      flex-direction: column;
+
+      .modal_line_menu {
+        display: flex;
+        align-items: center;
+        padding: 16px 0px;
+        cursor: pointer;
+
+        .user_list_button_image_box,
+        .muted_user_list_button_image_box,
+        .blocked_user_list_button_image_box {
+          display: flex;
+          align-items: center;
+          margin-right: 12px;
+        }
+
+        .user_list_button_text_box,
+        .muted_user_button_text_box,
+        .blocked_user_button_text_box {
+          @include body-1-400;
+        }
+
+        .active {
+          color: $fiivepurple-5;
+        }
+      }
+    }
+  }
+
+  .user_filter_modal_wrapper.non_active {
+    position: relative;
+    bottom: -300px;
+    @include responsive_modal_slideDown;
+  }
+}

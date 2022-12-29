@@ -1,28 +1,31 @@
-import React, { useState, Dispatch, SetStateAction, Ref } from 'react'
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  Dispatch,
+  SetStateAction,
+} from 'react'
+import Image from 'next/image'
 
 type props = {
   userId: string
-  topHeight: string
-  rightWidth: string
   emojiContainer: Array<any>
+  isReactionBox: boolean
   setIsReactionBox: Dispatch<SetStateAction<boolean>>
   messageInfomation: any
-  refName: string
-  reactionTopRef?: React.RefObject<HTMLDivElement>
-  reactionBottomRef?: React.RefObject<HTMLDivElement>
   reactedEmojis: Array<any>
 }
 
-const EmojiContainerBox = (props: props) => {
+const ResponsiveEmojiContainerBox = (props: props) => {
+  // modal을 닫을 때, 애니메이션 효과와 setTimeout을 하기 위한 boolean state
+  const [isCloseModal, setIsCloseModal] = useState(false)
+
+  const emojiModalRef = useRef<HTMLDivElement>(null)
+
   const appId = process.env.NEXT_PUBLIC_SENDBIRD_APP_ID
   const apiToken = process.env.NEXT_PUBLIC_SENDBIRD_API_TOKEN
   const channel_url = process.env.NEXT_PUBLIC_SENDBIRD_TEST_CHANNEL_ID
   const message_id = props.messageInfomation.messageId
-
-  const boxStyle = {
-    top: `${props.topHeight}px`,
-    right: `${props.rightWidth}px`,
-  }
 
   const addUserReaction = (emojiKey: string) => {
     // 해당 메시지에 유저가 선택한 리액션 이모지가 이미 있을 경우, 이모지 제거
@@ -86,28 +89,76 @@ const EmojiContainerBox = (props: props) => {
       })
   }
 
+  const closeModal = () => {
+    setIsCloseModal(true)
+
+    // 400초가 지나면 modal close 처리
+    let timer = setTimeout(() => props.setIsReactionBox(false), 400)
+
+    // setTimeout의 cleanUp 처리
+    clearSetTimeOut(timer)
+  }
+
+  const clearSetTimeOut = (countTimer: any) => {
+    return () => {
+      clearTimeout(countTimer)
+    }
+  }
+
+  const clickModalOutside = (e) => {
+    if (props.isReactionBox && !emojiModalRef.current.contains(e.target)) {
+      closeModal()
+    }
+  }
+
+  // 반응형 모달 outside click
+  useEffect(() => {
+    document.addEventListener('mousedown', clickModalOutside)
+
+    return () => {
+      document.removeEventListener('mousedown', clickModalOutside)
+    }
+  }, [props.isReactionBox])
+
   return (
-    <div
-      className='EmojiContainerBox'
-      ref={
-        props.refName === 'top' ? props.reactionTopRef : props.reactionBottomRef
-      }
-    >
-      <div className='emojis_container_wrapper' style={boxStyle}>
-        <div className='emoji_outer_box'>
-          {props.emojiContainer.map((emoji: any) => (
-            <div
-              className='emoji_inner_box'
-              key={emoji.key}
-              onClick={() => addUserReaction(emoji.key)}
-            >
-              <img src={emoji.url} alt={emoji.key} />
-            </div>
-          ))}
+    <div className='ResponsiveEmojiContainerBox'>
+      {/* non_active 일 때 close modal animation 실행 */}
+      <div
+        className={
+          !isCloseModal
+            ? 'emojis_container_wrapper'
+            : 'emojis_container_wrapper non_active'
+        }
+        ref={emojiModalRef}
+      >
+        <div className='responsive_modal_title'>
+          <div className='add_reaction_title_text'>반응 추가하기</div>
+          <div className='close_modal_image_box' onClick={() => closeModal()}>
+            <Image
+              src='/Sendbird/responsive_close_button.svg'
+              width={20}
+              height={20}
+              alt='closeButton'
+            />
+          </div>
+        </div>
+
+        <div className='responsive_modal_container'>
+          <div className='emoji_outer_box'>
+            {props.emojiContainer.map((emoji: any) => (
+              <div
+                className='emoji_inner_box'
+                key={emoji.key}
+                onClick={() => addUserReaction(emoji.key)}
+              >
+                <img src={emoji.url} alt={emoji.key} />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
   )
 }
 
-export default EmojiContainerBox
+export default ResponsiveEmojiContainerBox

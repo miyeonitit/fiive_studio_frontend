@@ -294,7 +294,7 @@ const UserListProfileCard = (props: props) => {
       case '라이브 참여자':
         setIsBlockUser(props.user.isBlockedByMe)
         setIsMutedUser(props.user.isMuted)
-        return
+        break
 
       case '채팅 정지된 참여자':
         // 전체 채팅방 유저중에 현재 user id와 같은 유저 id를 골라내기
@@ -311,6 +311,7 @@ const UserListProfileCard = (props: props) => {
           currentGroupChannel.members[indexOfMutedUser].isMuted
 
         setIsMutedUser(isUserMuted)
+        break
 
       case '차단된 참여자':
         // 전체 채팅방 유저중에 현재 user id와 같은 유저 id를 골라내기
@@ -327,6 +328,7 @@ const UserListProfileCard = (props: props) => {
           currentGroupChannel.members[indexOfFindedUser].isBlockedByMe
 
         setIsBlockUser(isUserBlocked)
+        break
     }
   }, [props.isUserFilterMiniMenu])
 
@@ -421,7 +423,7 @@ const UserListProfileCard = (props: props) => {
 
         {/* 마우스 hover에 따라 나타나는 더보기 버튼 */}
         {isHoverMoreMenu && (
-          <div className='more_menu_box'>
+          <div className={`more_menu_box ${isMoreMiniMenu && 'active'}`}>
             <Image
               src='/Sendbird/more_button.svg'
               onClick={() => handleMoreMenuButton()}

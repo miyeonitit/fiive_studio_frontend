@@ -9,8 +9,12 @@ import Image from 'next/image'
 
 import { useChannelContext } from '@sendbird/uikit-react/Channel/context'
 
+import sendBirdUseStore from '../../store/Sendbird'
+import fiiveStudioUseStore from '../../store/FiiveStudio'
+
 import UserListProfileCard from './components/UserListProfileCard'
-import useStore from '../../store/Sendbird'
+import ResponsiveChatHeaderMenu from './ResponsiveComponents/ResponsiveChatHeaderMenu'
+import ResponsiveUserFilterMenu from './ResponsiveComponents/ResponsiveUserFilterMenu'
 
 type props = {
   userId: string
@@ -20,7 +24,13 @@ type props = {
 }
 
 const CustomChatHeader = (props: props) => {
-  const contextSetIsUserList = useStore((state: any) => state.setIsUserList)
+  // 반응형 미디어쿼리 스타일 지정을 위한 브라우저 넓이 측정 전역 state
+  const offsetX = fiiveStudioUseStore((state: any) => state.offsetX)
+
+  // 유저 리스트 전역 state
+  const contextSetIsUserList = sendBirdUseStore(
+    (state: any) => state.setIsUserList
+  )
 
   const { currentGroupChannel } = useChannelContext()
 
@@ -44,6 +54,7 @@ const CustomChatHeader = (props: props) => {
   const [userFilter, setUserFilter] = useState('라이브 참여자')
 
   const miniMenuRef = useRef<HTMLButtonElement>(null)
+  const userFilterRef = useRef<HTMLDivElement>(null)
 
   const appId = process.env.NEXT_PUBLIC_SENDBIRD_APP_ID
   const apiToken = process.env.NEXT_PUBLIC_SENDBIRD_API_TOKEN
@@ -92,7 +103,8 @@ const CustomChatHeader = (props: props) => {
         setUserList(currentGroupChannel.members)
         setUserFilter('라이브 참여자')
         setIsUserFilterMiniMenu(false)
-        return
+        break
+
       case 'muted':
         fetch(
           `https://api-${appId}.sendbird.com/v3/group_channels/${currentChannelUrl}/mute`,
@@ -115,7 +127,8 @@ const CustomChatHeader = (props: props) => {
           .catch((error) => {
             console.error('실패:', error)
           })
-        return
+        break
+
       case 'blocked':
         fetch(
           `https://api-${appId}.sendbird.com/v3/users/${props.userId}/block`,
@@ -138,25 +151,34 @@ const CustomChatHeader = (props: props) => {
           .catch((error) => {
             console.error('실패:', error)
           })
-        return
+        break
     }
   }
 
   // 더보기 미니 메뉴 outside click
   const clickModalOutside = (e) => {
-    if (isMoreMiniMenu && !miniMenuRef.current.contains(e.target)) {
-      setIsMoreMiniMenu(false)
+    // 반응형 header menu modal (ResponsiveChatHeaderMenu)에서는 작동하지 않게 if문 처리
+    if (offsetX >= 1023) {
+      if (isMoreMiniMenu && !miniMenuRef.current.contains(e.target)) {
+        setIsMoreMiniMenu(false)
+      }
+
+      if (isUserFilterMiniMenu && !userFilterRef.current.contains(e.target)) {
+        setIsUserFilterMiniMenu(false)
+      }
     }
   }
 
   // 더보기 미니 메뉴 outside click
   useEffect(() => {
-    document.addEventListener('mousedown', clickModalOutside)
+    if (offsetX >= 1023) {
+      document.addEventListener('mousedown', clickModalOutside)
 
-    return () => {
-      document.removeEventListener('mousedown', clickModalOutside)
+      return () => {
+        document.removeEventListener('mousedown', clickModalOutside)
+      }
     }
-  }, [isMoreMiniMenu])
+  }, [isMoreMiniMenu, isUserFilterMiniMenu])
 
   useEffect(() => {
     if (currentGroupChannel) {
@@ -196,109 +218,112 @@ const CustomChatHeader = (props: props) => {
               alt='moreButton'
             />
 
-            {isMoreMiniMenu && (
-              <div className='more_mini_menu' ref={miniMenuRef}>
-                <div
-                  className='list_in_menu'
-                  onClick={() => {
-                    controlMenuSetting()
-                  }}
-                >
-                  <Image
-                    src='/Sendbird/members_icon.svg'
-                    width={16}
-                    height={16}
-                    alt='membersIcon'
-                  />
-                  <span>라이브 참여자 보기</span>
-                </div>
-                {isFreezeChat ? (
+            {isMoreMiniMenu &&
+              (offsetX > 1023 ? (
+                <div className='more_mini_menu' ref={miniMenuRef}>
                   <div
                     className='list_in_menu'
                     onClick={() => {
-                      controlFreezeChat()
+                      controlMenuSetting()
                     }}
                   >
                     <Image
-                      src='/Sendbird/lock_icon.svg'
+                      src='/Sendbird/members_icon.svg'
                       width={16}
                       height={16}
-                      alt='lockIcon'
+                      alt='membersIcon'
                     />
-                    <span>채팅창 녹이기</span>
+                    <span>라이브 참여자 보기</span>
                   </div>
-                ) : (
-                  <div
-                    className='list_in_menu'
-                    onClick={() => {
-                      controlFreezeChat()
-                    }}
-                  >
-                    <Image
-                      src='/Sendbird/lock_icon.svg'
-                      width={16}
-                      height={16}
-                      alt='lockIcon'
-                    />
-                    <span>채팅창 얼리기</span>
-                  </div>
-                )}
 
-                <div
-                  className='list_in_menu'
-                  // onClick={() => {
-                  //   unmuteUser(sender.userId)
-                  // }}
-                >
-                  <Image
-                    src='/Sendbird/share_chatting_icon.svg'
-                    width={16}
-                    height={16}
-                    alt='shareIcon'
-                  />
-                  <span>채팅 내보내기</span>
+                  {props.userRole === 'teacher' && (
+                    <div
+                      className='list_in_menu'
+                      onClick={() => {
+                        controlFreezeChat()
+                      }}
+                    >
+                      <Image
+                        src='/Sendbird/lock_icon.svg'
+                        width={16}
+                        height={16}
+                        alt='lockIcon'
+                      />
+                      {isFreezeChat ? (
+                        <span>채팅창 녹이기</span>
+                      ) : (
+                        <span>채팅창 얼리기</span>
+                      )}
+                    </div>
+                  )}
+
+                  <div className='list_in_menu'>
+                    <Image
+                      src='/Sendbird/share_chatting_icon.svg'
+                      width={16}
+                      height={16}
+                      alt='shareIcon'
+                    />
+                    <span>채팅 내보내기</span>
+                  </div>
                 </div>
-              </div>
-            )}
+              ) : (
+                <ResponsiveChatHeaderMenu
+                  isMoreMiniMenu={isMoreMiniMenu}
+                  setIsMoreMiniMenu={setIsMoreMiniMenu}
+                  controlMenuSetting={controlMenuSetting}
+                  isFreezeChat={isFreezeChat}
+                  controlFreezeChat={controlFreezeChat}
+                  userRole={props.userRole}
+                />
+              ))}
           </div>
         </div>
       ) : (
         <div className='chat_user_list_wrapper'>
           <div className='user_list_header_box'>
-            {isUserFilterMiniMenu && (
-              <div className='user_filter_mini_menu_box'>
-                <div
-                  className={`list_in_menu ${
-                    userFilter === '라이브 참여자' && 'active'
-                  }`}
-                  onClick={() => {
-                    handleUserFilterStatus('live')
-                  }}
-                >
-                  <span>라이브 참여자</span>
+            {isUserFilterMiniMenu &&
+              (offsetX > 1023 ? (
+                <div className='user_filter_mini_menu_box' ref={userFilterRef}>
+                  <div
+                    className={`list_in_menu ${
+                      userFilter === '라이브 참여자' && 'active'
+                    }`}
+                    onClick={() => {
+                      handleUserFilterStatus('live')
+                    }}
+                  >
+                    <span>라이브 참여자</span>
+                  </div>
+                  <div
+                    className={`list_in_menu ${
+                      userFilter === '채팅 정지된 참여자' && 'active'
+                    }`}
+                    onClick={() => {
+                      handleUserFilterStatus('muted')
+                    }}
+                  >
+                    <span>채팅 정지된 참여자</span>
+                  </div>
+                  <div
+                    className={`list_in_menu ${
+                      userFilter === '차단된 참여자' && 'active'
+                    }`}
+                    onClick={() => {
+                      handleUserFilterStatus('blocked')
+                    }}
+                  >
+                    <span>차단된 참여자</span>
+                  </div>
                 </div>
-                <div
-                  className={`list_in_menu ${
-                    userFilter === '채팅 정지된 참여자' && 'active'
-                  }`}
-                  onClick={() => {
-                    handleUserFilterStatus('muted')
-                  }}
-                >
-                  <span>채팅 정지된 참여자</span>
-                </div>
-                <div
-                  className={`list_in_menu ${
-                    userFilter === '차단된 참여자' && 'active'
-                  }`}
-                  onClick={() => {
-                    handleUserFilterStatus('blocked')
-                  }}
-                >
-                  <span>차단된 참여자</span>
-                </div>
-              </div>
-            )}
+              ) : (
+                <ResponsiveUserFilterMenu
+                  userFilter={userFilter}
+                  isUserFilterMiniMenu={isUserFilterMiniMenu}
+                  setIsUserFilterMiniMenu={setIsUserFilterMiniMenu}
+                  handleUserFilterStatus={handleUserFilterStatus}
+                />
+              ))}
 
             <div
               className='user_list_title'
