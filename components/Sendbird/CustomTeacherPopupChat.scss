@@ -1,0 +1,26 @@
+.CustomTeacherPopupChat {
+  width: 285px;
+
+  .popup_chat_wrapper {
+    background-color: transparent;
+
+    .message_box {
+      display: flex;
+      @include body-2-700;
+      text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;
+
+      .teacher {
+        color: $fiivepurple-3;
+      }
+
+      .learner {
+        color: $bluegray-6;
+      }
+
+      .user_text_box {
+        margin-left: 6px;
+        color: white;
+      }
+    }
+  }
+}

@@ -11,3 +11,13 @@ body {
 @import './layouts/index';
 @import './pages/index';
 @import './components/index';
+
+/* obs 이용시 새창열기 팝업 chat */
+@import '../components/Sendbird/CustomTeacherPopupChat';
+
+.chat-monitor {
+  .sendbird-conversation {
+    // height: 140px;
+    background-color: transparent !important;
+  }
+}

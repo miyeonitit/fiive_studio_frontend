@@ -1,0 +1,73 @@
+/* 반응형 전용 모달  */
+
+.ResponsiveEmojiContainerBox {
+  @include responsive_modal_wrapper;
+  overflow: hidden;
+
+  .emojis_container_wrapper {
+    @include responsive_modal_box;
+    @include responsive_modal_slideUp;
+
+    .responsive_modal_title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 0px;
+
+      .add_reaction_title_text {
+        @include head-1;
+      }
+
+      .close_modal_image_box {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+      }
+    }
+
+    .responsive_modal_container {
+      .emoji_outer_box {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .emoji_inner_box {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 6px;
+          border-radius: 4px;
+          cursor: pointer;
+
+          img {
+            width: 32px;
+            height: 32px;
+          }
+        }
+
+        .emoji_inner_box:hover {
+          background-color: $bluegray-2;
+        }
+      }
+    }
+  }
+
+  .emojis_container_wrapper.non_active {
+    position: relative;
+    bottom: -200px;
+    @include responsive_modal_slideDown;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .ResponsiveEmojiContainerBox {
+    .responsive_modal_container {
+      .emoji_outer_box {
+        display: inline-flex !important;
+        justify-content: unset !important;
+        flex-wrap: wrap;
+        gap: 22px;
+      }
+    }
+  }
+}

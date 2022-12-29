@@ -246,3 +246,33 @@
   height: 10px;
   border-radius: 2px;
 }
+
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+  .sendbird-conversation {
+    /* 새로운 메시지가 왔다고 알려주는 notification 영역 커스텀 */
+    .sendbird-notification {
+      margin: 0 auto;
+      left: 0;
+      right: 0;
+    }
+  }
+
+  .Toastify__toast-container--bottom-right {
+    display: none;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .sendbird-conversation {
+    /* 새로운 메시지가 왔다고 알려주는 notification 영역 커스텀 */
+    .sendbird-notification {
+      margin: 0 auto;
+      left: 0;
+      right: 0;
+    }
+  }
+
+  .Toastify__toast-container--bottom-right {
+    display: none;
+  }
+}

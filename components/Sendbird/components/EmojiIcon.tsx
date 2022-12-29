@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import Image from 'next/image'
 
 import { useChannelContext } from '@sendbird/uikit-react/Channel/context'
 
@@ -7,6 +8,7 @@ import MessageTooltip from '../components/MessageTooltip'
 type props = {
   emoji: any
   userId: string
+  reactedEmojis: Array<any>
   emojiContainer: []
   messageInfomation: any
 }
@@ -20,6 +22,11 @@ const EmojiIcon = (props: props) => {
   const [userListTooltipTop, setUseListTooltipTop] = useState(0)
   const [userListTooltipRight, setUseListTooltipRight] = useState(0)
 
+  const appId = process.env.NEXT_PUBLIC_SENDBIRD_APP_ID
+  const apiToken = process.env.NEXT_PUBLIC_SENDBIRD_API_TOKEN
+  const channel_url = process.env.NEXT_PUBLIC_SENDBIRD_TEST_CHANNEL_ID
+  const message_id = props.messageInfomation.messageId
+
   const findEmojiImageUrl = (emojiIcon: any) => {
     const reaction = props.emojiContainer.find(
       (emoji: any) => emoji.key === emojiIcon.key
@@ -28,24 +35,66 @@ const EmojiIcon = (props: props) => {
     return reaction ? reaction.url : <></>
   }
 
-  const clickEmojiReaction = (react: {}, stringKey: string) => {
-    let reactionEvent = ''
-    const emojiKey: string = stringKey
+  const addUserReaction = (emojiKey: string) => {
+    // 해당 메시지에 유저가 선택한 리액션 이모지가 이미 있을 경우, 이모지 제거
+    const findAlreadyReactedEmoji = props.reactedEmojis.find(
+      (emoji: any) => emoji.key === emojiKey
+    )
 
-    // Remove or Add an emoji to a message as userId
-    if (react?.userIds.includes(props.userId)) {
-      reactionEvent = currentGroupChannel.deleteReaction(
-        props.messageInfomation,
-        emojiKey
-      )
-    } else {
-      reactionEvent = currentGroupChannel.addReaction(
-        props.messageInfomation,
-        emojiKey
-      )
+    // 해당 메시지에 유저가 선택한 리액션 이모지가 이미 있을 경우
+    if (
+      findAlreadyReactedEmoji &&
+      findAlreadyReactedEmoji.userIds.includes(props.userId)
+    ) {
+      removeUserReaction(findAlreadyReactedEmoji.key)
+      return
     }
+    // 해당 메시지에 유저가 선택한 리액션 이모지가 없을 경우
+    else {
+      fetch(
+        `https://api-${appId}.sendbird.com/v3/group_channels/${channel_url}/messages/${message_id}/reactions`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json; charset=utf8',
+            Accept: 'application/json',
+            'Api-Token': apiToken,
+          },
+          body: JSON.stringify({
+            user_id: props.userId,
+            reaction: emojiKey,
+          }),
+        }
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          console.log('성공:', data)
+        })
+        .catch((error) => {
+          console.error('실패:', error)
+        })
+    }
+  }
 
-    props.messageInfomation.applyReactionEvent(reactionEvent)
+  const removeUserReaction = (emojiKey: string) => {
+    fetch(
+      `https://api-${appId}.sendbird.com/v3/group_channels/${channel_url}/messages/${message_id}/reactions?user_id=${props.userId}&reaction=${emojiKey}`,
+      {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json; charset=utf8',
+          Accept: 'application/json',
+          'Api-Token': apiToken,
+        },
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('성공:', data)
+      })
+      .catch((error) => {
+        console.error('실패:', error)
+      })
   }
 
   const tooltipAsCursor = async (e, setter) => {
@@ -69,7 +118,6 @@ const EmojiIcon = (props: props) => {
     if (e.target.parentNode.classList[0] === 'EmojiIcon') {
       let test = e.target.parentNode.getBoundingClientRect()
 
-      console.log(test, 'test')
       setUseListTooltipTop(parseInt(test.width))
       setUseListTooltipRight(parseInt(test.height))
 
@@ -95,6 +143,7 @@ const EmojiIcon = (props: props) => {
         className={`reactions_item ${
           props.emoji.userIds.includes(props.userId) && 'active'
         }`}
+        onClick={() => addUserReaction(props.emoji.key)}
         // onMouseOver={(e) => handleTop(e)}
         onMouseOver={() => setIsReactedUser(true)}
         onMouseOut={() => setIsReactedUser(false)}
@@ -102,7 +151,6 @@ const EmojiIcon = (props: props) => {
         <img
           className='emoji_reaction'
           src={findEmojiImageUrl(props.emoji)}
-          onClick={() => clickEmojiReaction(props.emoji, props.emoji.key)}
           alt='emojiReaction'
         />
         <span className='reactions_item_inner'>

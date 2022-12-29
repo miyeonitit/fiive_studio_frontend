@@ -153,4 +153,31 @@
 
     background-color: $bluegray-4;
   }
+
+  /* responsive modal import css files */
+  /* chat header's mini menu css */
+  @import './ResponsiveComponents/ResponsiveChatHeaderMenu.scss';
+
+  /* chat header user filter menu css */
+  @import './ResponsiveComponents/ResponsiveUserFilterMenu.scss';
+}
+
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+  .CustomChatHeader {
+    .chat_header_wrapper {
+      .control_chat_size_box {
+        display: none;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .CustomChatHeader {
+    .chat_header_wrapper {
+      .control_chat_size_box {
+        display: none;
+      }
+    }
+  }
 }

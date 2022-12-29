@@ -32,6 +32,14 @@
       div:hover {
         background-color: $bluegray-2;
       }
+
+      div.active {
+        background-color: $bluegray-3;
+      }
+    }
+
+    .Message_more_menu_box.active {
+      border: 1px solid $bluegray-4;
     }
 
     /* emoji를 고를 수 있는 emoji contaioner box css */
@@ -219,6 +227,13 @@
         }
       }
     }
+
+    /* responsive modal import css files */
+    /* emoji를 고를 수 있는 반응형 emoji container box css */
+    @import './ResponsiveComponents/ResponsiveEmojiContainerBox.scss';
+
+    /* error message control 반응형 css */
+    @import './ResponsiveComponents/ResponsiveHandleErrorMessage.scss';
   }
 
   .message_wrapper:hover {
@@ -228,5 +243,17 @@
   .message_wrapper.edit {
     padding-bottom: 12px;
     background-color: $fiivepurple-1;
+  }
+}
+
+@media screen and (max-width: 1023px) {
+  .CustomChatRoom {
+    .message_wrapper.edit {
+      .edited_message_box {
+        .edit_message_input {
+          width: calc(100vw - 57px);
+        }
+      }
+    }
   }
 }

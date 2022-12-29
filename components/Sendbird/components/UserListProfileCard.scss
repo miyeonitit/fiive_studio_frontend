@@ -73,6 +73,15 @@
       cursor: pointer;
     }
 
+    .more_menu_box:hover {
+      background-color: $bluegray-2;
+    }
+
+    .more_menu_box.active {
+      border: 1px solid $bluegray-5;
+      background-color: $bluegray-3;
+    }
+
     .more_mini_menu_wrapper {
       position: absolute;
       top: 55px;
