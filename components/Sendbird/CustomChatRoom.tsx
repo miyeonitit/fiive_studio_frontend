@@ -511,7 +511,7 @@ const CustomChatRoom = (props: props) => {
   // console.log(sender, 'sender')
   // console.log(messageInfomation, 'info')
   // console.log(emojiContainer, 'emojiContainer')
-  // console.log(reactedEmojis, 'reactedEmojis')
+  console.log(offsetX, 'offsetX')
   // console.log(currentGroupChannel, 'currentGroupChannel')
 
   return (
@@ -671,7 +671,9 @@ const CustomChatRoom = (props: props) => {
             {isMoreMiniMenu &&
               (props.userId === sender.userId ? (
                 <div
-                  className={`more_mini_menu_wrapper ${isMiniMenuTop && 'top'}`}
+                  className={`more_mini_menu_wrapper ${
+                    isMiniMenuTop && (offsetX < 1023 ? 'responsive_top' : 'top')
+                  }`}
                   ref={miniMenuRef}
                 >
                   <div className='more_mini_menu'>
@@ -706,7 +708,9 @@ const CustomChatRoom = (props: props) => {
                 </div>
               ) : (
                 <div
-                  className={`more_mini_menu_wrapper ${isMiniMenuTop && 'top'}`}
+                  className={`more_mini_menu_wrapper ${
+                    isMiniMenuTop && (offsetX < 1023 ? 'responsive_top' : 'top')
+                  }`}
                   ref={miniMenuRef}
                 >
                   <div className='more_mini_menu'>
