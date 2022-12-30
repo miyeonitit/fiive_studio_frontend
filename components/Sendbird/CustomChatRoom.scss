@@ -86,6 +86,10 @@
       top: -115px;
     }
 
+    .more_mini_menu_wrapper.responsive_top {
+      top: -65px;
+    }
+
     .Message_text {
       display: flex;
       flex-direction: column;
@@ -251,7 +255,7 @@
     .message_wrapper.edit {
       .edited_message_box {
         .edit_message_input {
-          width: calc(100vw - 57px);
+          width: calc(100vw - 72px);
         }
       }
     }

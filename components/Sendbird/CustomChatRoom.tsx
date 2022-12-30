@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  Dispatch,
+  SetStateAction,
+} from 'react'
 import Image from 'next/image'
 import { ToastContainer, toast, cssTransition } from 'react-toastify'
 
@@ -19,7 +25,13 @@ import EmojiContainerBox from './components/EmojiContainerBox'
 import ResponsiveEmojiContainerBox from './ResponsiveComponents/ResponsiveEmojiContainerBox'
 import ResponsiveHandleErrorMessage from './ResponsiveComponents/ResponsiveHandleErrorMessage'
 
-const CustomChatRoom = ({ message, userId, emojiContainer }) => {
+type props = {
+  message: object
+  userId: string
+  emojiContainer: object
+}
+
+const CustomChatRoom = (props: props) => {
   // 반응형 미디어쿼리 스타일 지정을 위한 브라우저 넓이 측정 전역 state
   const offsetX = fiiveStudioUseStore((state: any) => state.offsetX)
 
@@ -27,25 +39,10 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
   const globalStore = useSendbirdStateContext()
   const deleteFileMessage = sendbirdSelectors.getDeleteMessage(globalStore)
 
-  const messageInfomation = message.message
-  const sender = messageInfomation.sender
-    ? messageInfomation.sender
-    : {
-        _iid: 'su-4db6ffdd-dfb9-49c3-9bcd-df9c1b8acd68',
-        userId: 'teacher',
-        nickname: '',
-        plainProfileUrl: '',
-        requireAuth: false,
-        metaData: {},
-        connectionStatus: 'nonavailable',
-        isActive: true,
-        lastSeenAt: null,
-        preferredLanguages: null,
-        friendDiscoveryKey: null,
-        friendName: null,
-        role: 'none',
-        isBlockedByMe: false,
-      }
+  const messageInfomation = props.message?.message
+  const sender = messageInfomation?.sender
+
+  const [indexOfMessage, setIndexOfMessage] = useState(-1)
 
   const [reactedEmojis, setReactedEmojis] = useState(
     messageInfomation.reactions ? messageInfomation.reactions : []
@@ -92,6 +89,7 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
     useState(false)
 
   const miniMenuRef = useRef<HTMLButtonElement>(null)
+  const responsiveMoreMenuRef = useRef<HTMLButtonElement>(null)
   const editInputRef = useRef<HTMLTextAreaElement>(null)
   const reactionTopRef = useRef<HTMLDivElement>(null)
   const reactionBottomRef = useRef<HTMLDivElement>(null)
@@ -167,7 +165,7 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
   }
 
   const blockUser = (senderId: string) => {
-    fetch(`https://api-${appId}.sendbird.com/v3/users/${userId}/block`, {
+    fetch(`https://api-${appId}.sendbird.com/v3/users/${props.userId}/block`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json; charset=utf8',
@@ -219,7 +217,7 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
 
   const unblockUser = (senderId: string) => {
     fetch(
-      `https://api-${appId}.sendbird.com/v3/users/${userId}/block/${senderId}`,
+      `https://api-${appId}.sendbird.com/v3/users/${props.userId}/block/${senderId}`,
       {
         method: 'DELETE',
         headers: {
@@ -461,6 +459,10 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
       setIsMoreMiniMenu(false)
     }
 
+    if (isHoverMoreMenu && !responsiveMoreMenuRef.current.contains(e.target)) {
+      setIsHoverMoreMenu(false)
+    }
+
     // 반응형 emoji modal (ResponsiveEmojiContainerBox)에서는 작동하지 않게 if문 처리
     if (offsetX >= 1023) {
       if (isReactionTopBox && !reactionTopRef.current.contains(e.target)) {
@@ -482,7 +484,7 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
     return () => {
       document.removeEventListener('mousedown', clickModalOutside)
     }
-  }, [isMoreMiniMenu, isReactionTopBox, isReactionBottomBox])
+  }, [isMoreMiniMenu, isReactionTopBox, isReactionBottomBox, isHoverMoreMenu])
 
   // allMessagesLength가 증가할 때마다 (로드되는 message가 많아질 때마다) Date Separator의 노출 여부 설정
   useEffect(() => {
@@ -509,7 +511,7 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
   // console.log(sender, 'sender')
   // console.log(messageInfomation, 'info')
   // console.log(emojiContainer, 'emojiContainer')
-  // console.log(reactedEmojis, 'reactedEmojis')
+  console.log(offsetX, 'offsetX')
   // console.log(currentGroupChannel, 'currentGroupChannel')
 
   return (
@@ -579,6 +581,7 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
                   className={`Message_more_menu_box ${
                     isReactionTopBox || (isMoreMiniMenu && 'active')
                   }`}
+                  ref={responsiveMoreMenuRef}
                 >
                   <div
                     className={`reaction_emoji_button ${
@@ -605,7 +608,7 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
                     />
                   </div>
                 </div>
-              ) : sender.userId === userId ? (
+              ) : sender.userId === props.userId ? (
                 <div className='Message_more_menu_box'>
                   <div
                     className='reaction_emoji_button'
@@ -643,20 +646,20 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
             {isReactionTopBox &&
               (offsetX > 1023 ? (
                 <EmojiContainerBox
-                  userId={userId}
+                  userId={props.userId}
                   topHeight='-55'
                   rightWidth='12'
                   refName='top'
                   reactedEmojis={reactedEmojis}
                   reactionTopRef={reactionTopRef}
-                  emojiContainer={emojiContainer}
+                  emojiContainer={props.emojiContainer}
                   setIsReactionBox={setIsReactionTopBox}
                   messageInfomation={messageInfomation}
                 />
               ) : (
                 <ResponsiveEmojiContainerBox
-                  userId={userId}
-                  emojiContainer={emojiContainer}
+                  userId={props.userId}
+                  emojiContainer={props.emojiContainer}
                   isReactionBox={isReactionTopBox}
                   setIsReactionBox={setIsReactionTopBox}
                   messageInfomation={messageInfomation}
@@ -666,9 +669,11 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
 
             {/* 더보기 버튼의 미니 메뉴 */}
             {isMoreMiniMenu &&
-              (userId === sender.userId ? (
+              (props.userId === sender.userId ? (
                 <div
-                  className={`more_mini_menu_wrapper ${isMiniMenuTop && 'top'}`}
+                  className={`more_mini_menu_wrapper ${
+                    isMiniMenuTop && (offsetX < 1023 ? 'responsive_top' : 'top')
+                  }`}
                   ref={miniMenuRef}
                 >
                   <div className='more_mini_menu'>
@@ -703,7 +708,9 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
                 </div>
               ) : (
                 <div
-                  className={`more_mini_menu_wrapper ${isMiniMenuTop && 'top'}`}
+                  className={`more_mini_menu_wrapper ${
+                    isMiniMenuTop && (offsetX < 1023 ? 'responsive_top' : 'top')
+                  }`}
                   ref={miniMenuRef}
                 >
                   <div className='more_mini_menu'>
@@ -893,9 +900,9 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
                       <EmojiIcon
                         key={idx + emoji.key}
                         emoji={emoji}
-                        userId={userId}
+                        userId={props.userId}
                         reactedEmojis={reactedEmojis}
-                        emojiContainer={emojiContainer}
+                        emojiContainer={props.emojiContainer}
                         messageInfomation={messageInfomation}
                       />
                     ))}
@@ -932,20 +939,20 @@ const CustomChatRoom = ({ message, userId, emojiContainer }) => {
                   {isReactionBottomBox &&
                     (offsetX > 1023 ? (
                       <EmojiContainerBox
-                        userId={userId}
+                        userId={props.userId}
                         topHeight='12'
                         rightWidth='20'
                         refName='bottom'
                         reactedEmojis={reactedEmojis}
                         reactionBottomRef={reactionBottomRef}
-                        emojiContainer={emojiContainer}
+                        emojiContainer={props.emojiContainer}
                         setIsReactionBox={setIsReactionBottomBox}
                         messageInfomation={messageInfomation}
                       />
                     ) : (
                       <ResponsiveEmojiContainerBox
-                        userId={userId}
-                        emojiContainer={emojiContainer}
+                        userId={props.userId}
+                        emojiContainer={props.emojiContainer}
                         isReactionBox={isReactionBottomBox}
                         setIsReactionBox={setIsReactionBottomBox}
                         messageInfomation={messageInfomation}

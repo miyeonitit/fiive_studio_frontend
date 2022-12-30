@@ -41,6 +41,7 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
   const [questionModal, toggleQuestionModal] = useState(false)
   const [reactions, toggleReactions] = useState(false)
 
+  // 반응형일 때, chat의 상대적 height state
   const [chatOffsetHeight, setChatOffsetHeight] = useState(0)
 
   // chat 접기, 펼치기 boolean state
@@ -58,27 +59,27 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
     return question
   }
 
+  // 반응형일 때, 전체 페이지 height(100vh) - Nav height(73px) - Video height
   const chatHeightStyle: CSSProperties =
     offsetX < 1023
       ? {
-          // height: `calc(100vh - 73px - ${chatOffsetHeight}px)`,
+          height: `calc(100vh - 73px - ${chatOffsetHeight}px)`,
         }
       : {}
 
+  // 브라우저 resize 할 때마다 <Video /> 의 height 감지
   const reset = () => {
-    // if (playerHeightRef) {
     setChatOffsetHeight(playerHeightRef.current?.offsetHeight)
-    // }
   }
 
   useEffect(() => {
     window.addEventListener('resize', reset)
 
     // clean up function
-    return () => {
-      window.removeEventListener('resize', reset)
-    }
-  })
+    // return () => {
+    //   window.removeEventListener('resize', reset)
+    // }
+  }, [chatOffsetHeight])
 
   useEffect(() => {
     reset()
