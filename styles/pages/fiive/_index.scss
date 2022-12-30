@@ -251,28 +251,261 @@
   .sendbird-conversation {
     /* 새로운 메시지가 왔다고 알려주는 notification 영역 커스텀 */
     .sendbird-notification {
-      margin: 0 auto;
       left: 0;
       right: 0;
+      width: 95%;
+      margin: 0 auto;
     }
   }
 
   .Toastify__toast-container--bottom-right {
     display: none;
+  }
+
+  /* 현재 적용중인 toast bottom center 영역 커스텀 */
+  .Toastify__toast-container--bottom-center {
+    width: 100% !important;
+    bottom: 10rem !important;
+    padding: 0px 12px !important;
+    transform: translateX(-50%);
+
+    .Toastify__toast--close-on-click {
+      width: 100% !important;
+    }
+
+    .Toastify__toast--close-on-click {
+      margin: 0 auto;
+    }
+
+    /* toast.success 일 때 */
+    .toast_success_box {
+      display: flex;
+      align-items: center;
+      height: 50px;
+      padding: 0px;
+      border-radius: 2px;
+      @include body-2-500;
+      background-color: #5fbf7c;
+
+      .toast_success_text {
+        position: relative;
+        top: 1px;
+        margin-left: 6px;
+        color: $bluegray-1;
+      }
+    }
+
+    /* toast.error 일 때 */
+    .toast_error_box {
+      display: flex;
+      align-items: center;
+      height: 50px;
+      padding: 0px;
+      border-radius: 2px;
+      @include body-2-500;
+      background-color: $red-5;
+
+      .toast_error_text {
+        position: relative;
+        top: 1px;
+        margin-left: 6px;
+        color: $bluegray-1;
+      }
+    }
+
+    .Toastify__toast-theme--colored.Toastify__toast--success {
+      height: 50px;
+      margin-bottom: 12px;
+      background: #5fbf7c;
+    }
+
+    .Toastify__toast-theme--colored.Toastify__toast--error {
+      height: 50px;
+      background: $red-5;
+    }
+
+    .Toastify__close-button.Toastify__close-button--colored {
+      display: none;
+    }
+
+    .Toastify__toast-icon.Toastify--animate-icon.Toastify__zoom-enter {
+      display: none;
+    }
   }
 }
 
-@media screen and (max-width: 767px) {
+@media screen and (min-width: 481px) and (max-width: 767px) {
   .sendbird-conversation {
     /* 새로운 메시지가 왔다고 알려주는 notification 영역 커스텀 */
     .sendbird-notification {
-      margin: 0 auto;
       left: 0;
       right: 0;
+      width: 95%;
+      margin: 0 auto;
     }
   }
 
   .Toastify__toast-container--bottom-right {
     display: none;
+  }
+
+  /* 현재 적용중인 toast bottom center 영역 커스텀 */
+  .Toastify__toast-container--bottom-center {
+    width: 100% !important;
+    bottom: 10rem !important;
+    padding: 0px 12px !important;
+    transform: translateX(-50%);
+
+    .Toastify__toast--close-on-click {
+      width: 100% !important;
+    }
+
+    .Toastify__toast--close-on-click {
+      margin: 0 auto;
+    }
+
+    /* toast.success 일 때 */
+    .toast_success_box {
+      display: flex;
+      align-items: center;
+      height: 50px;
+      padding: 0px;
+      border-radius: 2px;
+      @include body-2-500;
+      background-color: #5fbf7c;
+
+      .toast_success_text {
+        position: relative;
+        top: 1px;
+        margin-left: 6px;
+        color: $bluegray-1;
+      }
+    }
+
+    /* toast.error 일 때 */
+    .toast_error_box {
+      display: flex;
+      align-items: center;
+      height: 50px;
+      padding: 0px;
+      border-radius: 2px;
+      @include body-2-500;
+      background-color: $red-5;
+
+      .toast_error_text {
+        position: relative;
+        top: 1px;
+        margin-left: 6px;
+        color: $bluegray-1;
+      }
+    }
+
+    .Toastify__toast-theme--colored.Toastify__toast--success {
+      height: 50px;
+      margin-bottom: 12px;
+      background: #5fbf7c;
+    }
+
+    .Toastify__toast-theme--colored.Toastify__toast--error {
+      height: 50px;
+      background: $red-5;
+    }
+
+    .Toastify__close-button.Toastify__close-button--colored {
+      display: none;
+    }
+
+    .Toastify__toast-icon.Toastify--animate-icon.Toastify__zoom-enter {
+      display: none;
+    }
+  }
+}
+
+/* 모바일 사이즈 480px 미만부터는 toast 형태 및 정렬이 이상하게 보여, 480 미만의 브레이크 포인트를 따로 잡음 */
+@media screen and (max-width: 480px) {
+  .sendbird-conversation {
+    /* 새로운 메시지가 왔다고 알려주는 notification 영역 커스텀 */
+    .sendbird-notification {
+      left: 0;
+      right: 0;
+      width: 95%;
+      margin: 0 auto;
+    }
+  }
+
+  .Toastify__toast-container--bottom-right {
+    display: none;
+  }
+
+  /* 현재 적용중인 toast bottom center 영역 커스텀 */
+  .Toastify__toast-container--bottom-center {
+    width: 100% !important;
+    bottom: 10rem !important;
+    transform: translateX(-50%);
+
+    .Toastify__toast--close-on-click {
+      width: 90% !important;
+      border-radius: 4px;
+    }
+
+    .Toastify__toast--close-on-click {
+      margin: 0 auto;
+    }
+
+    /* toast.success 일 때 */
+    .toast_success_box {
+      display: flex;
+      align-items: center;
+      width: 200px !important;
+      height: 50px;
+      padding: 0px;
+      border-radius: 4px;
+      @include body-2-500;
+      background-color: #5fbf7c;
+
+      .toast_success_text {
+        position: relative;
+        top: 1px;
+        margin-left: 6px;
+        color: $bluegray-1;
+      }
+    }
+
+    /* toast.error 일 때 */
+    .toast_error_box {
+      display: flex;
+      align-items: center;
+      height: 50px;
+      padding: 0px;
+      border-radius: 4px;
+      @include body-2-500;
+      background-color: $red-5;
+
+      .toast_error_text {
+        position: relative;
+        top: 1px;
+        margin-left: 6px;
+        color: $bluegray-1;
+      }
+    }
+
+    .Toastify__toast-theme--colored.Toastify__toast--success {
+      height: 50px;
+      margin-bottom: 12px;
+      background: #5fbf7c;
+    }
+
+    .Toastify__toast-theme--colored.Toastify__toast--error {
+      height: 50px;
+      background: $red-5;
+    }
+
+    .Toastify__close-button.Toastify__close-button--colored {
+      display: none;
+    }
+
+    .Toastify__toast-icon.Toastify--animate-icon.Toastify__zoom-enter {
+      display: none;
+    }
   }
 }

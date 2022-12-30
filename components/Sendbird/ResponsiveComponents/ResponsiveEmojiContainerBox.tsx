@@ -9,7 +9,7 @@ import Image from 'next/image'
 
 type props = {
   userId: string
-  emojiContainer: Array<any>
+  emojiContainer: any
   isReactionBox: boolean
   setIsReactionBox: Dispatch<SetStateAction<boolean>>
   messageInfomation: any

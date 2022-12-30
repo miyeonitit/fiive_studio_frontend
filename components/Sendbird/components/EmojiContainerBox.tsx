@@ -4,7 +4,7 @@ type props = {
   userId: string
   topHeight: string
   rightWidth: string
-  emojiContainer: Array<any>
+  emojiContainer: any
   setIsReactionBox: Dispatch<SetStateAction<boolean>>
   messageInfomation: any
   refName: string
