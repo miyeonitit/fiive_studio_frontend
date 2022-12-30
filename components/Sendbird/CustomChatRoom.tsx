@@ -969,7 +969,7 @@ const CustomChatRoom = (props: props) => {
 
               <ToastContainer
                 position={offsetX > 1023 ? 'bottom-right' : 'bottom-center'}
-                autoClose={200000}
+                autoClose={2000}
                 hideProgressBar
                 newestOnTop={false}
                 closeOnClick

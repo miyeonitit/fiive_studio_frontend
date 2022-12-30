@@ -444,7 +444,7 @@
     transform: translateX(-50%);
 
     .Toastify__toast--close-on-click {
-      width: 90% !important;
+      width: 93% !important;
       border-radius: 4px;
     }
 
@@ -475,6 +475,7 @@
     .toast_error_box {
       display: flex;
       align-items: center;
+      width: 200px !important;
       height: 50px;
       padding: 0px;
       border-radius: 4px;
