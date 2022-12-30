@@ -9,7 +9,7 @@ type props = {
   emoji: any
   userId: string
   reactedEmojis: Array<any>
-  emojiContainer: []
+  emojiContainer: any
   messageInfomation: any
 }
 
