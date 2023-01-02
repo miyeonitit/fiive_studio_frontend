@@ -94,7 +94,7 @@ const CustomChatRoom = (props: props) => {
   const reactionTopRef = useRef<HTMLDivElement>(null)
   const reactionBottomRef = useRef<HTMLDivElement>(null)
 
-  const appId = process.env.NEXT_PUBLIC_SENDBIRD_APP_ID
+  const ApiStudio = process.env.NEXT_PUBLIC_API_BASE_URL
   const apiToken = process.env.NEXT_PUBLIC_SENDBIRD_API_TOKEN
   const currentChannelUrl = process.env.NEXT_PUBLIC_SENDBIRD_TEST_CHANNEL_ID
 
@@ -165,7 +165,7 @@ const CustomChatRoom = (props: props) => {
   }
 
   const blockUser = (senderId: string) => {
-    fetch(`https://api-${appId}.sendbird.com/v3/users/${props.userId}/block`, {
+    fetch(`https://${ApiStudio}/users/${props.userId}/block`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json; charset=utf8',
@@ -216,17 +216,14 @@ const CustomChatRoom = (props: props) => {
   }
 
   const unblockUser = (senderId: string) => {
-    fetch(
-      `https://api-${appId}.sendbird.com/v3/users/${props.userId}/block/${senderId}`,
-      {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json; charset=utf8',
-          Accept: 'application/json',
-          'Api-Token': apiToken,
-        },
-      }
-    )
+    fetch(`https://${ApiStudio}/users/${props.userId}/block/${senderId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json; charset=utf8',
+        Accept: 'application/json',
+        'Api-Token': apiToken,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         console.log('성공:', data)
@@ -267,21 +264,18 @@ const CustomChatRoom = (props: props) => {
   }
 
   const muteUser = (senderId: string) => {
-    fetch(
-      `https://api-${appId}.sendbird.com/v3/group_channels/${currentChannelUrl}/mute`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json; charset=utf8',
-          Accept: 'application/json',
-          'Api-Token': apiToken,
-        },
-        body: JSON.stringify({
-          user_id: senderId,
-          seconds: 600,
-        }),
-      }
-    )
+    fetch(`https://${ApiStudio}/group_channels/${currentChannelUrl}/mute`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json; charset=utf8',
+        Accept: 'application/json',
+        'Api-Token': apiToken,
+      },
+      body: JSON.stringify({
+        user_id: senderId,
+        seconds: 600,
+      }),
+    })
       .then((response) => response.json())
       .then((data) => {
         console.log('성공:', data)
@@ -323,7 +317,7 @@ const CustomChatRoom = (props: props) => {
 
   const unmuteUser = (senderId: string) => {
     fetch(
-      `https://api-${appId}.sendbird.com/v3/group_channels/${currentChannelUrl}/mute/${senderId}`,
+      `https://${ApiStudio}/group_channels/${currentChannelUrl}/mute/${senderId}`,
       {
         method: 'DELETE',
         headers: {
@@ -392,7 +386,7 @@ const CustomChatRoom = (props: props) => {
     }
 
     fetch(
-      `https://api-${appId}.sendbird.com/v3/group_channels/${currentChannelUrl}/messages/${messageInfomation.messageId}`,
+      `https://${ApiStudio}/group_channels/${currentChannelUrl}/messages/${messageInfomation.messageId}`,
       {
         method: 'PUT',
         headers: {

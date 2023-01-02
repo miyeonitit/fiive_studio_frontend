@@ -29,6 +29,9 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   useEffect(() => {
     window.addEventListener('resize', reset)
 
+    // local에서는 devleopment
+    console.log(process.env.NODE_ENV, 'process.env.NODE_ENV')
+
     return () => {
       window.removeEventListener('resize', reset)
     }

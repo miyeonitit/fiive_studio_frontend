@@ -30,6 +30,7 @@ const Video = () => {
 
     const { channels = [] } = await resp.json()
 
+    // 왜 authrozied이 false인지? 어쩔 때 authrozied이 false가 되는지?
     const channel = channels.find((item: any) => {
       return !item.authrozied
     })

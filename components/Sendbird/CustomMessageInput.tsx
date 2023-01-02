@@ -25,7 +25,7 @@ const CustomMessageInput = ({ userId, userRole }) => {
   const [isUserTyping, setIsUserTyping] = useState(false)
   const [typingUsersName, setTypingUsersName] = useState([])
 
-  const appId = process.env.NEXT_PUBLIC_SENDBIRD_APP_ID
+  const ApiStudio = process.env.NEXT_PUBLIC_API_BASE_URL
   const apiToken = process.env.NEXT_PUBLIC_SENDBIRD_API_TOKEN
   const currentChannelUrl = process.env.NEXT_PUBLIC_SENDBIRD_TEST_CHANNEL_ID
 
@@ -140,20 +140,17 @@ const CustomMessageInput = ({ userId, userRole }) => {
 
   useEffect(() => {
     if (messageText.length > 0) {
-      fetch(
-        `https://api-${appId}.sendbird.com/v3/group_channels/${currentChannelUrl}/typing`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json; charset=utf8',
-            Accept: 'application/json',
-            'Api-Token': apiToken,
-          },
-          body: JSON.stringify({
-            user_ids: userId,
-          }),
-        }
-      )
+      fetch(`https://${ApiStudio}/group_channels/${currentChannelUrl}/typing`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json; charset=utf8',
+          Accept: 'application/json',
+          'Api-Token': apiToken,
+        },
+        body: JSON.stringify({
+          user_ids: userId,
+        }),
+      })
         .then((response) => response.json())
         .then((data) => {
           console.log('성공:', data)
@@ -169,20 +166,17 @@ const CustomMessageInput = ({ userId, userRole }) => {
           console.error('실패:', error)
         })
     } else {
-      fetch(
-        `https://api-${appId}.sendbird.com/v3/group_channels/${currentChannelUrl}/typing`,
-        {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json; charset=utf8',
-            Accept: 'application/json',
-            'Api-Token': apiToken,
-          },
-          body: JSON.stringify({
-            user_ids: userId,
-          }),
-        }
-      )
+      fetch(`https://${ApiStudio}/group_channels/${currentChannelUrl}/typing`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json; charset=utf8',
+          Accept: 'application/json',
+          'Api-Token': apiToken,
+        },
+        body: JSON.stringify({
+          user_ids: userId,
+        }),
+      })
         .then((response) => response.json())
         .then((data) => {
           console.log('성공:', data)

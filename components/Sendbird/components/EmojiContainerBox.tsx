@@ -14,7 +14,7 @@ type props = {
 }
 
 const EmojiContainerBox = (props: props) => {
-  const appId = process.env.NEXT_PUBLIC_SENDBIRD_APP_ID
+  const ApiStudio = process.env.NEXT_PUBLIC_API_BASE_URL
   const apiToken = process.env.NEXT_PUBLIC_SENDBIRD_API_TOKEN
   const channel_url = process.env.NEXT_PUBLIC_SENDBIRD_TEST_CHANNEL_ID
   const message_id = props.messageInfomation.messageId
@@ -41,7 +41,7 @@ const EmojiContainerBox = (props: props) => {
     // 해당 메시지에 유저가 선택한 리액션 이모지가 없을 경우
     else {
       fetch(
-        `https://api-${appId}.sendbird.com/v3/group_channels/${channel_url}/messages/${message_id}/reactions`,
+        `https://${ApiStudio}/group_channels/${channel_url}/messages/${message_id}/reactions`,
         {
           method: 'POST',
           headers: {
@@ -67,7 +67,7 @@ const EmojiContainerBox = (props: props) => {
 
   const removeUserReaction = (emojiKey: string) => {
     fetch(
-      `https://api-${appId}.sendbird.com/v3/group_channels/${channel_url}/messages/${message_id}/reactions?user_id=${props.userId}&reaction=${emojiKey}`,
+      `https://${ApiStudio}/group_channels/${channel_url}/messages/${message_id}/reactions?user_id=${props.userId}&reaction=${emojiKey}`,
       {
         method: 'DELETE',
         headers: {

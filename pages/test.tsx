@@ -27,17 +27,14 @@ const Home: NextPage = (props) => {
 // }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const appId = process.env.NEXT_PUBLIC_SENDBIRD_APP_ID
+  const ApiStudio = process.env.NEXT_PUBLIC_API_BASE_URL
   const apiToken = process.env.NEXT_PUBLIC_SENDBIRD_API_TOKEN
 
-  const resonse = await axios.get(
-    `https://api-${appId}.sendbird.com/v3/emoji_categories/53`,
-    {
-      headers: {
-        'Api-Token': apiToken,
-      },
-    }
-  )
+  const resonse = await axios.get(`https://${ApiStudio}/emoji_categories/53`, {
+    headers: {
+      'Api-Token': apiToken,
+    },
+  })
   const data = await resonse.data
 
   return {

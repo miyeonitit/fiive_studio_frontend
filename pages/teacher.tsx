@@ -111,12 +111,12 @@ TeacherPage.getLayout = (page: ReactElement) => {
 }
 
 export const getStaticProps: GetStaticProps = async (context) => {
-  const appId = process.env.NEXT_PUBLIC_SENDBIRD_APP_ID
+  const ApiStudio = process.env.NEXT_PUBLIC_API_BASE_URL
   const apiToken = process.env.NEXT_PUBLIC_SENDBIRD_API_TOKEN
   const emojiCategoryId = process.env.NEXT_PUBLIC_SENDBIRD_EMOJI_CATEGORY_ID
 
   const emojiResonse = await axios.get(
-    `https://api-${appId}.sendbird.com/v3/emoji_categories/${emojiCategoryId}`,
+    `https://${ApiStudio}/emoji_categories/${emojiCategoryId}`,
     {
       headers: {
         'Api-Token': apiToken,
