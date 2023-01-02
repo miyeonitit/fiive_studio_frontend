@@ -72,7 +72,7 @@ const CustomChatHeader = (props: props) => {
   }
 
   const controlFreezeChat = () => {
-    fetch(`https://${ApiStudio}/group_channels/${currentChannelUrl}/freeze`, {
+    fetch(`${ApiStudio}/group_channels/${currentChannelUrl}/freeze`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json; charset=utf8',
@@ -103,7 +103,7 @@ const CustomChatHeader = (props: props) => {
         break
 
       case 'muted':
-        fetch(`https://${ApiStudio}/group_channels/${currentChannelUrl}/mute`, {
+        fetch(`${ApiStudio}/group_channels/${currentChannelUrl}/mute`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json; charset=utf8',
@@ -124,7 +124,7 @@ const CustomChatHeader = (props: props) => {
         break
 
       case 'blocked':
-        fetch(`https://${ApiStudio}/users/${props.userId}/block`, {
+        fetch(`${ApiStudio}/users/${props.userId}/block`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json; charset=utf8',

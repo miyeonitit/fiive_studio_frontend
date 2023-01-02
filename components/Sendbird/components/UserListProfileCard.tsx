@@ -54,7 +54,7 @@ const UserListProfileCard = (props: props) => {
   }
 
   const muteUser = (senderId: string) => {
-    fetch(`https://${ApiStudio}/group_channels/${currentChannelUrl}/mute`, {
+    fetch(`${ApiStudio}/group_channels/${currentChannelUrl}/mute`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json; charset=utf8',
@@ -106,17 +106,14 @@ const UserListProfileCard = (props: props) => {
   }
 
   const unmuteUser = (senderId: string) => {
-    fetch(
-      `https://${ApiStudio}/group_channels/${currentChannelUrl}/mute/${senderId}`,
-      {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json; charset=utf8',
-          Accept: 'application/json',
-          'Api-Token': apiToken,
-        },
-      }
-    )
+    fetch(`${ApiStudio}/group_channels/${currentChannelUrl}/mute/${senderId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json; charset=utf8',
+        Accept: 'application/json',
+        'Api-Token': apiToken,
+      },
+    })
       .then((response) => response.json())
       .then((data) => {
         console.log('성공:', data)
@@ -157,7 +154,7 @@ const UserListProfileCard = (props: props) => {
   }
 
   const blockUser = (senderId: string) => {
-    fetch(`https://${ApiStudio}/users/${props.userId}/block`, {
+    fetch(`${ApiStudio}/users/${props.userId}/block`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json; charset=utf8',
@@ -208,7 +205,7 @@ const UserListProfileCard = (props: props) => {
   }
 
   const unblockUser = (senderId: string) => {
-    fetch(`https://${ApiStudio}/users/${props.userId}/block/${senderId}`, {
+    fetch(`${ApiStudio}/users/${props.userId}/block/${senderId}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json; charset=utf8',

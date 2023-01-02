@@ -282,7 +282,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const emojiCategoryId = process.env.NEXT_PUBLIC_SENDBIRD_EMOJI_CATEGORY_ID
 
   const emojiResonse = await axios.get(
-    `https://${ApiStudio}/emoji_categories/${emojiCategoryId}`,
+    `${ApiStudio}/emoji_categories/${emojiCategoryId}`,
     {
       headers: {
         'Api-Token': apiToken,

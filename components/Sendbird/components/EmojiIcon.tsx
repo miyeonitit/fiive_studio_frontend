@@ -52,7 +52,7 @@ const EmojiIcon = (props: props) => {
     // 해당 메시지에 유저가 선택한 리액션 이모지가 없을 경우
     else {
       fetch(
-        `https://${ApiStudio}/group_channels/${channel_url}/messages/${message_id}/reactions`,
+        `${ApiStudio}/group_channels/${channel_url}/messages/${message_id}/reactions`,
         {
           method: 'POST',
           headers: {
@@ -78,7 +78,7 @@ const EmojiIcon = (props: props) => {
 
   const removeUserReaction = (emojiKey: string) => {
     fetch(
-      `https://${ApiStudio}/group_channels/${channel_url}/messages/${message_id}/reactions?user_id=${props.userId}&reaction=${emojiKey}`,
+      `${ApiStudio}/group_channels/${channel_url}/messages/${message_id}/reactions?user_id=${props.userId}&reaction=${emojiKey}`,
       {
         method: 'DELETE',
         headers: {

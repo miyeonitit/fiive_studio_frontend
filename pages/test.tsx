@@ -30,7 +30,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
   const ApiStudio = process.env.NEXT_PUBLIC_API_BASE_URL
   const apiToken = process.env.NEXT_PUBLIC_SENDBIRD_API_TOKEN
 
-  const resonse = await axios.get(`https://${ApiStudio}/emoji_categories/53`, {
+  const resonse = await axios.get(`${ApiStudio}/emoji_categories/53`, {
     headers: {
       'Api-Token': apiToken,
     },

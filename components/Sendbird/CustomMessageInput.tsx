@@ -140,7 +140,7 @@ const CustomMessageInput = ({ userId, userRole }) => {
 
   useEffect(() => {
     if (messageText.length > 0) {
-      fetch(`https://${ApiStudio}/group_channels/${currentChannelUrl}/typing`, {
+      fetch(`${ApiStudio}/group_channels/${currentChannelUrl}/typing`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json; charset=utf8',
@@ -166,7 +166,7 @@ const CustomMessageInput = ({ userId, userRole }) => {
           console.error('실패:', error)
         })
     } else {
-      fetch(`https://${ApiStudio}/group_channels/${currentChannelUrl}/typing`, {
+      fetch(`${ApiStudio}/group_channels/${currentChannelUrl}/typing`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json; charset=utf8',
