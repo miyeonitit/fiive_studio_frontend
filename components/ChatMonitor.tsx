@@ -3,8 +3,6 @@ import kr from 'date-fns/locale/ko'
 import { v4 as uuidv4 } from 'uuid'
 
 import SendbirdProvider from '@sendbird/uikit-react/SendbirdProvider'
-import { OpenChannelProvider } from '@sendbird/uikit-react/OpenChannel/context'
-import OpenChannelMessageList from '@sendbird/uikit-react/OpenChannel/components/OpenChannelMessageList'
 import sendbirdSelectors from '@sendbird/uikit-react/sendbirdSelectors'
 import useSendbirdStateContext from '@sendbird/uikit-react/useSendbirdStateContext'
 import { OpenChannelHandler } from '@sendbird/chat/openChannel'
@@ -19,7 +17,6 @@ import { BaseMessage } from '@sendbird/chat/message'
 
 import { ChannelProvider } from '@sendbird/uikit-react/Channel/context'
 import ChannelUI from '@sendbird/uikit-react/Channel/components/ChannelUI'
-import GroupMessageList from '@sendbird/uikit-react/Channel/components/MessageList'
 import CustomTeacherPopupChat from './Sendbird/CustomTeacherPopupChat'
 
 type props = {
