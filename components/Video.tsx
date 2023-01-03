@@ -128,11 +128,10 @@ const Video = () => {
     player.attachHTMLVideoElement(ivsPlayer.current)
 
     // local 환경에서는 test playbackUrl을 이용
-    if (process.env.NODE_ENV === 'development') {
-      player.load(testPlaybackUrl)
-    } else {
-      player.load(playbackUrl)
-    }
+    player.load(
+      process.env.NODE_ENV === 'development' ? testPlaybackUrl : playbackUrl
+    )
+
     player.play()
 
     setInit(true)
