@@ -30,6 +30,8 @@ const MessageList = () => {
   useEffect(() => {
     const channelHandlerId = uuidv4()
 
+    console.log(sdk.groupChannel, 'sdk.groupChannel')
+
     const intvl = window.setInterval(() => {
       if (window.scrollY + window.innerHeight === document.body.scrollHeight) {
         window.clearInterval(intvl)
@@ -38,23 +40,8 @@ const MessageList = () => {
       }
     }, 1000)
 
-    // if (sdk?.groupChannel?.addGroupChannelHandler) {
-    //   const groupChannelHandler: GroupChannelHandler = new GroupChannelHandler({
-    //     onMessageReceived: (channel: BaseChannel, message: BaseMessage) => {
-    //       window.setTimeout(() => {
-    //         window.scrollTo(0, document.body.scrollHeight)
-    //       }, 100)
-    //     },
-    //   })
-
-    //   sdk.groupChannel.addGroupChannelHandler(
-    //     channelHandlerId,
-    //     groupChannelHandler
-    //   )
-    // }
-
-    if (sdk?.openChannel?.addOpenChannelHandler) {
-      const openChannelHandler = new OpenChannelHandler({
+    if (sdk?.groupChannel?.addGroupChannelHandler) {
+      const groupChannelHandler: GroupChannelHandler = new GroupChannelHandler({
         onMessageReceived: (channel: BaseChannel, message: BaseMessage) => {
           window.setTimeout(() => {
             window.scrollTo(0, document.body.scrollHeight)
@@ -62,19 +49,34 @@ const MessageList = () => {
         },
       })
 
-      sdk.openChannel.addOpenChannelHandler(
-        'OPEN_CHANNEL_HANDLER',
-        openChannelHandler
+      sdk.groupChannel.addGroupChannelHandler(
+        UNIQUE_HANDLER_ID,
+        groupChannelHandler
       )
     }
 
-    return () => {
-      window.clearInterval(intvl)
+    // if (sdk?.openChannel?.addOpenChannelHandler) {
+    //   const openChannelHandler = new OpenChannelHandler({
+    //     onMessageReceived: (channel: BaseChannel, message: BaseMessage) => {
+    //       window.setTimeout(() => {
+    //         window.scrollTo(0, document.body.scrollHeight)
+    //       }, 100)
+    //     },
+    //   })
 
-      if (sdk?.openChannel?.addOpenChannelHandler) {
-        sdk.openChannel.removeChannelHandler('OPEN_CHANNEL_HANDLER')
-      }
-    }
+    //   sdk.openChannel.addOpenChannelHandler(
+    //     'OPEN_CHANNEL_HANDLER',
+    //     openChannelHandler
+    //   )
+    // }
+
+    // return () => {
+    //   window.clearInterval(intvl)
+
+    //   if (sdk?.openChannel?.addOpenChannelHandler) {
+    //     sdk.openChannel.removeChannelHandler('OPEN_CHANNEL_HANDLER')
+    //   }
+    // }
   })
 
   return (
