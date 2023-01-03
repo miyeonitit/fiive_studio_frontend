@@ -25,16 +25,12 @@ import Timer from '../components/Timer'
 import Reactions from '../components/Reactions'
 import useStore from '../store/video'
 
-type props = {
-  emoji_data: { id: number; key: string; url: string }
-}
-
 const Chat = dynamic(() => import('../components/Chat'), {
   ssr: false,
   loading: () => <div>Loading...</div>,
 })
 
-const LearnerPage: NextPageWithLayout = (props: props) => {
+const LearnerPage: NextPageWithLayout = () => {
   // 반응형 미디어쿼리 스타일 지정을 위한 브라우저 넓이 측정 전역 state
   const offsetX = fiiveStudioUseStore((state: any) => state.offsetX)
 
@@ -48,7 +44,7 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
   const [isCloseChat, setIsCloseChat] = useState(false)
 
   // custom reaction emoji list state
-  const [emojiContainer, setEmojiContaioner] = useState(props.emoji_data)
+  const [emojiContainer, setEmojiContainer] = useState([])
 
   const questions = useStore((state: any) => state.questions)
 
@@ -83,6 +79,22 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
 
   useEffect(() => {
     reset()
+  }, [])
+
+  useLayoutEffect(() => {
+    const ApiStudio = process.env.NEXT_PUBLIC_API_BASE_URL
+    const emojiCategoryId = process.env.NEXT_PUBLIC_SENDBIRD_EMOJI_CATEGORY_ID
+
+    axios
+      .get(`${ApiStudio}/sendbird/emoji_categories/${emojiCategoryId}`)
+      .then((response) => {
+        const data = response.data
+
+        setEmojiContainer(data.emojis)
+      })
+      .catch((error) => {
+        console.error('실패:', error)
+      })
   }, [])
 
   return (
@@ -274,28 +286,6 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
 
 LearnerPage.getLayout = (page: ReactElement) => {
   return <Layout>{page}</Layout>
-}
-
-export const getStaticProps: GetStaticProps = async (context) => {
-  const ApiStudio = process.env.NEXT_PUBLIC_API_BASE_URL
-  const apiToken = process.env.NEXT_PUBLIC_SENDBIRD_API_TOKEN
-  const emojiCategoryId = process.env.NEXT_PUBLIC_SENDBIRD_EMOJI_CATEGORY_ID
-
-  const emojiResonse = await axios.get(
-    `${ApiStudio}/emoji_categories/${emojiCategoryId}`,
-    {
-      headers: {
-        'Api-Token': apiToken,
-      },
-    }
-  )
-  const emojiData = await emojiResonse.data.emojis
-
-  return {
-    props: {
-      emoji_data: emojiData,
-    },
-  }
 }
 
 export default LearnerPage

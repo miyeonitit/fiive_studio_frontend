@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from 'react'
+import React, { ReactElement, useState, useLayoutEffect } from 'react'
 import type { GetStaticProps } from 'next'
 import Head from 'next/head'
 import axios from 'axios'
@@ -16,16 +16,28 @@ import Reactions from '../components/Reactions'
 
 import class_thumbnail_image from '../public/placeholders/class_thumbnail.png'
 
-type props = {
-  emoji_data: { id: number; key: string; url: string }
-}
-
-const TeacherPage: NextPageWithLayout = (props: props) => {
+const TeacherPage: NextPageWithLayout = () => {
   const [announcementModal, toggleAnnouncementModal] = useState(false)
   const [timerModal, toggleTimerModal] = useState(false)
 
   // custom reaction emoji list state
-  const [emojiContainer, setEmojiContaioner] = useState(props.emoji_data)
+  const [emojiContainer, setEmojiContainer] = useState([])
+
+  useLayoutEffect(() => {
+    const ApiStudio = process.env.NEXT_PUBLIC_API_BASE_URL
+    const emojiCategoryId = process.env.NEXT_PUBLIC_SENDBIRD_EMOJI_CATEGORY_ID
+
+    axios
+      .get(`${ApiStudio}/sendbird/emoji_categories/${emojiCategoryId}`)
+      .then((response) => {
+        const data = response.data
+
+        setEmojiContainer(data.emojis)
+      })
+      .catch((error) => {
+        console.error('실패:', error)
+      })
+  }, [])
 
   return (
     <div className='fiive teacher page'>
@@ -108,28 +120,6 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
 
 TeacherPage.getLayout = (page: ReactElement) => {
   return <Layout>{page}</Layout>
-}
-
-export const getStaticProps: GetStaticProps = async (context) => {
-  const ApiStudio = process.env.NEXT_PUBLIC_API_BASE_URL
-  const apiToken = process.env.NEXT_PUBLIC_SENDBIRD_API_TOKEN
-  const emojiCategoryId = process.env.NEXT_PUBLIC_SENDBIRD_EMOJI_CATEGORY_ID
-
-  const emojiResonse = await axios.get(
-    `${ApiStudio}/emoji_categories/${emojiCategoryId}`,
-    {
-      headers: {
-        'Api-Token': apiToken,
-      },
-    }
-  )
-  const emojiData = await emojiResonse.data.emojis
-
-  return {
-    props: {
-      emoji_data: emojiData,
-    },
-  }
 }
 
 export default TeacherPage

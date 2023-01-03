@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import Image from 'next/image'
+import axios from 'axios'
 
 import { useChannelContext } from '@sendbird/uikit-react/Channel/context'
 
@@ -51,25 +52,17 @@ const EmojiIcon = (props: props) => {
     }
     // 해당 메시지에 유저가 선택한 리액션 이모지가 없을 경우
     else {
-      fetch(
-        `${ApiStudio}/group_channels/${channel_url}/messages/${message_id}/reactions`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json; charset=utf8',
-            Accept: 'application/json',
-            'Api-Token': apiToken,
-          },
-          body: JSON.stringify({
-            user_id: props.userId,
-            reaction: emojiKey,
-          }),
-        }
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          console.log('성공:', data)
-        })
+      const body = {
+        user_id: props.userId,
+        reaction: emojiKey,
+      }
+
+      axios
+        .post(
+          `${ApiStudio}/sendbird/group_channels/${channel_url}/messages/${message_id}/reactions`,
+          body
+        )
+        .then((data) => {})
         .catch((error) => {
           console.error('실패:', error)
         })
@@ -77,21 +70,11 @@ const EmojiIcon = (props: props) => {
   }
 
   const removeUserReaction = (emojiKey: string) => {
-    fetch(
-      `${ApiStudio}/group_channels/${channel_url}/messages/${message_id}/reactions?user_id=${props.userId}&reaction=${emojiKey}`,
-      {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json; charset=utf8',
-          Accept: 'application/json',
-          'Api-Token': apiToken,
-        },
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        console.log('성공:', data)
-      })
+    axios
+      .delete(
+        `${ApiStudio}/sendbird/group_channels/${channel_url}/messages/${message_id}/reactions?user_id=${props.userId}&reaction=${emojiKey}`
+      )
+      .then((data) => {})
       .catch((error) => {
         console.error('실패:', error)
       })

@@ -19,18 +19,20 @@ const Video = () => {
 
   const setTimer = useStore((state: any) => state.setTimer)
 
+  const ApiStudio = process.env.NEXT_PUBLIC_API_BASE_URL
+
   useEffect(() => {
     initVideo()
   })
 
   const fetchChannels = async () => {
-    const resp = await fetch(`${baseUrl}/channel`, {
+    const resp = await fetch(`${ApiStudio}/channel`, {
       method: 'GET',
     })
 
     const { channels = [] } = await resp.json()
 
-    // 왜 authrozied이 false인지? 어쩔 때 authrozied이 false가 되는지?
+    // authrozied - true : 비밀채널 <> false : 공개채널
     const channel = channels.find((item: any) => {
       return !item.authrozied
     })
@@ -66,6 +68,9 @@ const Video = () => {
 
     const { arn } = await fetchChannels()
     const { playbackUrl } = await fetchChannel(arn)
+
+    // local 환경에서는 test playbackUrl을 이용
+    const testPlaybackUrl = process.env.NEXT_PUBLIC_TEST_PLAYBACK_URL
 
     const player = IVSPlayer.create()
 
@@ -121,7 +126,13 @@ const Video = () => {
     })
 
     player.attachHTMLVideoElement(ivsPlayer.current)
-    player.load(playbackUrl)
+
+    // local 환경에서는 test playbackUrl을 이용
+    if (process.env.NODE_ENV === 'development') {
+      player.load(testPlaybackUrl)
+    } else {
+      player.load(playbackUrl)
+    }
     player.play()
 
     setInit(true)

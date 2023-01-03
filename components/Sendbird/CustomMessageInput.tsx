@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
+import axios from 'axios'
 import { ToastContainer, toast, cssTransition } from 'react-toastify'
 
 import 'animate.css'
@@ -138,56 +139,43 @@ const CustomMessageInput = ({ userId, userRole }) => {
     }
   }
 
-  useEffect(() => {
-    if (messageText.length > 0) {
-      fetch(`${ApiStudio}/group_channels/${currentChannelUrl}/typing`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json; charset=utf8',
-          Accept: 'application/json',
-          'Api-Token': apiToken,
-        },
-        body: JSON.stringify({
-          user_ids: userId,
-        }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log('성공:', data)
-          // setIsUserTyping(true)
+  // Typing Indicator 도입시 주석 해제
+  // useEffect(() => {
+  //   const body = {
+  //     user_ids: userId,
+  //   }
 
-          const getTypingUsers = currentGroupChannel.getTypingUsers()
-          const getTypingUsersName = getTypingUsers.map(
-            (user: any) => user.userId
-          )
-          setTypingUsersName(getTypingUsersName)
-        })
-        .catch((error) => {
-          console.error('실패:', error)
-        })
-    } else {
-      fetch(`${ApiStudio}/group_channels/${currentChannelUrl}/typing`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json; charset=utf8',
-          Accept: 'application/json',
-          'Api-Token': apiToken,
-        },
-        body: JSON.stringify({
-          user_ids: userId,
-        }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log('성공:', data)
-          setIsUserTyping(false)
-          setTypingUsersName([])
-        })
-        .catch((error) => {
-          console.error('실패:', error)
-        })
-    }
-  }, [messageText])
+  //   if (messageText.length > 0) {
+  //     axios
+  //       .post(
+  //         `${ApiStudio}/sendbird/group_channels/${currentChannelUrl}/typing`,
+  //         body
+  //       )
+  //       .then((data) => {
+  //         const getTypingUsers = currentGroupChannel.getTypingUsers()
+  //         const getTypingUsersName = getTypingUsers.map(
+  //           (user: any) => user.userId
+  //         )
+  //         setTypingUsersName(getTypingUsersName)
+  //       })
+  //       .catch((error) => {
+  //         console.error('실패:', error)
+  //       })
+  //   } else {
+  //     axios
+  //       .delete(
+  //         `${ApiStudio}/sendbird/group_channels/${currentChannelUrl}/typing`,
+  //         body
+  //       )
+  //       .then((data) => {
+  //         setIsUserTyping(false)
+  //         setTypingUsersName([])
+  //       })
+  //       .catch((error) => {
+  //         console.error('실패:', error)
+  //       })
+  //   }
+  // }, [messageText])
 
   return (
     <div className='CustomMessageInput'>
@@ -245,6 +233,7 @@ const CustomMessageInput = ({ userId, userRole }) => {
               ? true
               : false
           }
+          autoFocus={false}
           type='text'
           placeholder={controlDisabledInputPlaceholder()}
         />
