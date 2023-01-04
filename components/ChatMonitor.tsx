@@ -19,6 +19,8 @@ import { ChannelProvider } from '@sendbird/uikit-react/Channel/context'
 import ChannelUI from '@sendbird/uikit-react/Channel/components/ChannelUI'
 import CustomTeacherPopupChat from './Sendbird/CustomTeacherPopupChat'
 
+import sendBirdUseStore from '../store/Sendbird'
+
 type props = {
   userId: string
 }
@@ -27,33 +29,43 @@ const MessageList = () => {
   const context = useSendbirdStateContext()
   const sdk = sendbirdSelectors.getSdk(context)
 
+  // 새로운 메시지가 추가될 때마다 저장하는 메시지 state
+  const messageLength = sendBirdUseStore((state: any) => state.messageLength)
+
   useEffect(() => {
     const channelHandlerId = uuidv4()
-
-    console.log(sdk.groupChannel, 'sdk.groupChannel')
 
     const intvl = window.setInterval(() => {
       if (window.scrollY + window.innerHeight === document.body.scrollHeight) {
         window.clearInterval(intvl)
+        console.log('1111111')
       } else {
         window.scrollTo(0, document.body.scrollHeight)
+        console.log('22222')
       }
     }, 1000)
 
-    if (sdk?.groupChannel?.addGroupChannelHandler) {
-      const groupChannelHandler: GroupChannelHandler = new GroupChannelHandler({
-        onMessageReceived: (channel: BaseChannel, message: BaseMessage) => {
-          window.setTimeout(() => {
-            window.scrollTo(0, document.body.scrollHeight)
-          }, 100)
-        },
-      })
-
-      sdk.groupChannel.addGroupChannelHandler(
-        UNIQUE_HANDLER_ID,
-        groupChannelHandler
-      )
+    if (messageLength !== 0) {
+      window.setTimeout(() => {
+        window.scrollTo(0, document.body.scrollHeight)
+      }, 100)
+      console.log('33333')
     }
+
+    // if (sdk?.groupChannel?.addGroupChannelHandler) {
+    //   const groupChannelHandler: GroupChannelHandler = new GroupChannelHandler({
+    //     onMessageReceived: (channel: BaseChannel, message: BaseMessage) => {
+    //       window.setTimeout(() => {
+    //         window.scrollTo(0, document.body.scrollHeight)
+    //       }, 100)
+    //     },
+    //   })
+
+    //   sdk.groupChannel.addGroupChannelHandler(
+    //     UNIQUE_HANDLER_ID,
+    //     groupChannelHandler
+    //   )
+    // }
 
     // if (sdk?.openChannel?.addOpenChannelHandler) {
     //   const openChannelHandler = new OpenChannelHandler({
