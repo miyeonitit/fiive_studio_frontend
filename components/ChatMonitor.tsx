@@ -33,15 +33,11 @@ const MessageList = () => {
   const messageLength = sendBirdUseStore((state: any) => state.messageLength)
 
   useEffect(() => {
-    const channelHandlerId = uuidv4()
-
     const intvl = window.setInterval(() => {
       if (window.scrollY + window.innerHeight === document.body.scrollHeight) {
         window.clearInterval(intvl)
-        console.log('1111111')
       } else {
         window.scrollTo(0, document.body.scrollHeight)
-        console.log('22222')
       }
     }, 1000)
 
@@ -49,7 +45,6 @@ const MessageList = () => {
       window.setTimeout(() => {
         window.scrollTo(0, document.body.scrollHeight)
       }, 100)
-      console.log('33333')
     }
 
     // if (sdk?.groupChannel?.addGroupChannelHandler) {
