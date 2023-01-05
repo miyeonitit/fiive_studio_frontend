@@ -6,8 +6,10 @@ interface props {
 }
 
 const SubmitReaction = (props: props) => {
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL
   const channel = useStore((state: any) => state.channel)
+
+  const ApiStudio = process.env.NEXT_PUBLIC_API_BASE_URL
+  const testIvsValue = process.env.NEXT_PUBLIC_TEST_IVS_CHANNEL_VALUE
 
   const embedMetadata = async (type: string) => {
     if (channel === null) return
@@ -23,10 +25,13 @@ const SubmitReaction = (props: props) => {
       }),
     })
 
-    const resp = await fetch(`${baseUrl}/channel/metadata`, {
-      method: 'POST',
-      body: form,
-    })
+    const resp = await fetch(
+      `${ApiStudio}/proxy/classroom/${testIvsValue}/ivs/meta`,
+      {
+        method: 'POST',
+        body: form,
+      }
+    )
     props.toggle()
   }
 
