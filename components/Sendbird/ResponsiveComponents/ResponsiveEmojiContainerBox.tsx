@@ -6,6 +6,7 @@ import React, {
   SetStateAction,
 } from 'react'
 import Image from 'next/image'
+import axios from 'axios'
 
 type props = {
   userId: string
@@ -22,7 +23,7 @@ const ResponsiveEmojiContainerBox = (props: props) => {
 
   const emojiModalRef = useRef<HTMLDivElement>(null)
 
-  const appId = process.env.NEXT_PUBLIC_SENDBIRD_APP_ID
+  const ApiStudio = process.env.NEXT_PUBLIC_API_BASE_URL
   const apiToken = process.env.NEXT_PUBLIC_SENDBIRD_API_TOKEN
   const channel_url = process.env.NEXT_PUBLIC_SENDBIRD_TEST_CHANNEL_ID
   const message_id = props.messageInfomation.messageId
@@ -43,25 +44,17 @@ const ResponsiveEmojiContainerBox = (props: props) => {
     }
     // 해당 메시지에 유저가 선택한 리액션 이모지가 없을 경우
     else {
-      fetch(
-        `https://api-${appId}.sendbird.com/v3/group_channels/${channel_url}/messages/${message_id}/reactions`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json; charset=utf8',
-            Accept: 'application/json',
-            'Api-Token': apiToken,
-          },
-          body: JSON.stringify({
-            user_id: props.userId,
-            reaction: emojiKey,
-          }),
-        }
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          console.log('성공:', data)
-        })
+      const body = {
+        user_id: props.userId,
+        reaction: emojiKey,
+      }
+
+      axios
+        .post(
+          `${ApiStudio}/sendbird/group_channels/${channel_url}/messages/${message_id}/reactions`,
+          body
+        )
+        .then((data) => {})
         .catch((error) => {
           console.error('실패:', error)
         })
@@ -69,26 +62,15 @@ const ResponsiveEmojiContainerBox = (props: props) => {
   }
 
   const removeUserReaction = (emojiKey: string) => {
-    fetch(
-      `https://api-${appId}.sendbird.com/v3/group_channels/${channel_url}/messages/${message_id}/reactions?user_id=${props.userId}&reaction=${emojiKey}`,
-      {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json; charset=utf8',
-          Accept: 'application/json',
-          'Api-Token': apiToken,
-        },
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        console.log('성공:', data)
-      })
+    axios
+      .delete(
+        `${ApiStudio}/sendbird/group_channels/${channel_url}/messages/${message_id}/reactions?user_id=${props.userId}&reaction=${emojiKey}`
+      )
+      .then((data) => {})
       .catch((error) => {
         console.error('실패:', error)
       })
   }
-
   const closeModal = () => {
     setIsCloseModal(true)
 

@@ -1,55 +1,44 @@
 import React, { useRef, useEffect, useState } from 'react'
+import axios from 'axios'
+
 // import Messages from "../components/Messages";
-import useStore from '../store/video'
+import videoUseStore from '../store/video'
 
 const Video = () => {
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL
-  const ivsPlayer = useRef<HTMLVideoElement>(null)
+  const channel = videoUseStore((state: any) => state.channel)
+  const setChannel = videoUseStore((state: any) => state.setChannel)
+
+  const addAnnouncement = videoUseStore((state: any) => state.addAnnouncement)
+
+  const addQuestion = videoUseStore((state: any) => state.addQuestion)
+  const resolveQuestion = videoUseStore((state: any) => state.resolveQuestion)
+
+  const addReaction = videoUseStore((state: any) => state.addReaction)
+
+  const setTimer = videoUseStore((state: any) => state.setTimer)
+
   const [init, setInit] = useState(false)
   // const [messages, setMessages] = useState<any[]>([]);
 
-  const setChannel = useStore((state: any) => state.setChannel)
+  const ivsPlayer = useRef<HTMLVideoElement>(null)
 
-  const addAnnouncement = useStore((state: any) => state.addAnnouncement)
-
-  const addQuestion = useStore((state: any) => state.addQuestion)
-  const resolveQuestion = useStore((state: any) => state.resolveQuestion)
-
-  const addReaction = useStore((state: any) => state.addReaction)
-
-  const setTimer = useStore((state: any) => state.setTimer)
+  const ApiStudio = process.env.NEXT_PUBLIC_API_BASE_URL
+  const testIvsValue = process.env.NEXT_PUBLIC_TEST_IVS_CHANNEL_VALUE
 
   useEffect(() => {
     initVideo()
-  })
+  }, [])
 
-  const fetchChannels = async () => {
-    const resp = await fetch(`${baseUrl}/channel`, {
-      method: 'GET',
-    })
+  const getChannelData = async () => {
+    let channelData = ''
 
-    const { channels = [] } = await resp.json()
+    await axios
+      .get(`${ApiStudio}/proxy/classroom/${testIvsValue}/ivs`)
+      .then((response) => {
+        channelData = response.data
+      })
 
-    const channel = channels.find((item: any) => {
-      return !item.authrozied
-    })
-
-    return channel
-  }
-
-  const fetchChannel = async (arn: string) => {
-    const params = new URLSearchParams({
-      arn,
-    })
-
-    const resp = await fetch(`${baseUrl}/channel?arn=${params}`, {
-      method: 'GET',
-    })
-
-    const { channel = null } = await resp.json()
-
-    setChannel(channel)
-    return channel
+    return channelData
   }
 
   const initVideo = async () => {
@@ -63,8 +52,14 @@ const Video = () => {
     // Bail if player is not supported
     if (!IVSPlayer.isPlayerSupported) return
 
-    const { arn } = await fetchChannels()
-    const { playbackUrl } = await fetchChannel(arn)
+    // get ivs channel data
+    const channelData = await getChannelData()
+
+    // 리턴된 channelData를 전역적으로 저장
+    setChannel(channelData)
+
+    // get playbackUrl in channelData
+    const playbackUrl = channelData?.channel?.playbackUrl
 
     const player = IVSPlayer.create()
 
@@ -72,24 +67,25 @@ const Video = () => {
     player.addEventListener(
       IVSPlayer.PlayerEventType.TEXT_METADATA_CUE,
       (cue: any) => {
-        const { text: json, startTime } = cue
-        const { type, message } = JSON.parse(json)
+        const type = cue.text
+        console.log(cue, 'get cue data')
 
         switch (type) {
           case 'ANNOUNCEMENT':
-            addAnnouncement(message)
+            // addAnnouncement(message)
             break
           case 'QUESTION':
-            addQuestion(message)
+            // addQuestion(message)
             break
           case 'RESOLVE_QUESTION':
-            resolveQuestion(message)
+            // resolveQuestion(message)
             break
           case 'REACTION':
-            addReaction(message)
+            console.log('reaction post success')
+            // addReaction(message)
             break
           case 'TIMER':
-            setTimer(message)
+            // setTimer(message)
             break
         }
 
@@ -120,7 +116,9 @@ const Video = () => {
     })
 
     player.attachHTMLVideoElement(ivsPlayer.current)
+
     player.load(playbackUrl)
+
     player.play()
 
     setInit(true)
