@@ -176,7 +176,7 @@ const CustomChatHeader = (props: props) => {
     <div className='CustomChatHeader'>
       {!isUserList ? (
         <div className='chat_header_wrapper'>
-          <div className='control_chat_size_box'>
+          {/* <div className='control_chat_size_box'>
             <Image
               src='/Sendbird/move_right.svg'
               onClick={() => props.setIsCloseChat(!props.isCloseChat)}
@@ -184,16 +184,28 @@ const CustomChatHeader = (props: props) => {
               height={20}
               alt='chatCloseIcon'
             />
-          </div>
-          <div className='chat_title_box'>라이브 채팅</div>
-          <div className='chat_the_more_box'>
-            <Image
-              src='/Sendbird/more_button.svg'
-              onClick={() => setIsMoreMiniMenu(!isMoreMiniMenu)}
-              width={20}
-              height={20}
-              alt='moreButton'
-            />
+          </div> */}
+          <div className='chat_title_box'>실시간 채팅</div>
+          <div className='chat_the_menu_box'>
+            <div className='more_button_box'>
+              <Image
+                src='/Sendbird/more_button.svg'
+                onClick={() => setIsMoreMiniMenu(!isMoreMiniMenu)}
+                width={20}
+                height={20}
+                alt='moreButton'
+              />
+            </div>
+
+            <div className='close_button_box'>
+              <Image
+                src='/Sendbird/responsive_close_button.svg'
+                onClick={() => props.setIsCloseChat(!props.isCloseChat)}
+                width={20}
+                height={20}
+                alt='closeButton'
+              />
+            </div>
 
             {isMoreMiniMenu &&
               (offsetX > 1023 ? (

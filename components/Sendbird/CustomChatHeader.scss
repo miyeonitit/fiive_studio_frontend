@@ -4,7 +4,6 @@
     align-items: center;
     justify-content: space-between;
     padding: 16px;
-    border-bottom: 1px solid $bluegray-2;
 
     .control_chat_size_box {
       display: flex;
@@ -16,11 +15,16 @@
     }
 
     .chat_title_box {
-      @include body-2-700;
+      @include body-1-700;
     }
 
-    .chat_the_more_box {
+    .chat_the_menu_box {
+      display: flex;
       position: relative;
+
+      .more_button_box {
+        margin-right: 24px;
+      }
 
       img {
         cursor: pointer;

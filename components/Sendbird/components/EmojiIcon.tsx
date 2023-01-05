@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import Image from 'next/image'
 import axios from 'axios'
 
 import { useChannelContext } from '@sendbird/uikit-react/Channel/context'
