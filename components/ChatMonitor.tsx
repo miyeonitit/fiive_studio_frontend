@@ -3,8 +3,6 @@ import kr from 'date-fns/locale/ko'
 import { v4 as uuidv4 } from 'uuid'
 
 import SendbirdProvider from '@sendbird/uikit-react/SendbirdProvider'
-import { OpenChannelProvider } from '@sendbird/uikit-react/OpenChannel/context'
-import OpenChannelMessageList from '@sendbird/uikit-react/OpenChannel/components/OpenChannelMessageList'
 import sendbirdSelectors from '@sendbird/uikit-react/sendbirdSelectors'
 import useSendbirdStateContext from '@sendbird/uikit-react/useSendbirdStateContext'
 import { OpenChannelHandler } from '@sendbird/chat/openChannel'
@@ -19,7 +17,6 @@ import { BaseMessage } from '@sendbird/chat/message'
 
 import { ChannelProvider } from '@sendbird/uikit-react/Channel/context'
 import ChannelUI from '@sendbird/uikit-react/Channel/components/ChannelUI'
-import GroupMessageList from '@sendbird/uikit-react/Channel/components/MessageList'
 import CustomTeacherPopupChat from './Sendbird/CustomTeacherPopupChat'
 
 type props = {
@@ -106,7 +103,7 @@ const ChatMonitor = (props: props) => {
     CHANNEL__MESSAGE_LIST__NOTIFICATION__ON: '도착',
   })
 
-  const appId = process.env.NEXT_PUBLIC_SENDBIRD_APP_ID
+  const ApiStudio = process.env.NEXT_PUBLIC_API_BASE_URL
   const currentChannelUrl = process.env.NEXT_PUBLIC_SENDBIRD_TEST_CHANNEL_ID
 
   return (

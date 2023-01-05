@@ -6,6 +6,7 @@ import React, {
   SetStateAction,
 } from 'react'
 import Image from 'next/image'
+import axios from 'axios'
 import { ToastContainer, toast, cssTransition } from 'react-toastify'
 
 import { useChannelContext } from '@sendbird/uikit-react/Channel/context'
@@ -94,7 +95,7 @@ const CustomChatRoom = (props: props) => {
   const reactionTopRef = useRef<HTMLDivElement>(null)
   const reactionBottomRef = useRef<HTMLDivElement>(null)
 
-  const appId = process.env.NEXT_PUBLIC_SENDBIRD_APP_ID
+  const ApiStudio = process.env.NEXT_PUBLIC_API_BASE_URL
   const apiToken = process.env.NEXT_PUBLIC_SENDBIRD_API_TOKEN
   const currentChannelUrl = process.env.NEXT_PUBLIC_SENDBIRD_TEST_CHANNEL_ID
 
@@ -165,20 +166,13 @@ const CustomChatRoom = (props: props) => {
   }
 
   const blockUser = (senderId: string) => {
-    fetch(`https://api-${appId}.sendbird.com/v3/users/${props.userId}/block`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json; charset=utf8',
-        Accept: 'application/json',
-        'Api-Token': apiToken,
-      },
-      body: JSON.stringify({
-        target_id: senderId,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log('성공:', data)
+    const body = {
+      target_id: senderId,
+    }
+
+    axios
+      .post(`${ApiStudio}/sendbird/users/${props.userId}/block`, body)
+      .then((response) => {
         toast.success(
           <div className='toast_success_box'>
             <Image
@@ -216,20 +210,9 @@ const CustomChatRoom = (props: props) => {
   }
 
   const unblockUser = (senderId: string) => {
-    fetch(
-      `https://api-${appId}.sendbird.com/v3/users/${props.userId}/block/${senderId}`,
-      {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json; charset=utf8',
-          Accept: 'application/json',
-          'Api-Token': apiToken,
-        },
-      }
-    )
-      .then((response) => response.json())
+    axios
+      .delete(`${ApiStudio}/sendbird/users/${props.userId}/block/${senderId}`)
       .then((data) => {
-        console.log('성공:', data)
         toast.success(
           <div className='toast_success_box'>
             <Image
@@ -267,24 +250,17 @@ const CustomChatRoom = (props: props) => {
   }
 
   const muteUser = (senderId: string) => {
-    fetch(
-      `https://api-${appId}.sendbird.com/v3/group_channels/${currentChannelUrl}/mute`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json; charset=utf8',
-          Accept: 'application/json',
-          'Api-Token': apiToken,
-        },
-        body: JSON.stringify({
-          user_id: senderId,
-          seconds: 600,
-        }),
-      }
-    )
-      .then((response) => response.json())
+    const body = {
+      user_id: senderId,
+      seconds: 600,
+    }
+
+    axios
+      .post(
+        `${ApiStudio}/sendbird/group_channels/${currentChannelUrl}/mute`,
+        body
+      )
       .then((data) => {
-        console.log('성공:', data)
         toast.success(
           <div className='toast_success_box'>
             <Image
@@ -322,20 +298,11 @@ const CustomChatRoom = (props: props) => {
   }
 
   const unmuteUser = (senderId: string) => {
-    fetch(
-      `https://api-${appId}.sendbird.com/v3/group_channels/${currentChannelUrl}/mute/${senderId}`,
-      {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json; charset=utf8',
-          Accept: 'application/json',
-          'Api-Token': apiToken,
-        },
-      }
-    )
-      .then((response) => response.json())
+    axios
+      .delete(
+        `${ApiStudio}/sendbird/group_channels/${currentChannelUrl}/mute/${senderId}`
+      )
       .then((data) => {
-        console.log('성공:', data)
         toast.success(
           <div className='toast_success_box'>
             <Image
@@ -391,25 +358,17 @@ const CustomChatRoom = (props: props) => {
       return
     }
 
-    fetch(
-      `https://api-${appId}.sendbird.com/v3/group_channels/${currentChannelUrl}/messages/${messageInfomation.messageId}`,
-      {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json; charset=utf8',
-          Accept: 'application/json',
-          'Api-Token': apiToken,
-        },
-        body: JSON.stringify({
-          message_type: 'MESG',
-          message: editMessageValue,
-        }),
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        console.log('성공:', data)
-      })
+    const body = {
+      message_type: 'MESG',
+      message: editMessageValue,
+    }
+
+    axios
+      .put(
+        `${ApiStudio}/sendbird/group_channels/${currentChannelUrl}/messages/${messageInfomation.messageId}`,
+        body
+      )
+      .then((response) => {})
       .catch((error) => {
         console.error('실패:', error)
         toast.error(
@@ -511,7 +470,7 @@ const CustomChatRoom = (props: props) => {
   // console.log(sender, 'sender')
   // console.log(messageInfomation, 'info')
   // console.log(emojiContainer, 'emojiContainer')
-  console.log(offsetX, 'offsetX')
+  // console.log(offsetX, 'offsetX')
   // console.log(currentGroupChannel, 'currentGroupChannel')
 
   return (

@@ -6,6 +6,7 @@ import React, {
   SetStateAction,
 } from 'react'
 import Image from 'next/image'
+import axios from 'axios'
 
 import { useChannelContext } from '@sendbird/uikit-react/Channel/context'
 
@@ -56,7 +57,7 @@ const CustomChatHeader = (props: props) => {
   const miniMenuRef = useRef<HTMLButtonElement>(null)
   const userFilterRef = useRef<HTMLDivElement>(null)
 
-  const appId = process.env.NEXT_PUBLIC_SENDBIRD_APP_ID
+  const ApiStudio = process.env.NEXT_PUBLIC_API_BASE_URL
   const apiToken = process.env.NEXT_PUBLIC_SENDBIRD_API_TOKEN
   const currentChannelUrl = process.env.NEXT_PUBLIC_SENDBIRD_TEST_CHANNEL_ID
 
@@ -72,23 +73,17 @@ const CustomChatHeader = (props: props) => {
   }
 
   const controlFreezeChat = () => {
-    fetch(
-      `https://api-${appId}.sendbird.com/v3/group_channels/${currentChannelUrl}/freeze`,
-      {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json; charset=utf8',
-          Accept: 'application/json',
-          'Api-Token': apiToken,
-        },
-        body: JSON.stringify({
-          freeze: !isFreezeChat,
-        }),
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        console.log('성공:', data)
+    const body = {
+      freeze: !isFreezeChat,
+    }
+
+    axios
+      .put(
+        `${ApiStudio}/sendbird/group_channels/${currentChannelUrl}/freeze`,
+        body
+      )
+      .then((response) => {
+        console.log('성공:', response)
         setIsFreezeChat(!isFreezeChat)
         setIsMoreMiniMenu(false)
       })
@@ -106,20 +101,11 @@ const CustomChatHeader = (props: props) => {
         break
 
       case 'muted':
-        fetch(
-          `https://api-${appId}.sendbird.com/v3/group_channels/${currentChannelUrl}/mute`,
-          {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json; charset=utf8',
-              Accept: 'application/json',
-              'Api-Token': apiToken,
-            },
-          }
-        )
-          .then((response) => response.json())
-          .then((data) => {
-            console.log('성공:', data)
+        axios
+          .get(`${ApiStudio}/sendbird/group_channels/${currentChannelUrl}/mute`)
+          .then((response) => {
+            const data = response.data
+
             setUserList(data.muted_list)
             setUserFilter('채팅 정지된 참여자')
             setIsUserFilterMiniMenu(false)
@@ -130,20 +116,11 @@ const CustomChatHeader = (props: props) => {
         break
 
       case 'blocked':
-        fetch(
-          `https://api-${appId}.sendbird.com/v3/users/${props.userId}/block`,
-          {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json; charset=utf8',
-              Accept: 'application/json',
-              'Api-Token': apiToken,
-            },
-          }
-        )
-          .then((response) => response.json())
-          .then((data) => {
-            console.log('성공:', data)
+        axios
+          .get(`${ApiStudio}/sendbird/users/${props.userId}/block`)
+          .then((response) => {
+            const data = response.data
+
             setUserList(data.users)
             setUserFilter('차단된 참여자')
             setIsUserFilterMiniMenu(false)

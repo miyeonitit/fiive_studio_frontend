@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import Head from 'next/head'
 import Script from 'next/script'
 
 import '@sendbird/uikit-react/dist/index.css'
@@ -29,22 +30,32 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   useEffect(() => {
     window.addEventListener('resize', reset)
 
+    // local에서는 devleopment
+    console.log(process.env.NODE_ENV, 'process.env.NODE_ENV')
+
     return () => {
       window.removeEventListener('resize', reset)
     }
   })
 
   return (
-    <ThemeProvider theme={lightTheme}>
-      <MeetingProvider>
-        <Script
-          src='https://player.live-video.net/1.11.0/amazon-ivs-player.min.js'
-          strategy='beforeInteractive'
-        />
+    <>
+      <Head>
+        <title>fiive studio</title>
+        <meta name='viewport' content='viewport-fit=cover' />
+      </Head>
 
-        {getLayout(<Component {...pageProps} />)}
-      </MeetingProvider>
-    </ThemeProvider>
+      <ThemeProvider theme={lightTheme}>
+        <MeetingProvider>
+          <Script
+            src='https://player.live-video.net/1.11.0/amazon-ivs-player.min.js'
+            strategy='beforeInteractive'
+          />
+
+          {getLayout(<Component {...pageProps} />)}
+        </MeetingProvider>
+      </ThemeProvider>
+    </>
   )
 }
 
