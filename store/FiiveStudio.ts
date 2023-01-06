@@ -10,7 +10,7 @@ interface FiiveStudioState {
 const useStore = create(
   subscribeWithSelector(
     (set): FiiveStudioState => ({
-      offsetX: typeof window !== 'undefined' ? window.innerWidth : 0,
+      offsetX: 0,
       setOffsetX: (offsetX) =>
         set(() => ({
           offsetX,

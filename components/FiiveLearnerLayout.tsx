@@ -104,7 +104,52 @@ const FiiveLayout = (props: any) => {
 
       <div className='layout-body'>{children}</div>
 
-      <footer className='layout-footer'></footer>
+      <footer className='layout-footer'>
+        {/* 문의하기 영역 */}
+        <div className='help_button_wrapper'>
+          <Image
+            src='../layouts/fiive/help_question_icon.svg'
+            width={22}
+            height={22}
+            alt='helpQuestionIcon'
+          />
+          <span className='help_button_text'>문의하기</span>
+        </div>
+
+        {/* 위젯 메뉴 영역 */}
+        <div className='widget_menu_wrapper'>
+          <div className='live_chat_box'>
+            <Image
+              src='../layouts/fiive/chat_icon.svg'
+              width={22}
+              height={22}
+              alt='chatIcon'
+            />
+            <span className='chat_button_text'>실시간 채팅</span>
+          </div>
+
+          <div className='live_reaction_box'>
+            <Image
+              src='../layouts/fiive/reaction_icon.svg'
+              width={22}
+              height={22}
+              alt='reactionIcon'
+            />
+            <span className='chat_button_text'>리액션</span>
+          </div>
+        </div>
+
+        {/* 라이브 나가기 버튼 영역 */}
+        <div className='quit_button_wrapper'>
+          <Image
+            src='../layouts/fiive/quit_live_icon.svg'
+            width={22}
+            height={22}
+            alt='quitLiveIcon'
+          />
+          <span className='quit_button_text'>라이브 나가기</span>
+        </div>
+      </footer>
     </div>
   )
 }

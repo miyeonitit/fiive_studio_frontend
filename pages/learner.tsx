@@ -105,6 +105,7 @@ const LearnerPage: NextPageWithLayout = () => {
       </Head>
 
       <main>
+        {/* ivs 영역 */}
         <section className='video-wrapper' ref={playerHeightRef}>
           <Announcements></Announcements>
           <Timer></Timer>
@@ -112,67 +113,40 @@ const LearnerPage: NextPageWithLayout = () => {
           <Video />
         </section>
 
-        <section className='session-info'>
-          <div className='profile'>
-            <div className='img'>
-              <Image
-                className='profile'
-                src='/Sendbird/Ellipse 8stateBadge.svg'
-                width={64}
-                height={64}
-                alt='teacher_profile_img'
-              />
-
-              <Image
-                className='live'
-                src='/Sendbird/iconBadge.svg'
-                width={24}
-                height={24}
-                alt='live_status'
-              />
+        {/* class infomation 영역 */}
+        <section className='class-wrapper'>
+          <div className='class_infomation_wrapper'>
+            <div className='class_title_box'>
+              평가원 행동 증명(이감 파이널2 (시즌6) 해설 강의) n회차
             </div>
 
-            <div className='txt'>
-              <h2>&#123;teacher_names&#125;</h2>
-              <p>&#123;class_names&#125;</p>
+            <div className='class_description_box'>
+              평가원 '기술' 지문 포인트 및 실전 행동 훈련 + EBS 수능특강 속
+              '기술' 지문 연계 대비
             </div>
           </div>
 
-          <div className='status'>
-            <Image
-              className='viewers'
-              src='/Sendbird/person.svg'
-              width={14}
-              height={14}
-              alt='viewers'
-            />
-            <span className='viewer-count'>n</span>
-            <span className='timestamp'>00:00:10</span>
-
-            <button type='button' className='more'>
+          {/* class notification 영역 */}
+          <div className='class_notification_wrapper'>
+            <div className='nonotification_title_box'>
               <Image
-                className='more'
-                src='/Sendbird/more-button.svg'
-                width={24}
-                height={24}
-                alt='More'
+                src='../layouts/fiive/announce_icon.svg'
+                width={16}
+                height={16}
+                alt='announceIcon'
               />
+              <span className='class_title'>
+                n회차 라이브에 오신 것을 환영해요
+              </span>
+            </div>
+            <div className='notification_description_box'>
+              선생님과 수강생이 함께 소통하는 공간이에요. 피이브 커뮤니티
+              가이드를 준수하는 것을 잊지 마세요.
+            </div>
+            <button className='community_guide_button'>
+              커뮤니티 가이드 알아보기
             </button>
           </div>
-        </section>
-
-        <section className='class-info'>
-          <div className='class'>
-            {/* <img src='/placeholders/Ratio.jpg' alt='Class' /> */}
-            <div className='description'>
-              <h2>1회차 - 12월 23일 일요일, 22시 30분</h2>
-              <p>비문학(기본기+훈련) + 문학(기본기+개념어 정의+유형별 접근)</p>
-            </div>
-          </div>
-
-          <a href='' target='_blank'>
-            상세 페이지 바로가기
-          </a>
         </section>
       </main>
 
