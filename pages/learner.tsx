@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useRef,
-  useEffect,
-  useLayoutEffect,
-  ReactElement,
-} from 'react'
+import React, { useState, useRef, useEffect, ReactElement } from 'react'
 import type { GetStaticProps } from 'next'
 import { NextPageWithLayout } from '../types/NextPageWithLayout'
 import Head from 'next/head'
@@ -81,7 +75,7 @@ const LearnerPage: NextPageWithLayout = () => {
     reset()
   }, [])
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const ApiStudio = process.env.NEXT_PUBLIC_API_BASE_URL
     const emojiCategoryId = process.env.NEXT_PUBLIC_SENDBIRD_EMOJI_CATEGORY_ID
 
@@ -121,8 +115,8 @@ const LearnerPage: NextPageWithLayout = () => {
             </div>
 
             <div className='class_description_box'>
-              평가원 '기술' 지문 포인트 및 실전 행동 훈련 + EBS 수능특강 속
-              '기술' 지문 연계 대비
+              평가원 기술 지문 포인트 및 실전 행동 훈련 + EBS 수능특강 속 기술
+              지문 연계 대비
             </div>
           </div>
 

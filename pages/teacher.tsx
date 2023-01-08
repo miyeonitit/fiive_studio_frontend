@@ -1,4 +1,4 @@
-import React, { ReactElement, useState, useLayoutEffect } from 'react'
+import React, { ReactElement, useState, useEffect } from 'react'
 import type { GetStaticProps } from 'next'
 import Head from 'next/head'
 import axios from 'axios'
@@ -23,7 +23,7 @@ const TeacherPage: NextPageWithLayout = () => {
   // custom reaction emoji list state
   const [emojiContainer, setEmojiContainer] = useState([])
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const ApiStudio = process.env.NEXT_PUBLIC_API_BASE_URL
     const emojiCategoryId = process.env.NEXT_PUBLIC_SENDBIRD_EMOJI_CATEGORY_ID
 
