@@ -20,13 +20,16 @@ import ResponsiveUserFilterMenu from './ResponsiveComponents/ResponsiveUserFilte
 type props = {
   userId: string
   userRole: string
-  isCloseChat: boolean
-  setIsCloseChat: Dispatch<SetStateAction<boolean>>
+  isChatOpen: boolean
+  setIsChatOpen: Dispatch<SetStateAction<boolean>>
 }
 
 const CustomChatHeader = (props: props) => {
   // 반응형 미디어쿼리 스타일 지정을 위한 브라우저 넓이 측정 전역 state
   const offsetX = fiiveStudioUseStore((state: any) => state.offsetX)
+
+  // sendbird Chat close 동작을 위한 toggle boolean state
+  const setIsChatOpen = fiiveStudioUseStore((state: any) => state.setIsChatOpen)
 
   // 유저 리스트 전역 state
   const contextSetIsUserList = sendBirdUseStore(
@@ -176,15 +179,6 @@ const CustomChatHeader = (props: props) => {
     <div className='CustomChatHeader'>
       {!isUserList ? (
         <div className='chat_header_wrapper'>
-          {/* <div className='control_chat_size_box'>
-            <Image
-              src='/Sendbird/move_right.svg'
-              onClick={() => props.setIsCloseChat(!props.isCloseChat)}
-              width={20}
-              height={20}
-              alt='chatCloseIcon'
-            />
-          </div> */}
           <div className='chat_title_box'>실시간 채팅</div>
           <div className='chat_the_menu_box'>
             <div className='more_button_box'>
@@ -200,7 +194,10 @@ const CustomChatHeader = (props: props) => {
             <div className='close_button_box'>
               <Image
                 src='/Sendbird/responsive_close_button.svg'
-                onClick={() => props.setIsCloseChat(!props.isCloseChat)}
+                onClick={() => {
+                  props.setIsChatOpen(!props.isChatOpen)
+                  setIsChatOpen(false)
+                }}
                 width={20}
                 height={20}
                 alt='closeButton'

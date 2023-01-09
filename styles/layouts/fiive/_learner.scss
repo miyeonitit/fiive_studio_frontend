@@ -105,8 +105,11 @@
 
   /* learner 레이아웃 footer 영역 */
   .layout-footer {
+    position: fixed;
+    bottom: 0px;
     display: flex;
     justify-content: space-between;
+    width: 100%;
     padding: 12px;
     background-color: $bluegray-2;
 
@@ -123,6 +126,35 @@
       span {
         margin-top: 4px;
       }
+    }
+
+    .widget_menu_wrapper {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      height: 56px;
+      padding: 10px 8px;
+      border-radius: 1px solid $bluegray-1;
+      box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.08),
+        0px 4px 10px rgba(0, 0, 0, 0.06);
+      background-color: white;
+
+      div {
+        width: 75px;
+        padding: 10px;
+      }
+
+      .live_chat_box {
+        .chat_button_text.active {
+          color: $fiivepurple-5;
+        }
+      }
+    }
+
+    .quit_button_wrapper {
+      padding: 10px;
+      color: white;
+      background-color: $red-5;
     }
   }
 }

@@ -24,7 +24,7 @@
     width: 341px;
     border-left: 1px solid #f1f3f5;
     // height: 100vh;
-    height: calc(100vh - 81px);
+    height: calc(100vh - 57px - 106px);
     position: sticky;
     top: 0;
   }
@@ -37,6 +37,8 @@
 /* sendbird chat custom css styling */
 .sendbird-conversation {
   border: unset !important;
+  border-radius: 8px;
+  box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.08), 0px 4px 10px rgba(0, 0, 0, 0.06);
 
   /* 새로운 메시지가 왔다고 알려주는 notification 영역 커스텀 */
   .sendbird-notification {
@@ -251,6 +253,12 @@
 }
 
 @media screen and (min-width: 768px) and (max-width: 1023px) {
+  .fiive.page {
+    & > main {
+      background-color: $bluegray-2;
+    }
+  }
+
   .sendbird-conversation {
     /* 새로운 메시지가 왔다고 알려주는 notification 영역 커스텀 */
     .sendbird-notification {
@@ -338,6 +346,12 @@
 }
 
 @media screen and (min-width: 481px) and (max-width: 767px) {
+  .fiive.page {
+    & > main {
+      background-color: $bluegray-2;
+    }
+  }
+
   .sendbird-conversation {
     /* 새로운 메시지가 왔다고 알려주는 notification 영역 커스텀 */
     .sendbird-notification {

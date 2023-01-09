@@ -1,12 +1,47 @@
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 
 import fiiveStudioUseStore from '../store/FiiveStudio'
+import ChannelService from '../utils/ChannelService'
 
 const FiiveLayout = (props: any) => {
   const { children } = props
 
+  // channelTalk open <> close toggle boolean state
+  const [isOpenChannelTalk, setIsOpenChannelTalk] = useState(false)
+
   // 반응형 미디어쿼리 스타일 지정을 위한 브라우저 넓이 측정 전역 state
   const offsetX = fiiveStudioUseStore((state: any) => state.offsetX)
+
+  // sendbird Chat open <> close 동작을 위한 toggle boolean state
+  const isChatOpen = fiiveStudioUseStore((state: any) => state.isChatOpen)
+  const setIsChatOpen = fiiveStudioUseStore((state: any) => state.setIsChatOpen)
+
+  // channelTalk open <> close toggle
+  const clickChannelTalk = () => {
+    if (!isOpenChannelTalk) {
+      ChannelIO('show')
+      setIsOpenChannelTalk(true)
+
+      // default direction인 right에서 left로 설정
+      const ChannelTalkDirection = document.getElementById('ch-plugin-script')
+
+      ChannelTalkDirection?.classList.remove('rightPosition')
+      ChannelTalkDirection?.classList.add('leftPosition')
+    } else {
+      ChannelIO('hide')
+      setIsOpenChannelTalk(false)
+    }
+  }
+
+  // 페이지 초기 로드시, channelTalk booting
+  useEffect(() => {
+    ChannelService.boot({
+      pluginKey: process.env.NEXT_PUBLIC_CHANNELTALK_PLUGIN_KEY,
+      customLauncherSelector: '.help_button_wrapper',
+      hideChannelButtonOnBoot: true,
+    })
+  }, [])
 
   return (
     <div className='fiive_layout learner_layout'>
@@ -106,7 +141,11 @@ const FiiveLayout = (props: any) => {
 
       <footer className='layout-footer'>
         {/* 문의하기 영역 */}
-        <div className='help_button_wrapper'>
+        <div
+          className='help_button_wrapper'
+          id='test'
+          onClick={() => clickChannelTalk()}
+        >
           <Image
             src='../layouts/fiive/help_question_icon.svg'
             width={22}
@@ -118,14 +157,23 @@ const FiiveLayout = (props: any) => {
 
         {/* 위젯 메뉴 영역 */}
         <div className='widget_menu_wrapper'>
-          <div className='live_chat_box'>
+          <div
+            className='live_chat_box'
+            onClick={() => setIsChatOpen(!isChatOpen)}
+          >
             <Image
-              src='../layouts/fiive/chat_icon.svg'
+              src={
+                isChatOpen
+                  ? '../layouts/fiive/chat_icon_active.svg'
+                  : '../layouts/fiive/chat_icon.svg'
+              }
               width={22}
               height={22}
               alt='chatIcon'
             />
-            <span className='chat_button_text'>실시간 채팅</span>
+            <span className={`chat_button_text ${isChatOpen && 'active'}`}>
+              실시간 채팅
+            </span>
           </div>
 
           <div className='live_reaction_box'>
@@ -135,7 +183,7 @@ const FiiveLayout = (props: any) => {
               height={22}
               alt='reactionIcon'
             />
-            <span className='chat_button_text'>리액션</span>
+            <span className='reaction_button_text'>리액션</span>
           </div>
         </div>
 

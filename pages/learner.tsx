@@ -28,14 +28,15 @@ const LearnerPage: NextPageWithLayout = () => {
   // 반응형 미디어쿼리 스타일 지정을 위한 브라우저 넓이 측정 전역 state
   const offsetX = fiiveStudioUseStore((state: any) => state.offsetX)
 
+  // sendbird Chat open <> close 동작을 위한 toggle boolean state
+  const isChatOpen = fiiveStudioUseStore((state: any) => state.isChatOpen)
+  const setIsChatOpen = fiiveStudioUseStore((state: any) => state.setIsChatOpen)
+
   const [questionModal, toggleQuestionModal] = useState(false)
   const [reactions, toggleReactions] = useState(false)
 
   // 반응형일 때, chat의 상대적 height state
   const [chatOffsetHeight, setChatOffsetHeight] = useState(0)
-
-  // chat 접기, 펼치기 boolean state
-  const [isCloseChat, setIsCloseChat] = useState(false)
 
   // custom reaction emoji list state
   const [emojiContainer, setEmojiContainer] = useState([])
@@ -107,6 +108,21 @@ const LearnerPage: NextPageWithLayout = () => {
           <Video />
         </section>
 
+        {/* 반응형 chat */}
+        {/* <aside
+          className={`chat ${!isChatOpen && 'close'}`}
+          style={chatHeightStyle}
+        >
+          <div className='chatroom'>
+            <Chat
+              userId='learne'
+              isChatOpen={isChatOpen}
+              setIsChatOpen={setIsChatOpen}
+              emojiContainer={emojiContainer}
+            />
+          </div>
+        </aside> */}
+
         {/* class infomation 영역 */}
         <section className='class-wrapper'>
           <div className='class_infomation_wrapper'>
@@ -144,24 +160,9 @@ const LearnerPage: NextPageWithLayout = () => {
         </section>
       </main>
 
-      {/* chat을 접었을 때 aside bar */}
-      {isCloseChat && (
-        <aside className='closed_chat_sidebar'>
-          <div className='closed_chat_image_box'>
-            <Image
-              src='/Sendbird/move_left.svg'
-              onClick={() => setIsCloseChat(false)}
-              width={20}
-              height={20}
-              alt='closed_chat'
-            />
-          </div>
-        </aside>
-      )}
-
       {/* chat을 펼쳤을 때 aside bar */}
       <aside
-        className={`chat ${isCloseChat && 'close'}`}
+        className={`chat ${!isChatOpen && 'close'}`}
         style={chatHeightStyle}
       >
         {/* <header>
@@ -189,12 +190,12 @@ const LearnerPage: NextPageWithLayout = () => {
         <div className='chatroom'>
           <Chat
             userId='learne'
-            isCloseChat={isCloseChat}
-            setIsCloseChat={setIsCloseChat}
+            isChatOpen={isChatOpen}
+            setIsChatOpen={setIsChatOpen}
             emojiContainer={emojiContainer}
           />
         </div>
-        <footer>
+        {/* <footer>
           <button
             onClick={() => {
               toggleQuestionModal(true)
@@ -238,7 +239,7 @@ const LearnerPage: NextPageWithLayout = () => {
               }}
             ></SubmitReaction>
           )}
-        </footer>
+        </footer> */}
       </aside>
 
       {questionModal && (

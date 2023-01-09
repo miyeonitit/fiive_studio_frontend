@@ -15,8 +15,8 @@ import CustomChatHeader from './Sendbird/CustomChatHeader'
 
 type props = {
   userId: string
-  isCloseChat: boolean
-  setIsCloseChat: React.Dispatch<React.SetStateAction<boolean>>
+  isChatOpen: boolean
+  setIsChatOpen: React.Dispatch<React.SetStateAction<boolean>>
   emojiContainer: object
 }
 
@@ -66,8 +66,8 @@ const Chat = (props: props) => {
               <CustomChatHeader
                 userId={userId}
                 userRole='teacher'
-                isCloseChat={props.isCloseChat}
-                setIsCloseChat={props.setIsCloseChat}
+                isChatOpen={props.isChatOpen}
+                setIsChatOpen={props.setIsChatOpen}
               />
             )}
             renderMessage={(message: {}) => (
