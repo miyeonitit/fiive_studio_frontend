@@ -124,7 +124,7 @@ const LearnerPage: NextPageWithLayout = () => {
         </aside> */}
 
         {/* class infomation 영역 */}
-        {!isChatOpen && (
+        {(offsetX >= 1023 || !isChatOpen) && (
           <section className='class-wrapper'>
             <div className='class_infomation_wrapper'>
               <div className='class_title_box'>
