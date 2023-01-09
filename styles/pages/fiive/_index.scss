@@ -255,6 +255,7 @@
 @media screen and (min-width: 768px) and (max-width: 1023px) {
   .fiive.page {
     & > main {
+      margin-right: unset;
       background-color: $bluegray-2;
     }
   }
@@ -348,6 +349,7 @@
 @media screen and (min-width: 481px) and (max-width: 767px) {
   .fiive.page {
     & > main {
+      margin-right: unset;
       background-color: $bluegray-2;
     }
   }
@@ -440,6 +442,13 @@
 
 /* 모바일 사이즈 480px 미만부터는 toast 형태 및 정렬이 이상하게 보여, 480 미만의 브레이크 포인트를 따로 잡음 */
 @media screen and (max-width: 480px) {
+  .fiive.page {
+    & > main {
+      margin-right: unset;
+      background-color: $bluegray-2;
+    }
+  }
+
   .sendbird-conversation {
     /* 새로운 메시지가 왔다고 알려주는 notification 영역 커스텀 */
     .sendbird-notification {

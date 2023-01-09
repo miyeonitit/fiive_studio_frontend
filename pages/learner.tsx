@@ -50,11 +50,11 @@ const LearnerPage: NextPageWithLayout = () => {
     return question
   }
 
-  // 반응형일 때, 전체 페이지 height(100vh) - Nav height(73px) - Video height
+  // 반응형일 때, 전체 페이지 height(100vh) - ( Nav height(57px) + fix bottom height(82px) + content margin up & down(24px) = 163px )- Video height
   const chatHeightStyle: CSSProperties =
     offsetX < 1023
       ? {
-          height: `calc(100vh - 73px - ${chatOffsetHeight}px)`,
+          height: `calc(100vh  - 163px - ${chatOffsetHeight}px)`,
         }
       : {}
 
@@ -124,40 +124,42 @@ const LearnerPage: NextPageWithLayout = () => {
         </aside> */}
 
         {/* class infomation 영역 */}
-        <section className='class-wrapper'>
-          <div className='class_infomation_wrapper'>
-            <div className='class_title_box'>
-              평가원 행동 증명(이감 파이널2 (시즌6) 해설 강의) n회차
+        {!isChatOpen && (
+          <section className='class-wrapper'>
+            <div className='class_infomation_wrapper'>
+              <div className='class_title_box'>
+                평가원 행동 증명(이감 파이널2 (시즌6) 해설 강의) n회차
+              </div>
+
+              <div className='class_description_box'>
+                평가원 기술 지문 포인트 및 실전 행동 훈련 + EBS 수능특강 속 기술
+                지문 연계 대비
+              </div>
             </div>
 
-            <div className='class_description_box'>
-              평가원 기술 지문 포인트 및 실전 행동 훈련 + EBS 수능특강 속 기술
-              지문 연계 대비
+            {/* class notification 영역 */}
+            <div className='class_notification_wrapper'>
+              <div className='nonotification_title_box'>
+                <Image
+                  src='../layouts/fiive/announce_icon.svg'
+                  width={16}
+                  height={16}
+                  alt='announceIcon'
+                />
+                <span className='class_title'>
+                  n회차 라이브에 오신 것을 환영해요
+                </span>
+              </div>
+              <div className='notification_description_box'>
+                선생님과 수강생이 함께 소통하는 공간이에요. 피이브 커뮤니티
+                가이드를 준수하는 것을 잊지 마세요.
+              </div>
+              <button className='community_guide_button'>
+                커뮤니티 가이드 알아보기
+              </button>
             </div>
-          </div>
-
-          {/* class notification 영역 */}
-          <div className='class_notification_wrapper'>
-            <div className='nonotification_title_box'>
-              <Image
-                src='../layouts/fiive/announce_icon.svg'
-                width={16}
-                height={16}
-                alt='announceIcon'
-              />
-              <span className='class_title'>
-                n회차 라이브에 오신 것을 환영해요
-              </span>
-            </div>
-            <div className='notification_description_box'>
-              선생님과 수강생이 함께 소통하는 공간이에요. 피이브 커뮤니티
-              가이드를 준수하는 것을 잊지 마세요.
-            </div>
-            <button className='community_guide_button'>
-              커뮤니티 가이드 알아보기
-            </button>
-          </div>
-        </section>
+          </section>
+        )}
       </main>
 
       {/* chat을 펼쳤을 때 aside bar */}

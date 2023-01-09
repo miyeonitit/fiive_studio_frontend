@@ -141,19 +141,21 @@ const FiiveLayout = (props: any) => {
 
       <footer className='layout-footer'>
         {/* 문의하기 영역 */}
-        <div
-          className='help_button_wrapper'
-          id='test'
-          onClick={() => clickChannelTalk()}
-        >
-          <Image
-            src='../layouts/fiive/help_question_icon.svg'
-            width={22}
-            height={22}
-            alt='helpQuestionIcon'
-          />
-          <span className='help_button_text'>문의하기</span>
-        </div>
+        {offsetX >= 1023 && (
+          <div
+            className='help_button_wrapper'
+            id='test'
+            onClick={() => clickChannelTalk()}
+          >
+            <Image
+              src='../layouts/fiive/help_question_icon.svg'
+              width={22}
+              height={22}
+              alt='helpQuestionIcon'
+            />
+            <span className='help_button_text'>문의하기</span>
+          </div>
+        )}
 
         {/* 위젯 메뉴 영역 */}
         <div className='widget_menu_wrapper'>
