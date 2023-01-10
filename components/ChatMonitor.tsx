@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import kr from 'date-fns/locale/ko'
 import { v4 as uuidv4 } from 'uuid'
 
+import * as SendBird from 'sendbird'
 import SendbirdProvider from '@sendbird/uikit-react/SendbirdProvider'
 import sendbirdSelectors from '@sendbird/uikit-react/sendbirdSelectors'
 import useSendbirdStateContext from '@sendbird/uikit-react/useSendbirdStateContext'
@@ -29,6 +30,10 @@ const MessageList = () => {
   const context = useSendbirdStateContext()
   const sdk = sendbirdSelectors.getSdk(context)
 
+  const appId = process.env.NEXT_PUBLIC_SENDBIRD_APP_ID
+
+  var sb = new SendBird({ appId: appId })
+
   // 새로운 메시지가 추가될 때마다 저장하는 메시지 state
   const messageLength = sendBirdUseStore((state: any) => state.messageLength)
 
@@ -41,26 +46,31 @@ const MessageList = () => {
       }
     }, 1000)
 
-    if (messageLength !== 0) {
-      window.setTimeout(() => {
-        window.scrollTo(0, document.body.scrollHeight)
-      }, 100)
+    // if (messageLength !== 0) {
+    //   window.setTimeout(() => {
+    //     window.scrollTo(0, document.body.scrollHeight)
+    //   }, 100)
+    // }
+
+    if (sb.addChannelHandler) {
+      const groupChannelHandler: GroupChannelHandler = new GroupChannelHandler({
+        onMessageReceived: (channel: BaseChannel, message: BaseMessage) => {
+          window.setTimeout(() => {
+            window.scrollTo(0, document.body.scrollHeight)
+          }, 100)
+        },
+      })
+
+      sb.addChannelHandler('GROUP_CHANNEL_HANDLER', groupChannelHandler)
     }
 
-    // if (sdk?.groupChannel?.addGroupChannelHandler) {
-    //   const groupChannelHandler: GroupChannelHandler = new GroupChannelHandler({
-    //     onMessageReceived: (channel: BaseChannel, message: BaseMessage) => {
-    //       window.setTimeout(() => {
-    //         window.scrollTo(0, document.body.scrollHeight)
-    //       }, 100)
-    //     },
-    //   })
+    return () => {
+      window.clearInterval(intvl)
 
-    //   sdk.groupChannel.addGroupChannelHandler(
-    //     UNIQUE_HANDLER_ID,
-    //     groupChannelHandler
-    //   )
-    // }
+      if (sb.addChannelHandler) {
+        sb.removeChannelHandler('GROUP_CHANNEL_HANDLER')
+      }
+    }
 
     // if (sdk?.openChannel?.addOpenChannelHandler) {
     //   const openChannelHandler = new OpenChannelHandler({

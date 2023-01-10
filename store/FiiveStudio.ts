@@ -10,7 +10,11 @@ interface FiiveStudioState {
   isOpenResponsiveModal: false
   setIsOpenResponsiveModal: (isOpenResponsiveModal: boolean) => void
 
-  // sendbird chat open <> close toggle boolean state
+  // 반응형 사이즈에서 header의 라이브 참여자 목록을 볼 때, UI height 버그를 처리하기 위해 확인하는 boolean state
+  isOpenResponsiveLiveMember: false
+  setIsOpenResponsiveLiveMember: (isOpenResponsiveLiveMember: boolean) => void
+
+  // sendbird chat UI open <> close toggle boolean state
   isChatOpen: boolean
   setIsChatOpen: (isChatOpen: boolean) => void
 }
@@ -28,6 +32,12 @@ const useStore = create(
       setIsOpenResponsiveModal: (isOpenResponsiveModal) =>
         set(() => ({
           isOpenResponsiveModal,
+        })),
+
+      isOpenResponsiveLiveMember: false,
+      setIsOpenResponsiveLiveMember: (isOpenResponsiveLiveMember) =>
+        set(() => ({
+          isOpenResponsiveLiveMember,
         })),
 
       isChatOpen: true,

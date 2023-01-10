@@ -36,6 +36,11 @@ const CustomChatHeader = (props: props) => {
     (state: any) => state.setIsOpenResponsiveModal
   )
 
+  // 반응형 사이즈에서 header의 라이브 참여자 목록을 볼 때, UI height 버그를 처리하기 위해 확인하는 boolean state
+  const setIsOpenResponsiveLiveMember = fiiveStudioUseStore(
+    (state: any) => state.setIsOpenResponsiveLiveMember
+  )
+
   // 유저 리스트 전역 state
   const contextSetIsUserList = sendBirdUseStore(
     (state: any) => state.setIsUserList
@@ -140,6 +145,10 @@ const CustomChatHeader = (props: props) => {
     }
   }
 
+  const openChatMonitor = () => {
+    window.open('/chat-monitor', 'chat-monitor', 'width=300,height=500px')
+  }
+
   // 더보기 미니 메뉴 outside click
   const clickModalOutside = (e) => {
     // 반응형 header menu modal (ResponsiveChatHeaderMenu)에서는 작동하지 않게 if문 처리
@@ -179,8 +188,10 @@ const CustomChatHeader = (props: props) => {
   }, [currentGroupChannel])
 
   // 라이브 참여자 목록 on, off에 따라 typing input을 숨기기 위한 state
+  // 반응형 사이즈에서 header의 라이브 참여자 목록을 볼 때, UI height 버그를 처리하기 위해 확인하는 로직
   useEffect(() => {
     contextSetIsUserList(isUserList)
+    setIsOpenResponsiveLiveMember(isUserList)
   }, [isUserList])
 
   return (
@@ -251,7 +262,10 @@ const CustomChatHeader = (props: props) => {
                     </div>
                   )}
 
-                  <div className='list_in_menu'>
+                  <div
+                    className='list_in_menu'
+                    onClick={() => openChatMonitor()}
+                  >
                     <Image
                       src='/Sendbird/share_chatting_icon.svg'
                       width={16}

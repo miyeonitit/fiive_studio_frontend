@@ -22,6 +22,10 @@ const ResponsiveChatHeaderMenu = (props: props) => {
 
   const headerModalRef = useRef<HTMLDivElement>(null)
 
+  const openChatMonitor = () => {
+    window.open('/chat-monitor', 'chat-monitor', 'width=300,height=500px')
+  }
+
   const closeModal = () => {
     setIsCloseModal(true)
 
@@ -114,10 +118,7 @@ const ResponsiveChatHeaderMenu = (props: props) => {
             </div>
           )}
 
-          <div
-            className='modal_line_menu'
-            // onClick={() => deleteMessage()}
-          >
+          <div className='modal_line_menu' onClick={() => openChatMonitor()}>
             <div className='share_chat_button_image_box'>
               <Image
                 src='/Sendbird/share_chatting_icon.svg'

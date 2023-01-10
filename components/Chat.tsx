@@ -5,6 +5,8 @@ import SendbirdProvider from '@sendbird/uikit-react/SendbirdProvider'
 import { ChannelProvider } from '@sendbird/uikit-react/Channel/context'
 import ChannelUI from '@sendbird/uikit-react/Channel/components/ChannelUI'
 
+import * as SendBird from 'sendbird'
+
 import { config } from '../utils/HeaderConfig'
 import useStore from '../store/Sendbird'
 
@@ -12,6 +14,7 @@ import CustomChatRoom from './Sendbird/CustomChatRoom'
 import CustomMessageInput from './Sendbird/CustomMessageInput'
 import CustomDateSeparator from './Sendbird/CustomDateSeparator'
 import CustomChatHeader from './Sendbird/CustomChatHeader'
+import { ConnectionHandler, SessionHandler } from '@sendbird/chat'
 
 type props = {
   userId: string
@@ -43,9 +46,34 @@ const Chat = (props: props) => {
   const appId = process.env.NEXT_PUBLIC_SENDBIRD_APP_ID
   const currentChannelUrl = process.env.NEXT_PUBLIC_SENDBIRD_TEST_CHANNEL_ID
 
+  var sb = new SendBird({ appId: appId })
+  console.log(sb, 'sb')
+
   useEffect(() => {
     contextAddEmojiContainer(props.emojiContainer)
   }, [])
+
+  useEffect(() => {
+    const connectionHandler: ConnectionHandler = new ConnectionHandler()
+
+    console.log(connectionHandler, 'connectionHandler')
+
+    connectionHandler.onDisconnected = () => {
+      sb.reconnect()
+      console.log('1 실행')
+    }
+
+    connectionHandler.onReconnectFailed = () => {
+      sb.reconnect()
+      console.log('2 실행')
+    }
+
+    sb.addConnectionHandler('GROUP_CHANNEL_HANDLER', connectionHandler)
+
+    return () => {
+      sb.removeConnectionHandler('GROUP_CHANNEL_HANDLER')
+    }
+  }, [sb])
 
   return (
     <>
@@ -94,3 +122,6 @@ const Chat = (props: props) => {
 }
 
 export default Chat
+function issueSessionToken(appInfo: any) {
+  throw new Error('Function not implemented.')
+}
