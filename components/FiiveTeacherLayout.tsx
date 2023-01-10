@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
+import { CSSProperties } from 'styled-components'
 
 import fiiveStudioUseStore from '../store/FiiveStudio'
 
@@ -9,9 +10,21 @@ const FiiveLayout = (props: any) => {
   // 반응형 미디어쿼리 스타일 지정을 위한 브라우저 넓이 측정 전역 state
   const offsetX = fiiveStudioUseStore((state: any) => state.offsetX)
 
+  // 반응형 전용 모달이 활성화 된 상태인지 확인하는 boolean state
+  const isOpenResponsiveModal = fiiveStudioUseStore(
+    (state: any) => state.isOpenResponsiveModal
+  )
+
   // sendbird Chat open <> close 동작을 위한 toggle boolean state
   const isChatOpen = fiiveStudioUseStore((state: any) => state.isChatOpen)
   const setIsChatOpen = fiiveStudioUseStore((state: any) => state.setIsChatOpen)
+
+  const responsiveZindexStyle: CSSProperties =
+    offsetX < 1023 && isOpenResponsiveModal
+      ? {
+          zIndex: '-1',
+        }
+      : { zIndex: 'unset' }
 
   return (
     <div className='fiive_layout teacher_layout'>
@@ -107,9 +120,9 @@ const FiiveLayout = (props: any) => {
         </div> */}
       </header>
 
-      <div className='layout_body'>{children}</div>
+      <div className='layout-body'>{children}</div>
 
-      <footer className='layout-footer'>
+      <footer className='layout-footer' style={responsiveZindexStyle}>
         {/* 문의하기 영역 */}
         <div className='help_button_wrapper'></div>
 

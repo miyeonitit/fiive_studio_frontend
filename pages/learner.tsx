@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect, ReactElement } from 'react'
-import type { GetStaticProps } from 'next'
 import { NextPageWithLayout } from '../types/NextPageWithLayout'
 import Head from 'next/head'
 import Image from 'next/image'
@@ -32,6 +31,8 @@ const LearnerPage: NextPageWithLayout = () => {
   const isChatOpen = fiiveStudioUseStore((state: any) => state.isChatOpen)
   const setIsChatOpen = fiiveStudioUseStore((state: any) => state.setIsChatOpen)
 
+  const questions = useStore((state: any) => state.questions)
+
   const [questionModal, toggleQuestionModal] = useState(false)
   const [reactions, toggleReactions] = useState(false)
 
@@ -40,8 +41,6 @@ const LearnerPage: NextPageWithLayout = () => {
 
   // custom reaction emoji list state
   const [emojiContainer, setEmojiContainer] = useState([])
-
-  const questions = useStore((state: any) => state.questions)
 
   const playerHeightRef = useRef<HTMLElement>(null)
 
