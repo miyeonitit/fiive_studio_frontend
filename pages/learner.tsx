@@ -45,11 +45,6 @@ const LearnerPage: NextPageWithLayout = () => {
 
   const playerHeightRef = useRef<HTMLElement>(null)
 
-  const question = () => {
-    const [question = null] = questions
-    return question
-  }
-
   // 반응형일 때, 전체 페이지 height(100vh) - ( Nav height(57px) + fix bottom height(82px) + content margin up & down(24px) = 163px )- Video height
   const chatHeightStyle: CSSProperties =
     offsetX < 1023
@@ -57,6 +52,11 @@ const LearnerPage: NextPageWithLayout = () => {
           height: `calc(100vh  - 163px - ${chatOffsetHeight}px)`,
         }
       : {}
+
+  const question = () => {
+    const [question = null] = questions
+    return question
+  }
 
   // 브라우저 resize 할 때마다 <Video /> 의 height 감지
   const reset = () => {
@@ -107,21 +107,6 @@ const LearnerPage: NextPageWithLayout = () => {
           <Reactions></Reactions>
           <Video />
         </section>
-
-        {/* 반응형 chat */}
-        {/* <aside
-          className={`chat ${!isChatOpen && 'close'}`}
-          style={chatHeightStyle}
-        >
-          <div className='chatroom'>
-            <Chat
-              userId='learne'
-              isChatOpen={isChatOpen}
-              setIsChatOpen={setIsChatOpen}
-              emojiContainer={emojiContainer}
-            />
-          </div>
-        </aside> */}
 
         {/* class infomation 영역 */}
         {(offsetX >= 1023 || !isChatOpen) && (

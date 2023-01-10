@@ -31,6 +31,11 @@ const CustomChatHeader = (props: props) => {
   // sendbird Chat close 동작을 위한 toggle boolean state
   const setIsChatOpen = fiiveStudioUseStore((state: any) => state.setIsChatOpen)
 
+  // 반응형 전용 모달이 활성화 된 상태인지 확인하는 boolean state
+  const setIsOpenResponsiveModal = fiiveStudioUseStore(
+    (state: any) => state.setIsOpenResponsiveModal
+  )
+
   // 유저 리스트 전역 state
   const contextSetIsUserList = sendBirdUseStore(
     (state: any) => state.setIsUserList
@@ -149,7 +154,7 @@ const CustomChatHeader = (props: props) => {
     }
   }
 
-  // 더보기 미니 메뉴 outside click
+  // 더보기 미니 메뉴 outside click 처리와 responsive modal의 강제 스타일링 처리
   useEffect(() => {
     if (offsetX >= 1023) {
       document.addEventListener('mousedown', clickModalOutside)
@@ -157,6 +162,9 @@ const CustomChatHeader = (props: props) => {
       return () => {
         document.removeEventListener('mousedown', clickModalOutside)
       }
+    } else {
+      // 반응형 사이즈일 때, responsive modal이 열리면 z-index 강제 처리를 위한 로직
+      setIsOpenResponsiveModal(isMoreMiniMenu || isUserFilterMiniMenu)
     }
   }, [isMoreMiniMenu, isUserFilterMiniMenu])
 

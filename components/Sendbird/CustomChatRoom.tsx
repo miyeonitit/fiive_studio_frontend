@@ -36,6 +36,11 @@ const CustomChatRoom = (props: props) => {
   // 반응형 미디어쿼리 스타일 지정을 위한 브라우저 넓이 측정 전역 state
   const offsetX = fiiveStudioUseStore((state: any) => state.offsetX)
 
+  // 반응형 전용 모달이 활성화 된 상태인지 확인하는 boolean state
+  const setIsOpenResponsiveModal = fiiveStudioUseStore(
+    (state: any) => state.setIsOpenResponsiveModal
+  )
+
   const { currentGroupChannel, allMessages } = useChannelContext()
   const globalStore = useSendbirdStateContext()
   const deleteFileMessage = sendbirdSelectors.getDeleteMessage(globalStore)
@@ -434,7 +439,14 @@ const CustomChatRoom = (props: props) => {
     }
   }
 
+  // outside click 처리와 responsive modal의 강제 스타일링 처리
   useEffect(() => {
+    setIsOpenResponsiveModal(
+      isMoreMiniMenu ||
+        isReactionTopBox ||
+        isReactionBottomBox ||
+        isHoverMoreMenu
+    )
     document.addEventListener('mousedown', clickModalOutside)
 
     return () => {
