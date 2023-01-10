@@ -33,7 +33,7 @@ const Video = () => {
     let channelData = ''
 
     await axios
-      .get(`${ApiStudio}/proxy/classroom/${testIvsValue}/ivs`)
+      .get(`${ApiStudio}/classroom/${testIvsValue}/ivs`)
       .then((response) => {
         channelData = response.data
       })

@@ -36,6 +36,11 @@ const CustomChatRoom = (props: props) => {
   // 반응형 미디어쿼리 스타일 지정을 위한 브라우저 넓이 측정 전역 state
   const offsetX = fiiveStudioUseStore((state: any) => state.offsetX)
 
+  // 반응형 전용 모달이 활성화 된 상태인지 확인하는 boolean state
+  const setIsOpenResponsiveModal = fiiveStudioUseStore(
+    (state: any) => state.setIsOpenResponsiveModal
+  )
+
   const { currentGroupChannel, allMessages } = useChannelContext()
   const globalStore = useSendbirdStateContext()
   const deleteFileMessage = sendbirdSelectors.getDeleteMessage(globalStore)
@@ -77,9 +82,6 @@ const CustomChatRoom = (props: props) => {
 
   // 메시지 삭제 툴팁 노출 boolean state
   const [isMessageDeleteTooltip, setIsMessageDeleteTooltip] = useState(false)
-
-  // Date Separator 노출 boolean state
-  const [isDateSeparator, setIsDateSeparator] = useState(false)
 
   // 수정할 메시지 text value와 메시지가 수정 중에 있는지 여부 boolean state
   const [editMessageValue, setEditMessageValue] = useState('')
@@ -437,35 +439,20 @@ const CustomChatRoom = (props: props) => {
     }
   }
 
+  // outside click 처리와 responsive modal의 강제 스타일링 처리
   useEffect(() => {
+    setIsOpenResponsiveModal(
+      isMoreMiniMenu ||
+        isReactionTopBox ||
+        isReactionBottomBox ||
+        isHoverMoreMenu
+    )
     document.addEventListener('mousedown', clickModalOutside)
 
     return () => {
       document.removeEventListener('mousedown', clickModalOutside)
     }
   }, [isMoreMiniMenu, isReactionTopBox, isReactionBottomBox, isHoverMoreMenu])
-
-  // allMessagesLength가 증가할 때마다 (로드되는 message가 많아질 때마다) Date Separator의 노출 여부 설정
-  useEffect(() => {
-    // allMessages에서 현재 message에 해당하는 원소값 찾기
-    const currentMessageInAllMessages = allMessages.find(
-      (message: any) => message.messageId === messageInfomation.messageId
-    )
-
-    // allMessages에서 현재 message의 바로 이전 message의 인덱스를 구하기
-    const previousIndex = allMessages.indexOf(currentMessageInAllMessages) - 1
-
-    // 이전 message와 현재 message의 날짜를 비교하여, 현재 message 영역에 Date Separator의 노출 여부 결정
-    // 해당 chat room에서 message를 보낸 최초 날짜가 아닐 때
-    if (previousIndex > 0) {
-      if (
-        compareMessageDate(allMessages[previousIndex].createdAt) !==
-        compareMessageDate(messageInfomation.createdAt)
-      ) {
-        setIsDateSeparator(true)
-      }
-    }
-  }, [allMessagesLength])
 
   // console.log(sender, 'sender')
   // console.log(messageInfomation, 'info')
@@ -475,12 +462,6 @@ const CustomChatRoom = (props: props) => {
 
   return (
     <div className='CustomChatRoom'>
-      {isDateSeparator && (
-        <DateSeparator className='date_separator'>
-          {formatDateTime(messageInfomation.createdAt)}
-        </DateSeparator>
-      )}
-
       <div
         className={`message_wrapper ${isEditedMessage && 'edit'}`}
         onClick={() =>

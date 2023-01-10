@@ -5,15 +5,35 @@ interface FiiveStudioState {
   // 반응형 미디어쿼리 스타일 지정을 위한 브라우저 넓이 측정 state
   offsetX: number
   setOffsetX: (offsetX: number) => void
+
+  // 반응형 전용 모달이 활성화 된 상태인지 확인하는 boolean state
+  isOpenResponsiveModal: false
+  setIsOpenResponsiveModal: (isOpenResponsiveModal: boolean) => void
+
+  // sendbird chat open <> close toggle boolean state
+  isChatOpen: boolean
+  setIsChatOpen: (isChatOpen: boolean) => void
 }
 
 const useStore = create(
   subscribeWithSelector(
     (set): FiiveStudioState => ({
-      offsetX: typeof window !== 'undefined' ? window.innerWidth : 0,
+      offsetX: 0,
       setOffsetX: (offsetX) =>
         set(() => ({
           offsetX,
+        })),
+
+      isOpenResponsiveModal: false,
+      setIsOpenResponsiveModal: (isOpenResponsiveModal) =>
+        set(() => ({
+          isOpenResponsiveModal,
+        })),
+
+      isChatOpen: true,
+      setIsChatOpen: (isChatOpen) =>
+        set(() => ({
+          isChatOpen,
         })),
     })
   )

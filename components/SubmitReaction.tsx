@@ -26,7 +26,7 @@ const SubmitReaction = (props: props) => {
     })
 
     const resp = await fetch(
-      `${ApiStudio}/proxy/classroom/${testIvsValue}/ivs/meta`,
+      `${ApiStudio}/classroom/${testIvsValue}/ivs/meta`,
       {
         method: 'POST',
         body: form,

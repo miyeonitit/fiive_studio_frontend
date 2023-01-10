@@ -3,9 +3,13 @@
     .video-wrapper {
       position: relative;
       overflow: hidden;
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+
       video {
         display: block;
         width: 100%;
+        height: 500px;
       }
 
       .messages {
@@ -13,8 +17,57 @@
       }
     }
 
-    @import './session-info';
-    @import './class-info';
+    .class-wrapper {
+      margin: 24px;
+
+      .class_infomation_wrapper {
+        margin-bottom: 24px;
+
+        .class_title_box {
+          @include head-2;
+          margin-bottom: 8px;
+          color: $bluegray-10;
+        }
+
+        .class_description_box {
+          @include body-2-400;
+          color: $bluegray-6;
+        }
+      }
+
+      .class_notification_wrapper {
+        padding: 16px;
+        border-radius: 2px;
+        background-color: $bluegray-1;
+
+        .nonotification_title_box {
+          display: flex;
+          align-items: flex-start;
+
+          .class_title {
+            margin-left: 6px;
+            margin-bottom: 8px;
+            @include body-2-700;
+            color: $bluegray-10;
+          }
+        }
+
+        .notification_description_box {
+          margin-bottom: 12px;
+          @include body-2-400;
+          color: $bluegray-8;
+        }
+
+        .community_guide_button {
+          padding: 10px 12px;
+          @include btn-sm-500;
+          border-radius: 2px;
+          border: 1px solid $bluegray-3;
+          color: $bluegray-9;
+          background-color: white;
+        }
+      }
+    }
   }
 
   /* chat을 펼쳤을 때 aside bar */
@@ -133,21 +186,6 @@
     }
   }
 
-  aside.closed_chat_sidebar {
-    height: calc(100vh - 73px);
-    padding: 16px;
-    border-left: 1px solid $bluegray-2;
-
-    .closed_chat_image_box {
-      display: flex;
-      align-items: center;
-
-      img {
-        cursor: pointer;
-      }
-    }
-  }
-
   /* chat aside bar를 접었을 때 상태 표현 */
   aside.chat.close {
     display: none;
@@ -158,14 +196,27 @@
   .fiive.learner.page {
     display: flex;
     flex-direction: column;
-
-    /* chat을 접었을 때 aside bar */
-    .closed_chat_sidebar {
-      display: none;
-    }
+    padding: 0px !important;
+    margin-bottom: 82px;
 
     main {
       width: 100%;
+
+      .video-wrapper {
+        border-top-left-radius: 0px;
+        border-top-right-radius: 0px;
+
+        video {
+          height: auto;
+        }
+      }
+
+      .class-wrapper {
+        margin: 12px;
+        padding: 16px;
+        border-radius: 8px;
+        background-color: white;
+      }
 
       .session-info,
       .class-info {
@@ -174,7 +225,8 @@
     }
 
     .chat {
-      width: 100%;
+      margin: 12px;
+      width: calc(100vw - 24px);
     }
   }
 }
@@ -183,14 +235,27 @@
   .fiive.learner.page {
     display: flex;
     flex-direction: column;
-
-    /* chat을 접었을 때 aside bar */
-    .closed_chat_sidebar {
-      display: none;
-    }
+    padding: 0px !important;
+    margin-bottom: 82px;
 
     main {
       width: 100%;
+
+      .video-wrapper {
+        border-top-left-radius: 0px;
+        border-top-right-radius: 0px;
+
+        video {
+          height: auto;
+        }
+      }
+
+      .class-wrapper {
+        margin: 12px;
+        padding: 16px;
+        border-radius: 8px;
+        background-color: white;
+      }
 
       .session-info,
       .class-info {
@@ -199,7 +264,8 @@
     }
 
     .chat {
-      width: 100%;
+      margin: 12px;
+      width: calc(100vw - 24px);
     }
   }
 }
