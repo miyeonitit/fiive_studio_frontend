@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  background-color: $bluegray-2;
 
   & > header.layout_header,
   & > footer.layout_footer {
@@ -9,13 +10,14 @@
     min-height: 0;
   }
 
-  & > .layout-body {
+  .layout-body {
     flex: 1 1 auto;
     min-height: 0;
     display: flex;
 
-    & > .page {
+    .page {
       width: 100%;
+      padding: 12px;
     }
   }
 
