@@ -4,23 +4,25 @@
     align-items: center;
     justify-content: space-between;
     padding: 16px;
-    border-bottom: 1px solid $bluegray-2;
-
-    .control_chat_size_box {
-      display: flex;
-      align-items: center;
-
-      img {
-        cursor: pointer;
-      }
-    }
 
     .chat_title_box {
-      @include body-2-700;
+      @include body-1-700;
     }
 
-    .chat_the_more_box {
+    .chat_the_menu_box {
+      display: flex;
       position: relative;
+
+      .more_button_box {
+        display: flex;
+        align-items: center;
+        margin-right: 24px;
+      }
+
+      .close_button_box {
+        display: flex;
+        align-items: center;
+      }
 
       img {
         cursor: pointer;
@@ -163,21 +165,7 @@
 }
 
 @media screen and (min-width: 768px) and (max-width: 1023px) {
-  .CustomChatHeader {
-    .chat_header_wrapper {
-      .control_chat_size_box {
-        display: none;
-      }
-    }
-  }
 }
 
 @media screen and (max-width: 767px) {
-  .CustomChatHeader {
-    .chat_header_wrapper {
-      .control_chat_size_box {
-        display: none;
-      }
-    }
-  }
 }

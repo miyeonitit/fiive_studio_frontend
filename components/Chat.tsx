@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import kr from 'date-fns/locale/ko'
 
 import SendbirdProvider from '@sendbird/uikit-react/SendbirdProvider'
@@ -15,8 +15,8 @@ import CustomChatHeader from './Sendbird/CustomChatHeader'
 
 type props = {
   userId: string
-  isCloseChat: boolean
-  setIsCloseChat: React.Dispatch<React.SetStateAction<boolean>>
+  isChatOpen: boolean
+  setIsChatOpen: React.Dispatch<React.SetStateAction<boolean>>
   emojiContainer: object
 }
 
@@ -41,7 +41,6 @@ const Chat = (props: props) => {
   })
 
   const appId = process.env.NEXT_PUBLIC_SENDBIRD_APP_ID
-  const ApiStudio = process.env.NEXT_PUBLIC_API_BASE_URL
   const currentChannelUrl = process.env.NEXT_PUBLIC_SENDBIRD_TEST_CHANNEL_ID
 
   useEffect(() => {
@@ -67,8 +66,8 @@ const Chat = (props: props) => {
               <CustomChatHeader
                 userId={userId}
                 userRole='teacher'
-                isCloseChat={props.isCloseChat}
-                setIsCloseChat={props.setIsCloseChat}
+                isChatOpen={props.isChatOpen}
+                setIsChatOpen={props.setIsChatOpen}
               />
             )}
             renderMessage={(message: {}) => (

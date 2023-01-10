@@ -1,4 +1,4 @@
-import { useEffect, useState, useLayoutEffect } from 'react'
+import { useEffect, useState } from 'react'
 import kr from 'date-fns/locale/ko'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -103,7 +103,7 @@ const ChatMonitor = (props: props) => {
     CHANNEL__MESSAGE_LIST__NOTIFICATION__ON: '도착',
   })
 
-  const ApiStudio = process.env.NEXT_PUBLIC_API_BASE_URL
+  const appId = process.env.NEXT_PUBLIC_SENDBIRD_APP_ID
   const currentChannelUrl = process.env.NEXT_PUBLIC_SENDBIRD_TEST_CHANNEL_ID
 
   return (

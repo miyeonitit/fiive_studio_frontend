@@ -1,9 +1,9 @@
-.fiive-layout.learner-layout {
+.fiive_layout.learner_layout {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 
-  & > header.layout-header,
+  & > header.layout_header,
   & > footer.layout-footer {
     flex: 0 0 auto;
     min-height: 0;
@@ -16,6 +16,8 @@
 
     & > .page {
       width: 100%;
+      padding: 12px;
+      background-color: $bluegray-2;
     }
   }
 
@@ -26,76 +28,138 @@
     background-color: transparent;
   }
 
-  & > header.layout-header {
+  & > header.layout_header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 18px 13px 18px 12px;
-    border-bottom: 1px solid #f1f3f5;
+    padding: 12px 16px;
+    border-bottom: 1px solid $bluegray-2;
+    background-color: white;
 
-    img.logo {
-      flex: 0 0 auto;
-      width: 60px;
-      height: 36px;
-    }
-
-    .controls {
-      flex: 0 0 auto;
-      min-width: 0;
+    .left_header_box {
       display: flex;
       align-items: center;
 
-      button.notifications {
-        flex: 0 0 auto;
-        min-width: 0;
-        display: block;
-        position: relative;
-        margin-right: 24px;
-
-        img {
-          display: block;
-          width: 24px;
-          height: 24px;
-        }
-
-        span {
-          position: absolute;
-          display: block;
-          left: 13px;
-          bottom: 13px;
-          padding: 2px 4px;
-          border: 1px solid #fff;
-          border-radius: 18px;
-          background: #ff3366;
-
-          font-size: 10px;
-          font-weight: 600;
-          line-height: 10px;
-          letter-spacing: -0.4000000059604645px;
-          text-align: left;
-          color: #fff;
-        }
+      .back_button_box {
+        display: flex;
+        align-items: center;
+        margin-right: 12px;
+        cursor: pointer;
       }
 
-      button.account {
-        flex: 0 0 auto;
-        min-width: 0;
+      .fiive_logo_box {
+        display: flex;
+        align-items: center;
+      }
+
+      .devider_box {
+        display: flex;
+        align-items: center;
+        margin: 0px 24px;
+      }
+
+      .fiive_class_infomation_box {
         display: flex;
         align-items: center;
 
-        img {
-          display: block;
-          &.profile {
-            width: 32px;
-            height: 32px;
-          }
+        .teacher_profile_image_box {
+          display: flex;
+          align-items: center;
+          margin-right: 8px;
+        }
 
-          &.expand {
-            width: 8px;
-            height: 5px;
-          }
+        .teacher_name_box {
+          @include body-1-700;
+          color: $bluegray-9;
+        }
+      }
+    }
+
+    .right_header_box {
+      display: flex;
+      align-items: center;
+
+      div {
+        padding: 6px;
+        @include btn-sm-600;
+        border-radius: 2px;
+      }
+
+      .live_status {
+        margin-right: 6px;
+        color: $bluegray-7;
+        background-color: $bluegray-2;
+      }
+
+      .live_participant_number_box {
+        display: flex;
+        align-items: center;
+        background-color: $bluegray-1;
+
+        .live_participant_number {
+          margin-left: 2px;
+          color: $bluegray-8;
         }
       }
     }
   }
+
+  /* learner 레이아웃 footer 영역 */
+  .layout-footer {
+    position: fixed;
+    bottom: 0px;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 12px;
+    background-color: $bluegray-2;
+
+    div {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      @include btn-sm-600;
+      border-radius: 8px;
+      color: $bluegray-10;
+      cursor: pointer;
+
+      span {
+        margin-top: 4px;
+      }
+    }
+
+    .widget_menu_wrapper {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      height: 56px;
+      padding: 10px 8px;
+      border-radius: 1px solid $bluegray-1;
+      box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.08),
+        0px 4px 10px rgba(0, 0, 0, 0.06);
+      background-color: white;
+
+      div {
+        width: 75px;
+        padding: 10px;
+      }
+
+      .live_chat_box {
+        .chat_button_text.active {
+          color: $fiivepurple-5;
+        }
+      }
+    }
+
+    .quit_button_wrapper {
+      padding: 10px;
+      color: white;
+      background-color: $red-5;
+    }
+  }
+}
+
+.fiive_layout.learner_layout::-webkit-scrollbar {
+  display: none;
 }

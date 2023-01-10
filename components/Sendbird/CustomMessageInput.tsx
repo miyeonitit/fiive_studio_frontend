@@ -9,7 +9,6 @@ import '../../node_modules/react-toastify/dist/ReactToastify.css'
 import sendbirdSelectors from '@sendbird/uikit-react/sendbirdSelectors'
 import useSendbirdStateContext from '@sendbird/uikit-react/useSendbirdStateContext'
 import { useChannelContext } from '@sendbird/uikit-react/Channel/context'
-// import TypingIndicator from '@sendbird/uikit-react/Channel/components/TypingIndicator'
 
 import {
   UserMessageCreateParams,

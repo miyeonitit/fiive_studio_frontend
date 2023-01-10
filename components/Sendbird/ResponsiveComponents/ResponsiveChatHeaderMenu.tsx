@@ -26,7 +26,9 @@ const ResponsiveChatHeaderMenu = (props: props) => {
     setIsCloseModal(true)
 
     // 400초가 지나면 modal close 처리
-    let timer = setTimeout(() => props.setIsMoreMiniMenu(false), 400)
+    let timer = setTimeout(() => {
+      props.setIsMoreMiniMenu(false)
+    }, 400)
 
     // setTimeout의 cleanUp 처리
     clearSetTimeOut(timer)
