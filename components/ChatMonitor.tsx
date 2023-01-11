@@ -12,8 +12,6 @@ import useSendbirdStateContext from '@sendbird/uikit-react/useSendbirdStateConte
 import { ChannelProvider } from '@sendbird/uikit-react/Channel/context'
 import ChannelUI from '@sendbird/uikit-react/Channel/components/ChannelUI'
 
-import sendBirdUseStore from '../store/Sendbird'
-
 import CustomTeacherPopupChat from './Sendbird/CustomTeacherPopupChat'
 
 type props = {
@@ -23,13 +21,6 @@ type props = {
 const MessageList = () => {
   const context = useSendbirdStateContext()
   const sdk = sendbirdSelectors.getSdk(context)
-
-  const appId = process.env.NEXT_PUBLIC_SENDBIRD_APP_ID
-
-  //  var sb = new SendBird({ appId: appId })
-
-  // 새로운 메시지가 추가될 때마다 저장하는 메시지 state
-  // const messageLength = sendBirdUseStore((state: any) => state.messageLength)
 
   useEffect(() => {
     const intvl = window.setInterval(() => {
@@ -50,7 +41,7 @@ const MessageList = () => {
       })
 
       sdk.groupChannel.addGroupChannelHandler(
-        'GROUP_CHANNEL_HANDLE',
+        'GROUP_CHANNEL_HANDLER',
         groupChannelHandler
       )
     }
@@ -59,37 +50,9 @@ const MessageList = () => {
       window.clearInterval(intvl)
 
       if (sdk?.groupChannel?.addGroupChannelHandler) {
-        sdk.groupChannel.removeGroupChannelHandler('GROUP_CHANNEL_HANDLE')
+        sdk.groupChannel.removeGroupChannelHandler('GROUP_CHANNEL_HANDLER')
       }
     }
-
-    // 1. 전역상태관리 방법
-    // if (messageLength !== 0) {
-    //   window.setTimeout(() => {
-    //     window.scrollTo(0, document.body.scrollHeight)
-    //   }, 100)
-    // }
-
-    // 2. 센드버드 라이브러리 방법
-    // if (sb.addChannelHandler) {
-    //   const groupChannelHandler: GroupChannelHandler = new GroupChannelHandler({
-    //     onMessageReceived: (channel: BaseChannel, message: BaseMessage) => {
-    //       window.setTimeout(() => {
-    //         window.scrollTo(0, document.body.scrollHeight)
-    //       }, 100)
-    //     },
-    //   })
-
-    //   sb.addChannelHandler('GROUP_CHANNEL_HANDLER', groupChannelHandler)
-    // }
-
-    // return () => {
-    //   window.clearInterval(intvl)
-
-    //   if (sb.addChannelHandler) {
-    //     sb.removeChannelHandler('GROUP_CHANNEL_HANDLER')
-    //   }
-    // }
   })
 
   return (
