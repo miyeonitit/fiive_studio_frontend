@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import kr from 'date-fns/locale/ko'
 
+import * as SendBird from 'sendbird'
 import SendbirdProvider from '@sendbird/uikit-react/SendbirdProvider'
 import { ChannelProvider } from '@sendbird/uikit-react/Channel/context'
 import ChannelUI from '@sendbird/uikit-react/Channel/components/ChannelUI'
-
-import * as SendBird from 'sendbird'
 
 import { config } from '../utils/HeaderConfig'
 import useStore from '../store/Sendbird'
@@ -46,34 +45,9 @@ const Chat = (props: props) => {
   const appId = process.env.NEXT_PUBLIC_SENDBIRD_APP_ID
   const currentChannelUrl = process.env.NEXT_PUBLIC_SENDBIRD_TEST_CHANNEL_ID
 
-  var sb = new SendBird({ appId: appId })
-  console.log(sb, 'sb')
-
   useEffect(() => {
     contextAddEmojiContainer(props.emojiContainer)
   }, [])
-
-  useEffect(() => {
-    const connectionHandler: ConnectionHandler = new ConnectionHandler()
-
-    console.log(connectionHandler, 'connectionHandler')
-
-    connectionHandler.onDisconnected = () => {
-      sb.reconnect()
-      console.log('1 실행')
-    }
-
-    connectionHandler.onReconnectFailed = () => {
-      sb.reconnect()
-      console.log('2 실행')
-    }
-
-    sb.addConnectionHandler('GROUP_CHANNEL_HANDLER', connectionHandler)
-
-    return () => {
-      sb.removeConnectionHandler('GROUP_CHANNEL_HANDLER')
-    }
-  }, [sb])
 
   return (
     <>

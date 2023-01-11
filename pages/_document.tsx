@@ -11,11 +11,6 @@ class MyDocument extends Document {
 
           <meta name='description' content='fiive studio' />
 
-          <meta
-            name='viewport'
-            content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'
-          />
-
           <meta property='og:type' content='website' />
           <meta property='og:title' content='fiive studio' />
           <meta property='og:site_name' content='fiive studio' />
