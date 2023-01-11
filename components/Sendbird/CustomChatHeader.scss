@@ -145,13 +145,13 @@
     width: 8px;
     padding: 1px;
     background-clip: padding-box;
-    background-color: white;
+    background-color: transparent;
   }
 
   .chat_user_list_wrapper::-webkit-scrollbar-thumb {
     border-radius: 10px;
     background-clip: padding-box;
-    border-right: 2px solid white;
+    border-right: 2px solid transparent;
 
     background-color: $bluegray-4;
   }
