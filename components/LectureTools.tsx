@@ -22,7 +22,7 @@ const LectureTools = (props: props) => {
   )
 
   const openChatMonitor = () => {
-    window.open('/chat-monitor', 'chat-monitor', 'width=340,height=500px')
+    window.open('/chat-monitor', 'chat-monitor', 'width=300,height=500px')
   }
 
   const openQuestionMonitor = () => {

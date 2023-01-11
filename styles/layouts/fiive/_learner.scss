@@ -17,6 +17,7 @@
     & > .page {
       width: 100%;
       padding: 12px;
+      margin-bottom: 82px;
       background-color: $bluegray-2;
     }
   }
@@ -162,4 +163,28 @@
 
 .fiive_layout.learner_layout::-webkit-scrollbar {
   display: none;
+}
+
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+  .fiive_layout.learner_layout {
+    .layout-footer {
+      justify-content: space-between;
+
+      .help_button_wrapper {
+        display: none;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .fiive_layout.learner_layout {
+    .layout-footer {
+      justify-content: space-between;
+
+      .help_button_wrapper {
+        display: none;
+      }
+    }
+  }
 }

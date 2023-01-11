@@ -30,6 +30,11 @@ const TeacherPage: NextPageWithLayout = () => {
   // 반응형 미디어쿼리 스타일 지정을 위한 브라우저 넓이 측정 전역 state
   const offsetX = fiiveStudioUseStore((state: any) => state.offsetX)
 
+  // 반응형 사이즈에서 header의 라이브 참여자 목록을 볼 때, UI height 버그를 처리하기 위해 확인하는 boolean state
+  const isOpenResponsiveLiveMember = fiiveStudioUseStore(
+    (state: any) => state.isOpenResponsiveLiveMember
+  )
+
   // sendbird Chat open <> close 동작을 위한 toggle boolean state
   const isChatOpen = fiiveStudioUseStore((state: any) => state.isChatOpen)
   const setIsChatOpen = fiiveStudioUseStore((state: any) => state.setIsChatOpen)
@@ -47,7 +52,7 @@ const TeacherPage: NextPageWithLayout = () => {
 
   // 반응형일 때, 전체 페이지 height(100vh) - ( Nav height(57px) + fix bottom height(82px) + content margin up & down(24px) = 163px )- Video height
   const chatHeightStyle: CSSProperties =
-    offsetX < 1023
+    offsetX < 1023 && !isOpenResponsiveLiveMember
       ? {
           height: `calc(100vh  - 163px - ${chatOffsetHeight}px)`,
         }
@@ -173,7 +178,6 @@ const TeacherPage: NextPageWithLayout = () => {
         <section className='questions'>
           <TeacherQuestionWidget></TeacherQuestionWidget>
         </section>
-
         <section className='chat'>
           <TeacherChatWidget emojiContainer={emojiContainer} />
         </section>
@@ -186,7 +190,6 @@ const TeacherPage: NextPageWithLayout = () => {
           }}
         ></AnnouncementModal>
       )}
-
       {timerModal && (
         <TimerModal
           toggle={() => {
