@@ -98,37 +98,44 @@ const ResponsiveChatHeaderMenu = (props: props) => {
           </div>
 
           {props.userRole === 'teacher' && (
-            <div
-              className='modal_line_menu'
-              onClick={() => props.controlFreezeChat()}
-            >
-              <div className='freeze_button_image_box'>
-                <Image
-                  src='/Sendbird/lock_icon.svg'
-                  width={18}
-                  height={18}
-                  alt='deleteButton'
-                />
+            <>
+              <div
+                className='modal_line_menu'
+                onClick={() => props.controlFreezeChat()}
+              >
+                <div className='freeze_button_image_box'>
+                  <Image
+                    src='/Sendbird/lock_icon.svg'
+                    width={18}
+                    height={18}
+                    alt='deleteButton'
+                  />
+                </div>
+                {props.isFreezeChat ? (
+                  <div className='freeze_button_text_box'>채팅창 녹이기</div>
+                ) : (
+                  <div className='freeze_button_text_box'>채팅창 얼리기</div>
+                )}
               </div>
-              {props.isFreezeChat ? (
-                <div className='freeze_button_text_box'>채팅창 녹이기</div>
-              ) : (
-                <div className='freeze_button_text_box'>채팅창 얼리기</div>
-              )}
-            </div>
-          )}
 
-          <div className='modal_line_menu' onClick={() => openChatMonitor()}>
-            <div className='share_chat_button_image_box'>
-              <Image
-                src='/Sendbird/share_chatting_icon.svg'
-                width={18}
-                height={18}
-                alt='deleteButton'
-              />
-            </div>
-            <div className='share_chat_button_text_box'>채팅창 내보내기</div>
-          </div>
+              <div
+                className='modal_line_menu'
+                onClick={() => openChatMonitor()}
+              >
+                <div className='share_chat_button_image_box'>
+                  <Image
+                    src='/Sendbird/share_chatting_icon.svg'
+                    width={18}
+                    height={18}
+                    alt='deleteButton'
+                  />
+                </div>
+                <div className='share_chat_button_text_box'>
+                  채팅창 내보내기
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

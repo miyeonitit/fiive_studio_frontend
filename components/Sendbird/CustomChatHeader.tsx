@@ -242,38 +242,40 @@ const CustomChatHeader = (props: props) => {
                   </div>
 
                   {props.userRole === 'teacher' && (
-                    <div
-                      className='list_in_menu'
-                      onClick={() => {
-                        controlFreezeChat()
-                      }}
-                    >
-                      <Image
-                        src='/Sendbird/lock_icon.svg'
-                        width={16}
-                        height={16}
-                        alt='lockIcon'
-                      />
-                      {isFreezeChat ? (
-                        <span>채팅창 녹이기</span>
-                      ) : (
-                        <span>채팅창 얼리기</span>
-                      )}
-                    </div>
-                  )}
+                    <>
+                      <div
+                        className='list_in_menu'
+                        onClick={() => {
+                          controlFreezeChat()
+                        }}
+                      >
+                        <Image
+                          src='/Sendbird/lock_icon.svg'
+                          width={16}
+                          height={16}
+                          alt='lockIcon'
+                        />
+                        {isFreezeChat ? (
+                          <span>채팅창 녹이기</span>
+                        ) : (
+                          <span>채팅창 얼리기</span>
+                        )}
+                      </div>
 
-                  <div
-                    className='list_in_menu'
-                    onClick={() => openChatMonitor()}
-                  >
-                    <Image
-                      src='/Sendbird/share_chatting_icon.svg'
-                      width={16}
-                      height={16}
-                      alt='shareIcon'
-                    />
-                    <span>채팅 내보내기</span>
-                  </div>
+                      <div
+                        className='list_in_menu'
+                        onClick={() => openChatMonitor()}
+                      >
+                        <Image
+                          src='/Sendbird/share_chatting_icon.svg'
+                          width={16}
+                          height={16}
+                          alt='shareIcon'
+                        />
+                        <span>채팅 내보내기</span>
+                      </div>
+                    </>
+                  )}
                 </div>
               ) : (
                 <ResponsiveChatHeaderMenu
