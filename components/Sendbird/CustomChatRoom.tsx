@@ -439,20 +439,18 @@ const CustomChatRoom = (props: props) => {
     }
   }
 
-  // outside click 처리와 responsive modal의 강제 스타일링 처리
+  // responsive modal의 강제 스타일링 처리와 outside click 처리
   useEffect(() => {
     setIsOpenResponsiveModal(
-      isMoreMiniMenu ||
-        isReactionTopBox ||
-        isReactionBottomBox ||
-        isHoverMoreMenu
+      isMoreMiniMenu || isReactionTopBox || isReactionBottomBox
     )
+
     document.addEventListener('mousedown', clickModalOutside)
 
     return () => {
       document.removeEventListener('mousedown', clickModalOutside)
     }
-  }, [isMoreMiniMenu, isReactionTopBox, isReactionBottomBox, isHoverMoreMenu])
+  }, [isMoreMiniMenu, isReactionTopBox, isReactionBottomBox])
 
   // console.log(sender, 'sender')
   // console.log(messageInfomation, 'info')

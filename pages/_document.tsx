@@ -6,10 +6,8 @@ class MyDocument extends Document {
       <Html>
         <Head lang='ko'>
           <meta charSet='utf-8' />
-          <meta
-            name='viewport'
-            content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'
-          />
+
+          <link rel='icon' href='/icons/studio_favicon_black.ico' />
 
           <meta name='description' content='fiive studio' />
 

@@ -123,9 +123,6 @@ const FiiveLayout = (props: any) => {
       <div className='layout-body'>{children}</div>
 
       <footer className='layout-footer' style={responsiveZindexStyle}>
-        {/* 문의하기 영역 */}
-        <div className='help_button_wrapper'></div>
-
         {/* 위젯 메뉴 영역 */}
         <div className='widget_menu_wrapper'>
           <div
