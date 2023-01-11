@@ -7,8 +7,6 @@ class MyDocument extends Document {
         <Head lang='ko'>
           <meta charSet='utf-8' />
 
-          <link rel='icon' href='/icons/studio_favicon_black.ico' />
-
           <meta name='description' content='fiive studio' />
 
           <meta property='og:type' content='website' />
