@@ -95,8 +95,13 @@ const TeacherPage: NextPageWithLayout = () => {
   return (
     <div className='fiive teacher page'>
       <Head>
-        <title>fiive teacher</title>
-        <meta name='description' content='fiive teacher' />
+        <title>fiive studio || teacher page</title>
+        <link rel='icon' href='/icons/studio_favicon_black.ico' />
+
+        <meta
+          name='viewport'
+          content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'
+        />
       </Head>
 
       {/* <aside className='utilities'>
