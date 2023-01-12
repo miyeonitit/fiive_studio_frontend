@@ -148,6 +148,7 @@ const CustomChatHeader = (props: props) => {
 
   const openChatMonitor = () => {
     const chatUrl = studioUrl + 'chat-monitor'
+    console.log(chatUrl, 'chatUrl')
     window.navigator.clipboard.writeText(chatUrl)
     setIsMoreMiniMenu(false)
   }

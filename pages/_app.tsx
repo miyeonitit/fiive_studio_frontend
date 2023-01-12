@@ -1,5 +1,4 @@
 import { useEffect } from 'react'
-import Head from 'next/head'
 import Script from 'next/script'
 
 import '@sendbird/uikit-react/dist/index.css'
@@ -41,17 +40,6 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
   return (
     <>
-      <Head>
-        <title>fiive studio</title>
-
-        <link rel='icon' href='/icons/studio_favicon_black.ico' />
-
-        <meta
-          name='viewport'
-          content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'
-        />
-      </Head>
-
       <ThemeProvider theme={lightTheme}>
         <MeetingProvider>
           <Script

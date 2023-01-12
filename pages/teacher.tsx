@@ -94,9 +94,9 @@ const TeacherPage: NextPageWithLayout = () => {
 
   return (
     <div className='fiive teacher page'>
-      <Head>
+      {/* <Head>
         <title>fiive studio || teacher page</title>
-      </Head>
+      </Head> */}
 
       {/* <aside className='utilities'>
         <section className='tools'>

@@ -7,6 +7,15 @@ class MyDocument extends Document {
         <Head lang='ko'>
           <meta charSet='utf-8' />
 
+          <title>fiive studio page</title>
+
+          <link rel='icon' href='/icons/studio_favicon_black.ico' />
+
+          <meta
+            name='viewport'
+            content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0'
+          />
+
           <meta name='description' content='fiive studio' />
 
           <meta property='og:type' content='website' />
