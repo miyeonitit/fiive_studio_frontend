@@ -98,9 +98,9 @@ const LearnerPage: NextPageWithLayout = () => {
 
   return (
     <div className='fiive learner page'>
-      <Head>
+      {/* <Head>
         <title>fiive studio || learner page</title>
-      </Head>
+      </Head> */}
 
       <main>
         {/* ivs 영역 */}

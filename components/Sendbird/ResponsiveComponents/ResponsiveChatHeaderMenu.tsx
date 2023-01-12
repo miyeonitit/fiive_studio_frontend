@@ -27,6 +27,7 @@ const ResponsiveChatHeaderMenu = (props: props) => {
   const openChatMonitor = () => {
     const chatUrl = studioUrl + 'chat-monitor'
     window.navigator.clipboard.writeText(chatUrl)
+    console.log(chatUrl, 'chatUrl')
     props.setIsMoreMiniMenu(false)
   }
 
