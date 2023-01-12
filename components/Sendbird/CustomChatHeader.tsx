@@ -73,6 +73,7 @@ const CustomChatHeader = (props: props) => {
   const ApiStudio = process.env.NEXT_PUBLIC_API_BASE_URL
   const apiToken = process.env.NEXT_PUBLIC_SENDBIRD_API_TOKEN
   const currentChannelUrl = process.env.NEXT_PUBLIC_SENDBIRD_TEST_CHANNEL_ID
+  const studioUrl = process.env.NEXT_PUBLIC_STUDIO_URL
 
   const saveComponentIndex = (index: number) => {
     setSaveIndex(index)
@@ -146,7 +147,9 @@ const CustomChatHeader = (props: props) => {
   }
 
   const openChatMonitor = () => {
-    window.open('/chat-monitor', 'chat-monitor', 'width=300,height=500px')
+    const chatUrl = studioUrl + 'chat-monitor'
+    window.navigator.clipboard.writeText(chatUrl)
+    setIsMoreMiniMenu(false)
   }
 
   // 더보기 미니 메뉴 outside click
