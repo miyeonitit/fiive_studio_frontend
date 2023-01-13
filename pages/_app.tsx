@@ -1,5 +1,8 @@
 import { useEffect } from 'react'
 import Script from 'next/script'
+import axios from 'axios'
+
+import classRoomUseStore from '../store/classRoom'
 
 import '@sendbird/uikit-react/dist/index.css'
 import {
@@ -20,6 +23,24 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   // 반응형 미디어쿼리 스타일 지정을 위한 브라우저 넓이 측정 전역 state
   const setOffsetX = fiiveStudioUseStore((state: any) => state.setOffsetX)
 
+  // ivs, sendbird chat infomation 정보를 저장하는 state
+  const setIvsData = classRoomUseStore((state: any) => state.setIvsData)
+  const setChatData = classRoomUseStore((state: any) => state.setChatData)
+
+  const ApiStudio = process.env.NEXT_PUBLIC_API_BASE_URL
+  const testIvsValue = process.env.NEXT_PUBLIC_TEST_IVS_CHANNEL_VALUE
+
+  const getIvsAndChatData = () => {
+    axios
+      .get(`${ApiStudio}/classroom/${testIvsValue}/session/0`)
+      .then((response) => {
+        const data = response.data
+
+        setIvsData(data.ivs)
+        setChatData(data.sendbird)
+      })
+  }
+
   const reset = () => {
     if (typeof window !== 'undefined') {
       setOffsetX(window.innerWidth)
@@ -36,6 +57,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
   useEffect(() => {
     reset()
+    getIvsAndChatData()
   }, [])
 
   return (

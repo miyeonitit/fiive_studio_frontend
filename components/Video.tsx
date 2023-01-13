@@ -4,7 +4,11 @@ import axios from 'axios'
 // import Messages from "../components/Messages";
 import videoUseStore from '../store/video'
 
-const Video = () => {
+type props = {
+  playbackUrl: string
+}
+
+const Video = (props: props) => {
   const channel = videoUseStore((state: any) => state.channel)
   const setChannel = videoUseStore((state: any) => state.setChannel)
 
@@ -24,10 +28,13 @@ const Video = () => {
 
   const ApiStudio = process.env.NEXT_PUBLIC_API_BASE_URL
   const testIvsValue = process.env.NEXT_PUBLIC_TEST_IVS_CHANNEL_VALUE
+  const testIvsToken = process.env.NEXT_PUBLIC_TEST_IVS_TOKEN
 
   useEffect(() => {
-    initVideo()
-  }, [])
+    if (typeof props.playbackUrl !== 'undefined') {
+      initVideo()
+    }
+  }, [props.playbackUrl])
 
   const getChannelData = async () => {
     let channelData = ''
@@ -52,14 +59,16 @@ const Video = () => {
     // Bail if player is not supported
     if (!IVSPlayer.isPlayerSupported) return
 
-    // get ivs channel data
-    const channelData = await getChannelData()
+    // // get ivs channel data
+    // const channelData = await getChannelData()
 
     // 리턴된 channelData를 전역적으로 저장
-    setChannel(channelData)
+    // setChannel(channelData)
 
     // get playbackUrl in channelData
-    const playbackUrl = channelData?.channel?.playbackUrl
+    // const playbackUrl = channelData?.channel?.playbackUrl
+
+    const playbackUrl = props.playbackUrl + `?token=${testIvsToken}`
 
     const player = IVSPlayer.create()
 

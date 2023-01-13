@@ -7,6 +7,7 @@ import { CSSProperties } from 'styled-components'
 import axios from 'axios'
 
 import sendbirdUseStore from '../store/Sendbird'
+import classRoomUseStore from '../store/classRoom'
 import fiiveStudioUseStore from '../store/FiiveStudio'
 
 import Layout from '../components/FiiveLearnerLayout'
@@ -36,6 +37,9 @@ const LearnerPage: NextPageWithLayout = () => {
   const isChatOpen = fiiveStudioUseStore((state: any) => state.isChatOpen)
   const setIsChatOpen = fiiveStudioUseStore((state: any) => state.setIsChatOpen)
 
+  // ivs, sendbird chat infomation 정보를 저장하는 state
+  const ivsData = classRoomUseStore((state: any) => state.ivsData)
+
   const questions = useStore((state: any) => state.questions)
 
   const [questionModal, toggleQuestionModal] = useState(false)
@@ -49,6 +53,10 @@ const LearnerPage: NextPageWithLayout = () => {
 
   const playerHeightRef = useRef<HTMLElement>(null)
 
+  const ApiStudio = process.env.NEXT_PUBLIC_API_BASE_URL
+  const testIvsValue = process.env.NEXT_PUBLIC_TEST_IVS_CHANNEL_VALUE
+  const emojiCategoryId = process.env.NEXT_PUBLIC_SENDBIRD_EMOJI_CATEGORY_ID
+
   // 반응형일 때, 전체 페이지 height(100vh) - ( Nav height(57px) + fix bottom height(82px) + content margin up & down(24px) = 163px )- Video height
   const chatHeightStyle: CSSProperties =
     offsetX < 1023 && !isOpenResponsiveLiveMember
@@ -60,6 +68,19 @@ const LearnerPage: NextPageWithLayout = () => {
   const question = () => {
     const [question = null] = questions
     return question
+  }
+
+  const getEmojiCategory = () => {
+    axios
+      .get(`${ApiStudio}/sendbird/emoji_categories/${emojiCategoryId}`)
+      .then((response) => {
+        const data = response.data
+
+        setEmojiContainer(data.emojis)
+      })
+      .catch((error) => {
+        console.error('실패:', error)
+      })
   }
 
   // 브라우저 resize 할 때마다 <Video /> 의 height 감지
@@ -78,22 +99,7 @@ const LearnerPage: NextPageWithLayout = () => {
 
   useEffect(() => {
     reset()
-  }, [])
-
-  useEffect(() => {
-    const ApiStudio = process.env.NEXT_PUBLIC_API_BASE_URL
-    const emojiCategoryId = process.env.NEXT_PUBLIC_SENDBIRD_EMOJI_CATEGORY_ID
-
-    axios
-      .get(`${ApiStudio}/sendbird/emoji_categories/${emojiCategoryId}`)
-      .then((response) => {
-        const data = response.data
-
-        setEmojiContainer(data.emojis)
-      })
-      .catch((error) => {
-        console.error('실패:', error)
-      })
+    getEmojiCategory()
   }, [])
 
   return (
@@ -108,7 +114,7 @@ const LearnerPage: NextPageWithLayout = () => {
           <Announcements></Announcements>
           <Timer></Timer>
           <Reactions></Reactions>
-          <Video />
+          <Video playbackUrl={ivsData?.channel?.playbackUrl} />
         </section>
 
         {/* class infomation 영역 */}
@@ -185,7 +191,7 @@ const LearnerPage: NextPageWithLayout = () => {
             emojiContainer={emojiContainer}
           />
         </div>
-        {/* <footer>
+        <footer>
           <button
             onClick={() => {
               toggleQuestionModal(true)
@@ -229,7 +235,7 @@ const LearnerPage: NextPageWithLayout = () => {
               }}
             ></SubmitReaction>
           )}
-        </footer> */}
+        </footer>
       </aside>
 
       {questionModal && (
