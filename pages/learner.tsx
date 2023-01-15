@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect, ReactElement } from 'react'
 import { NextPageWithLayout } from '../types/NextPageWithLayout'
+import type { GetStaticProps } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
 import { CSSProperties } from 'styled-components'
-import axios from 'axios'
 
+import AxiosRequest from '../utils/AxiosRequest'
 import sendbirdUseStore from '../store/Sendbird'
 import classRoomUseStore from '../store/classRoom'
 import fiiveStudioUseStore from '../store/FiiveStudio'
@@ -19,12 +20,16 @@ import Timer from '../components/Timer'
 import Reactions from '../components/Reactions'
 import useStore from '../store/video'
 
+type props = {
+  emoji_data: { id: number; key: string; url: string }
+}
+
 const Chat = dynamic(() => import('../components/Chat'), {
   ssr: false,
   loading: () => <div>Loading...</div>,
 })
 
-const LearnerPage: NextPageWithLayout = () => {
+const LearnerPage: NextPageWithLayout = (props: props) => {
   // 반응형 미디어쿼리 스타일 지정을 위한 브라우저 넓이 측정 전역 state
   const offsetX = fiiveStudioUseStore((state: any) => state.offsetX)
 
@@ -49,12 +54,10 @@ const LearnerPage: NextPageWithLayout = () => {
   const [chatOffsetHeight, setChatOffsetHeight] = useState(0)
 
   // custom reaction emoji list state
-  const [emojiContainer, setEmojiContainer] = useState([])
+  const [emojiContainer, setEmojiContainer] = useState(props.emoji_data?.emojis)
 
   const playerHeightRef = useRef<HTMLElement>(null)
 
-  const ApiStudio = process.env.NEXT_PUBLIC_API_BASE_URL
-  const testIvsValue = process.env.NEXT_PUBLIC_TEST_IVS_CHANNEL_VALUE
   const emojiCategoryId = process.env.NEXT_PUBLIC_SENDBIRD_EMOJI_CATEGORY_ID
 
   // 반응형일 때, 전체 페이지 height(100vh) - ( Nav height(57px) + fix bottom height(82px) + content margin up & down(24px) = 163px )- Video height
@@ -68,19 +71,6 @@ const LearnerPage: NextPageWithLayout = () => {
   const question = () => {
     const [question = null] = questions
     return question
-  }
-
-  const getEmojiCategory = () => {
-    axios
-      .get(`${ApiStudio}/sendbird/emoji_categories/${emojiCategoryId}`)
-      .then((response) => {
-        const data = response.data
-
-        setEmojiContainer(data.emojis)
-      })
-      .catch((error) => {
-        console.error('실패:', error)
-      })
   }
 
   // 브라우저 resize 할 때마다 <Video /> 의 height 감지
@@ -99,14 +89,13 @@ const LearnerPage: NextPageWithLayout = () => {
 
   useEffect(() => {
     reset()
-    getEmojiCategory()
   }, [])
 
   return (
     <div className='fiive learner page'>
-      {/* <Head>
+      <Head>
         <title>fiive studio || learner page</title>
-      </Head> */}
+      </Head>
 
       <main>
         {/* ivs 영역 */}
@@ -114,7 +103,7 @@ const LearnerPage: NextPageWithLayout = () => {
           <Announcements></Announcements>
           <Timer></Timer>
           <Reactions></Reactions>
-          <Video playbackUrl={ivsData?.channel?.playbackUrl} />
+          <Video playbackUrl={ivsData?.playbackUrl} />
         </section>
 
         {/* class infomation 영역 */}
@@ -191,7 +180,7 @@ const LearnerPage: NextPageWithLayout = () => {
             emojiContainer={emojiContainer}
           />
         </div>
-        <footer>
+        {/* <footer>
           <button
             onClick={() => {
               toggleQuestionModal(true)
@@ -235,7 +224,7 @@ const LearnerPage: NextPageWithLayout = () => {
               }}
             ></SubmitReaction>
           )}
-        </footer>
+        </footer> */}
       </aside>
 
       {questionModal && (
@@ -251,6 +240,25 @@ const LearnerPage: NextPageWithLayout = () => {
 
 LearnerPage.getLayout = (page: ReactElement) => {
   return <Layout>{page}</Layout>
+}
+
+export const getStaticProps: GetStaticProps = async (context) => {
+  const emojiCategoryId = process.env.NEXT_PUBLIC_SENDBIRD_EMOJI_CATEGORY_ID
+
+  const requestUrl = `/sendbird/emoji_categories/${emojiCategoryId}`
+
+  const responseData = await AxiosRequest({
+    url: requestUrl,
+    method: 'GET',
+    body: '',
+    token: '',
+  })
+
+  return {
+    props: {
+      emoji_data: responseData,
+    },
+  }
 }
 
 export default LearnerPage

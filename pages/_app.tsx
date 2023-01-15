@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import Script from 'next/script'
-import axios from 'axios'
 
+import AxiosRequest from '../utils/AxiosRequest'
 import classRoomUseStore from '../store/classRoom'
 
 import '@sendbird/uikit-react/dist/index.css'
@@ -27,18 +27,20 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const setIvsData = classRoomUseStore((state: any) => state.setIvsData)
   const setChatData = classRoomUseStore((state: any) => state.setChatData)
 
-  const ApiStudio = process.env.NEXT_PUBLIC_API_BASE_URL
   const testIvsValue = process.env.NEXT_PUBLIC_TEST_IVS_CHANNEL_VALUE
 
-  const getIvsAndChatData = () => {
-    axios
-      .get(`${ApiStudio}/classroom/${testIvsValue}/session/0`)
-      .then((response) => {
-        const data = response.data
+  const getIvsAndChatData = async () => {
+    const requestUrl = `/classroom/${testIvsValue}/session/0`
 
-        setIvsData(data.ivs)
-        setChatData(data.sendbird)
-      })
+    const responseData = await AxiosRequest({
+      url: requestUrl,
+      method: 'GET',
+      body: '',
+      token: '',
+    })
+
+    setIvsData(responseData.ivs.channel)
+    setChatData(responseData.sendbird)
   }
 
   const reset = () => {

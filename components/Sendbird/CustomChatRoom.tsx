@@ -6,7 +6,6 @@ import React, {
   SetStateAction,
 } from 'react'
 import Image from 'next/image'
-import axios from 'axios'
 import { ToastContainer, toast, cssTransition } from 'react-toastify'
 
 import { useChannelContext } from '@sendbird/uikit-react/Channel/context'
@@ -17,7 +16,8 @@ import ImageRenderer from '@sendbird/uikit-react/ui/ImageRenderer'
 
 import 'animate.css'
 import '../../node_modules/react-toastify/dist/ReactToastify.css'
-import { config } from '../../utils/HeaderConfig'
+
+import AxiosRequest from '../../utils/AxiosRequest'
 import fiiveStudioUseStore from '../../store/FiiveStudio'
 
 import MessageTooltip from './components/MessageTooltip'
@@ -97,8 +97,6 @@ const CustomChatRoom = (props: props) => {
   const reactionTopRef = useRef<HTMLDivElement>(null)
   const reactionBottomRef = useRef<HTMLDivElement>(null)
 
-  const ApiStudio = process.env.NEXT_PUBLIC_API_BASE_URL
-  const apiToken = process.env.NEXT_PUBLIC_SENDBIRD_API_TOKEN
   const currentChannelUrl = process.env.NEXT_PUBLIC_SENDBIRD_TEST_CHANNEL_ID
 
   const fadeUp = cssTransition({
@@ -167,182 +165,22 @@ const CustomChatRoom = (props: props) => {
       })
   }
 
-  const blockUser = (senderId: string) => {
-    const body = {
-      target_id: senderId,
-    }
-
-    axios
-      .post(`${ApiStudio}/sendbird/users/${props.userId}/block`, body)
-      .then((response) => {
-        toast.success(
-          <div className='toast_success_box'>
-            <Image
-              src='/Sendbird/toast_success_icon.svg'
-              width={16}
-              height={16}
-              alt='toastSuccessIcon'
-            />
-            <span className='toast_success_text'>
-              {senderId} 님을 차단했어요.
-            </span>
-          </div>,
-          { transition: fadeUp }
-        )
-        setIsBlockUser(true)
-        setIsMoreMiniMenu(false)
-      })
-      .catch((error) => {
-        console.error('실패:', error)
-        toast.error(
-          <div className='toast_error_box'>
-            <Image
-              src='/Sendbird/toast_warning_icon.svg'
-              width={16}
-              height={16}
-              alt='toastWarningIcon'
-            />
-            <span className='toast_error_text'>
-              네트워크 문제로 차단하지 못했어요.
-            </span>
-          </div>,
-          { transition: fadeUp }
-        )
-      })
-  }
-
-  const unblockUser = (senderId: string) => {
-    axios
-      .delete(`${ApiStudio}/sendbird/users/${props.userId}/block/${senderId}`)
-      .then((data) => {
-        toast.success(
-          <div className='toast_success_box'>
-            <Image
-              src='/Sendbird/toast_success_icon.svg'
-              width={16}
-              height={16}
-              alt='toastSuccessIcon'
-            />
-            <span className='toast_success_text'>
-              {senderId} 님을 차단 해제했어요.
-            </span>
-          </div>,
-          { transition: fadeUp }
-        )
-        setIsBlockUser(false)
-        setIsMoreMiniMenu(false)
-      })
-      .catch((error) => {
-        console.error('실패:', error)
-        toast.error(
-          <div className='toast_error_box'>
-            <Image
-              src='/Sendbird/toast_warning_icon.svg'
-              width={16}
-              height={16}
-              alt='toastWarningIcon'
-            />
-            <span className='toast_error_text'>
-              네트워크 문제로 차단 해제 못했어요.
-            </span>
-          </div>,
-          { transition: fadeUp }
-        )
-      })
-  }
-
-  const muteUser = (senderId: string) => {
-    const body = {
-      user_id: senderId,
-      seconds: 600,
-    }
-
-    axios
-      .post(
-        `${ApiStudio}/sendbird/group_channels/${currentChannelUrl}/mute`,
-        body
+  // status가 true: toast 성공 <> false : toast 에러
+  const controlToastPopup = (status: boolean, contentText: string) => {
+    if (status) {
+      toast.success(
+        <div className='toast_success_box'>
+          <Image
+            src='/Sendbird/toast_success_icon.svg'
+            width={16}
+            height={16}
+            alt='toastSuccessIcon'
+          />
+          <span className='toast_success_text'>{contentText}</span>
+        </div>,
+        { transition: fadeUp }
       )
-      .then((data) => {
-        toast.success(
-          <div className='toast_success_box'>
-            <Image
-              src='/Sendbird/toast_success_icon.svg'
-              width={16}
-              height={16}
-              alt='toastSuccessIcon'
-            />
-            <span className='toast_success_text'>
-              {senderId} 님을 채팅 일시정지 했어요.
-            </span>
-          </div>,
-          { transition: fadeUp }
-        )
-        setIsMutedUser(true)
-        setIsMoreMiniMenu(false)
-      })
-      .catch((error) => {
-        console.error('실패:', error)
-        toast.error(
-          <div className='toast_error_box'>
-            <Image
-              src='/Sendbird/toast_warning_icon.svg'
-              width={16}
-              height={16}
-              alt='toastWarningIcon'
-            />
-            <span className='toast_error_text'>
-              네트워크 문제로 채팅 일시정지를 못했어요.
-            </span>
-          </div>,
-          { transition: fadeUp }
-        )
-      })
-  }
-
-  const unmuteUser = (senderId: string) => {
-    axios
-      .delete(
-        `${ApiStudio}/sendbird/group_channels/${currentChannelUrl}/mute/${senderId}`
-      )
-      .then((data) => {
-        toast.success(
-          <div className='toast_success_box'>
-            <Image
-              src='/Sendbird/toast_success_icon.svg'
-              width={16}
-              height={16}
-              alt='toastSuccessIcon'
-            />
-            <span className='toast_success_text'>
-              {senderId} 님의 채팅 일시정지를 해제했어요.
-            </span>
-          </div>,
-          { transition: fadeUp }
-        )
-        setIsMutedUser(false)
-        setIsMoreMiniMenu(false)
-      })
-      .catch((error) => {
-        console.error('실패:', error)
-        toast.error(
-          <div className='toast_error_box'>
-            <Image
-              src='/Sendbird/toast_warning_icon.svg'
-              width={16}
-              height={16}
-              alt='toastWarningIcon'
-            />
-            <span className='toast_error_text'>
-              네트워크 문제로 채팅 일시정지 해제를 못했어요.
-            </span>
-          </div>,
-          { transition: fadeUp }
-        )
-      })
-  }
-
-  const editMessage = () => {
-    if (editMessageValue === '' || editMessageValue.length < 1) {
+    } else {
       toast.error(
         <div className='toast_error_box'>
           <Image
@@ -351,43 +189,121 @@ const CustomChatRoom = (props: props) => {
             height={16}
             alt='toastWarningIcon'
           />
-          <span className='toast_error_text'>
-            수정할 메시지를 입력해 주세요.
-          </span>
+          <span className='toast_error_text'>{contentText}</span>
         </div>,
         { transition: fadeUp }
       )
+    }
+  }
+
+  const blockUser = async (senderId: string) => {
+    const requestUrl = `/sendbird/users/${props.userId}/block`
+
+    const body = {
+      target_id: senderId,
+    }
+
+    const responseData = await AxiosRequest({
+      url: requestUrl,
+      method: 'POST',
+      body: body,
+      token: '',
+    })
+
+    if (responseData !== 'AxiosError') {
+      controlToastPopup(true, `${senderId} 님을 차단했어요.`)
+      setIsBlockUser(true)
+      setIsMoreMiniMenu(false)
+    } else {
+      controlToastPopup(false, '네트워크 문제로 차단하지 못했어요.')
+    }
+  }
+
+  const unblockUser = async (senderId: string) => {
+    const requestUrl = `/sendbird/users/${props.userId}/block/${senderId}`
+
+    const responseData = await AxiosRequest({
+      url: requestUrl,
+      method: 'DELETE',
+      body: '',
+      token: '',
+    })
+
+    if (responseData !== 'AxiosError') {
+      controlToastPopup(true, `${senderId} 님을 차단 해제했어요.`)
+      setIsBlockUser(false)
+      setIsMoreMiniMenu(false)
+    } else {
+      controlToastPopup(false, '네트워크 문제로 차단 해제 못했어요.')
+    }
+  }
+
+  const muteUser = async (senderId: string) => {
+    const requestUrl = `/sendbird/group_channels/${currentChannelUrl}/mute`
+
+    const body = {
+      user_id: senderId,
+      seconds: 600,
+    }
+
+    const responseData = await AxiosRequest({
+      url: requestUrl,
+      method: 'POST',
+      body: body,
+      token: '',
+    })
+
+    if (responseData !== 'AxiosError') {
+      controlToastPopup(true, `${senderId} 님을 채팅 일시정지 했어요.`)
+      setIsBlockUser(false)
+      setIsMoreMiniMenu(false)
+    } else {
+      controlToastPopup(false, '네트워크 문제로 채팅 일시정지를 못했어요.')
+    }
+  }
+
+  const unmuteUser = async (senderId: string) => {
+    const requestUrl = `/sendbird/group_channels/${currentChannelUrl}/mute/${senderId}`
+
+    const responseData = await AxiosRequest({
+      url: requestUrl,
+      method: 'DELETE',
+      body: '',
+      token: '',
+    })
+
+    if (responseData !== 'AxiosError') {
+      controlToastPopup(true, `${senderId} 님의 채팅 일시정지를 해제했어요.`)
+      setIsBlockUser(false)
+      setIsMoreMiniMenu(false)
+    } else {
+      controlToastPopup(false, '네트워크 문제로 채팅 일시정지 해제를 못했어요.')
+    }
+  }
+
+  const editMessage = async () => {
+    if (editMessageValue === '' || editMessageValue.length < 1) {
+      controlToastPopup(false, '수정할 메시지를 입력해 주세요.')
       return
     }
+
+    const requestUrl = `/sendbird/group_channels/${currentChannelUrl}/messages/${messageInfomation.messageId}`
 
     const body = {
       message_type: 'MESG',
       message: editMessageValue,
     }
 
-    axios
-      .put(
-        `${ApiStudio}/sendbird/group_channels/${currentChannelUrl}/messages/${messageInfomation.messageId}`,
-        body
-      )
-      .then((response) => {})
-      .catch((error) => {
-        console.error('실패:', error)
-        toast.error(
-          <div className='toast_error_box'>
-            <Image
-              src='/Sendbird/toast_warning_icon.svg'
-              width={16}
-              height={16}
-              alt='toastWarningIcon'
-            />
-            <span className='toast_error_text'>
-              네트워크 문제로 메시지 수정을 못했어요.
-            </span>
-          </div>,
-          { transition: fadeUp }
-        )
-      })
+    const responseData = await AxiosRequest({
+      url: requestUrl,
+      method: 'PUT',
+      body: body,
+      token: '',
+    })
+
+    if (responseData === 'AxiosError') {
+      controlToastPopup(false, '네트워크 문제로 메시지 수정을 못했어요.')
+    }
   }
 
   const controlEditedInputHeightsize = () => {

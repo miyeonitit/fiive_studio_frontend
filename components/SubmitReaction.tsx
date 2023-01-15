@@ -1,7 +1,7 @@
 import useStore from '../store/video'
 import { v4 as uuidv4 } from 'uuid'
-import axios from 'axios'
 
+import AxiosRequest from '../utils/AxiosRequest'
 import classRoomUseStore from '../store/classRoom'
 
 interface props {
@@ -14,12 +14,13 @@ const SubmitReaction = (props: props) => {
   // ivs, sendbird chat infomation 정보를 저장하는 state
   const ivsData = classRoomUseStore((state: any) => state.ivsData)
 
-  const ApiStudio = process.env.NEXT_PUBLIC_API_BASE_URL
   const testIvsValue = process.env.NEXT_PUBLIC_TEST_IVS_CHANNEL_VALUE
 
   const embedMetadata = async (type: string) => {
+    const requestUrl = `/classroom/${testIvsValue}/ivs/meta`
+
     const body = {
-      arn: ivsData?.channel?.arn,
+      arn: ivsData?.arn,
       metadata: JSON.stringify({
         type: 'REACTION',
         message: {
@@ -29,42 +30,12 @@ const SubmitReaction = (props: props) => {
       }),
     }
 
-    axios
-      .post(`${ApiStudio}/classroom/${testIvsValue}/ivs/meta`, body)
-      .then((response) => {
-        console.log(response, '성공')
-      })
-      .catch((error) => {
-        console.error('실패:', error)
-      })
-
-    // if (channel === null) return
-
-    // console.log(ivsData?.channel?.arn, 'ivsData')
-
-    // const form = new URLSearchParams({
-    //   arn: ivsData?.channel?.arn,
-    //   metadata: JSON.stringify({
-    //     type: 'REACTION',
-    //     message: {
-    //       id: uuidv4(),
-    //       type: type,
-    //     },
-    //   }),
-    // })
-
-    // console.log(form, 'form')
-
-    // // “metadata”: “{ \“type\“: \“REACTION\“, \“message\” : { \“id\” : \“1234\“, \“type\” : \“grinnig_face\“ } }”
-
-    // const resp = await fetch(
-    //   `${ApiStudio}/classroom/${testIvsValue}/ivs/meta`,
-    //   {
-    //     method: 'POST',
-    //     body: form,
-    //   }
-    // )
-    // props.toggle()
+    const responseData = await AxiosRequest({
+      url: requestUrl,
+      method: 'POST',
+      body: body,
+      token: '',
+    })
   }
 
   return (

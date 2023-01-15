@@ -1,3 +1,5 @@
+import Image from 'next/image'
+
 import useStore from '../store/video'
 // import { CSSTransitionGroup } from 'react-transition-group'
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup'
@@ -11,24 +13,74 @@ const Reactions = (props: any) => {
     let img
 
     switch (type) {
-      case 'LIKE':
-        img = <img src='/components/submit-reaction/like.v2.svg' alt='Like' />
+      case 'THUMBS_UP':
+        img = (
+          <Image
+            src='../components/live-reaction-emoji/thumbs_up.png'
+            width={20}
+            height={20}
+            alt='THUMBS_UP'
+          />
+        )
         break
       case 'HEART':
-        img = <img src='/components/submit-reaction/heart.v2.svg' alt='Heart' />
+        img = (
+          <Image
+            src='../components/live-reaction-emoji/heart.png'
+            width={20}
+            height={20}
+            alt='HEART'
+          />
+        )
         break
-      case 'LIT':
-        img = <img src='/components/submit-reaction/lit.v2.svg' alt='Lit' />
+      case 'FIRE':
+        img = (
+          <Image
+            src='../components/live-reaction-emoji/fire.png'
+            width={20}
+            height={20}
+            alt='FIRE'
+          />
+        )
+        break
+      case 'CLAP':
+        img = (
+          <Image
+            src='../components/live-reaction-emoji/clap.png'
+            width={20}
+            height={20}
+            alt='CLAP'
+          />
+        )
         break
       case 'SMILE':
-        img = <img src='/components/submit-reaction/smile.v2.svg' alt='Smile' />
-        break
-      case 'SHAKE':
-        img = <img src='/components/submit-reaction/shake.v2.svg' alt='Shake' />
-        break
-      case 'FANFARE':
         img = (
-          <img src='/components/submit-reaction/fanfare.v2.svg' alt='Fanfare' />
+          <Image
+            src='../components/live-reaction-emoji/smile_face.png'
+            width={20}
+            height={20}
+            alt='SMILE'
+          />
+        )
+        break
+      case 'GRINNING':
+        img = (
+          <Image
+            src='../components/live-reaction-emoji/grinning_face.png'
+            width={20}
+            height={20}
+            alt='GRINNING'
+          />
+        )
+        break
+      case 'CRY':
+        img = (
+          <Image
+            src='../components/live-reaction-emoji/crying_face.png'
+            width={20}
+            height={20}
+            alt='CRY'
+          />
         )
         break
     }
@@ -39,13 +91,15 @@ const Reactions = (props: any) => {
   const items = reactions.map((item: any) => {
     const swarm = []
 
-    for (let number = 1; number <= 20; number++) {
+    for (let number = 1; number <= 1; number++) {
       const bottom = Math.floor(Math.random() * 400)
       swarm.push({
         key: `${item.id}-${number}`,
         type: item.type,
         style: {
-          bottom: `-${bottom}px`,
+          top: '150px',
+          left: `${bottom}px`,
+          // bottom: `-${bottom}px`,
         },
       })
     }

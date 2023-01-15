@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
-import axios from 'axios'
 import { ToastContainer, toast, cssTransition } from 'react-toastify'
 
 import 'animate.css'
@@ -24,10 +23,6 @@ const CustomMessageInput = ({ userId, userRole }) => {
 
   const [isUserTyping, setIsUserTyping] = useState(false)
   const [typingUsersName, setTypingUsersName] = useState([])
-
-  const ApiStudio = process.env.NEXT_PUBLIC_API_BASE_URL
-  const apiToken = process.env.NEXT_PUBLIC_SENDBIRD_API_TOKEN
-  const currentChannelUrl = process.env.NEXT_PUBLIC_SENDBIRD_TEST_CHANNEL_ID
 
   const messageInputWrapperRef = useRef<HTMLDivElement>(null)
   const messageInputRef = useRef<HTMLTextAreaElement>(null)

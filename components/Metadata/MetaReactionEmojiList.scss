@@ -36,11 +36,16 @@
 
 @media screen and (max-width: 1023px) {
   .MetaReactionEmojiList {
+    top: -75px;
     left: 0%;
 
-    .reaction_emoji_box {
-      div {
-        padding: 4px;
+    .reaction_emoji_wrapper {
+      padding: 4px;
+
+      .reaction_emoji_box {
+        div {
+          padding: 4px;
+        }
       }
     }
   }

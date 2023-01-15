@@ -1,5 +1,9 @@
 import React, { useState, useEffect, useRef, RefObject } from 'react'
+import { v4 as uuidv4 } from 'uuid'
 import Lottie from 'lottie-web'
+
+import AxiosRequest from '../../utils/AxiosRequest'
+import classRoomUseStore from '../../store/classRoom'
 
 type props = {
   emojiListRef: RefObject<HTMLDivElement>
@@ -7,6 +11,9 @@ type props = {
 }
 
 const MetaReactionEmojiList = (props: props) => {
+  // ivs, sendbird chat infomation 정보를 저장하는 state
+  const ivsData = classRoomUseStore((state: any) => state.ivsData)
+
   const thumbsUpRef = useRef<HTMLDivElement>(null)
   const heartRef = useRef<HTMLDivElement>(null)
   const fireRef = useRef<HTMLDivElement>(null)
@@ -15,7 +22,29 @@ const MetaReactionEmojiList = (props: props) => {
   const grinningRef = useRef<HTMLDivElement>(null)
   const cryingRef = useRef<HTMLDivElement>(null)
 
-  const closeEmojiList = () => {
+  const testIvsValue = process.env.NEXT_PUBLIC_TEST_IVS_CHANNEL_VALUE
+
+  const postReaction = async (reaction: string) => {
+    const requestUrl = `/classroom/${testIvsValue}/ivs/meta`
+
+    const body = {
+      arn: ivsData?.arn,
+      metadata: JSON.stringify({
+        type: 'REACTION',
+        message: {
+          id: uuidv4(),
+          type: reaction,
+        },
+      }),
+    }
+
+    const responseData = await AxiosRequest({
+      url: requestUrl,
+      method: 'POST',
+      body: body,
+      token: '',
+    })
+
     props.setIsOpenEmojiList(false)
   }
 
@@ -84,37 +113,37 @@ const MetaReactionEmojiList = (props: props) => {
           <div
             className='thumbs_up'
             ref={thumbsUpRef}
-            onClick={() => closeEmojiList()}
+            onClick={() => postReaction('THUMBS_UP')}
           />
           <div
             className='heart'
             ref={heartRef}
-            onClick={() => closeEmojiList()}
+            onClick={() => postReaction('HEART')}
           />
           <div
             className='fire'
             ref={fireRef}
-            onClick={() => closeEmojiList()}
+            onClick={() => postReaction('FIRE')}
           />
           <div
             className='clapping'
             ref={clappingRef}
-            onClick={() => closeEmojiList()}
+            onClick={() => postReaction('CLAP')}
           />
           <div
             className='smiling'
             ref={smilingRef}
-            onClick={() => closeEmojiList()}
+            onClick={() => postReaction('SMILE')}
           />
           <div
             className='grinning'
             ref={grinningRef}
-            onClick={() => closeEmojiList()}
+            onClick={() => postReaction('GRINNING')}
           />
           <div
             className='crying'
             ref={cryingRef}
-            onClick={() => closeEmojiList()}
+            onClick={() => postReaction('CRY')}
           />
         </div>
       </div>
