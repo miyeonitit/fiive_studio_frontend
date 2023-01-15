@@ -149,7 +149,7 @@ const CustomChatRoom = (props: props) => {
       .then((message) => {})
       .catch((error) => {
         console.log(error, 'error')
-        alert('다시 시도해 주세요.')
+        controlToastPopup(false, '다시 시도해 주세요.')
       })
   }
 
@@ -161,7 +161,7 @@ const CustomChatRoom = (props: props) => {
       .then((message) => {})
       .catch((error) => {
         console.log(error, 'error')
-        alert('다시 시도해 주세요.')
+        controlToastPopup(false, '다시 시도해 주세요.')
       })
   }
 
