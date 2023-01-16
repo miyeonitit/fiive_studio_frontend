@@ -1,10 +1,15 @@
 import React, { useRef, useEffect, useState } from 'react'
-import axios from 'axios'
+
+import AxiosRequest from '../utils/AxiosRequest'
 
 // import Messages from "../components/Messages";
 import videoUseStore from '../store/video'
 
-const Video = () => {
+type props = {
+  playbackUrl: string
+}
+
+const Video = (props: props) => {
   const channel = videoUseStore((state: any) => state.channel)
   const setChannel = videoUseStore((state: any) => state.setChannel)
 
@@ -22,26 +27,34 @@ const Video = () => {
 
   const ivsPlayer = useRef<HTMLVideoElement>(null)
 
-  const ApiStudio = process.env.NEXT_PUBLIC_API_BASE_URL
   const testIvsValue = process.env.NEXT_PUBLIC_TEST_IVS_CHANNEL_VALUE
 
   useEffect(() => {
-    initVideo()
-  }, [])
+    if (typeof props.playbackUrl !== 'undefined') {
+      getChannelData()
+    }
+  }, [props.playbackUrl])
 
   const getChannelData = async () => {
-    let channelData = ''
+    const requestUrl = `/classroom/${testIvsValue}/ivs/key`
 
-    await axios
-      .get(`${ApiStudio}/classroom/${testIvsValue}/ivs`)
-      .then((response) => {
-        channelData = response.data
-      })
+    const body = {
+      expiration: 14400,
+    }
 
-    return channelData
+    // ivs player를 재생할 수 있는 user의 전용 token을 받아오는 request
+    const responseData = await AxiosRequest({
+      url: requestUrl,
+      method: 'POST',
+      body: body,
+      token: '',
+    })
+
+    // user의 전용 token을 받아온 뒤, token을 파라미터로 전달하여 initVideo 호출
+    initVideo(responseData.token)
   }
 
-  const initVideo = async () => {
+  const initVideo = async (token: string) => {
     // Bail if already initialized
     if (init) return
 
@@ -52,14 +65,8 @@ const Video = () => {
     // Bail if player is not supported
     if (!IVSPlayer.isPlayerSupported) return
 
-    // get ivs channel data
-    const channelData = await getChannelData()
-
-    // 리턴된 channelData를 전역적으로 저장
-    setChannel(channelData)
-
     // get playbackUrl in channelData
-    const playbackUrl = channelData?.channel?.playbackUrl
+    const playbackUrl = props.playbackUrl + `?token=${token}`
 
     const player = IVSPlayer.create()
 
@@ -67,8 +74,9 @@ const Video = () => {
     player.addEventListener(
       IVSPlayer.PlayerEventType.TEXT_METADATA_CUE,
       (cue: any) => {
-        const type = cue.text
-        console.log(cue, 'get cue data')
+        // const type = cue.text
+        const { text: json } = cue
+        const { type, message } = JSON.parse(json)
 
         switch (type) {
           case 'ANNOUNCEMENT':
@@ -82,7 +90,7 @@ const Video = () => {
             break
           case 'REACTION':
             console.log('reaction post success')
-            // addReaction(message)
+            addReaction(message)
             break
           case 'TIMER':
             // setTimer(message)

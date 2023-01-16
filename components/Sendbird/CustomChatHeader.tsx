@@ -6,10 +6,10 @@ import React, {
   SetStateAction,
 } from 'react'
 import Image from 'next/image'
-import axios from 'axios'
 
 import { useChannelContext } from '@sendbird/uikit-react/Channel/context'
 
+import AxiosRequest from '../../utils/AxiosRequest'
 import sendBirdUseStore from '../../store/Sendbird'
 import fiiveStudioUseStore from '../../store/FiiveStudio'
 
@@ -70,8 +70,6 @@ const CustomChatHeader = (props: props) => {
   const miniMenuRef = useRef<HTMLButtonElement>(null)
   const userFilterRef = useRef<HTMLDivElement>(null)
 
-  const ApiStudio = process.env.NEXT_PUBLIC_API_BASE_URL
-  const apiToken = process.env.NEXT_PUBLIC_SENDBIRD_API_TOKEN
   const currentChannelUrl = process.env.NEXT_PUBLIC_SENDBIRD_TEST_CHANNEL_ID
   const studioUrl = process.env.NEXT_PUBLIC_STUDIO_URL
 
@@ -86,27 +84,28 @@ const CustomChatHeader = (props: props) => {
     handleUserFilterStatus('live')
   }
 
-  const controlFreezeChat = () => {
+  const controlFreezeChat = async () => {
+    const requestUrl = `/sendbird/group_channels/${currentChannelUrl}/freeze`
+
     const body = {
       freeze: !isFreezeChat,
     }
 
-    axios
-      .put(
-        `${ApiStudio}/sendbird/group_channels/${currentChannelUrl}/freeze`,
-        body
-      )
-      .then((response) => {
-        console.log('성공:', response)
-        setIsFreezeChat(!isFreezeChat)
-        setIsMoreMiniMenu(false)
-      })
-      .catch((error) => {
-        console.error('실패:', error)
-      })
+    const responseData = await AxiosRequest({
+      url: requestUrl,
+      method: 'POST',
+      body: body,
+      token: '',
+    })
+
+    setIsFreezeChat(!isFreezeChat)
+    setIsMoreMiniMenu(false)
   }
 
-  const handleUserFilterStatus = (status: string) => {
+  const handleUserFilterStatus = async (status: string) => {
+    let requestUrl = ''
+    let responseData = ''
+
     switch (status) {
       case 'live':
         setUserList(currentGroupChannel.members)
@@ -115,40 +114,39 @@ const CustomChatHeader = (props: props) => {
         break
 
       case 'muted':
-        axios
-          .get(`${ApiStudio}/sendbird/group_channels/${currentChannelUrl}/mute`)
-          .then((response) => {
-            const data = response.data
+        requestUrl = `/sendbird/group_channels/${currentChannelUrl}/mute`
 
-            setUserList(data.muted_list)
-            setUserFilter('채팅 정지된 참여자')
-            setIsUserFilterMiniMenu(false)
-          })
-          .catch((error) => {
-            console.error('실패:', error)
-          })
+        responseData = await AxiosRequest({
+          url: requestUrl,
+          method: 'GET',
+          body: '',
+          token: '',
+        })
+
+        setUserList(responseData?.muted_list)
+        setUserFilter('채팅 정지된 참여자')
+        setIsUserFilterMiniMenu(false)
         break
 
       case 'blocked':
-        axios
-          .get(`${ApiStudio}/sendbird/users/${props.userId}/block`)
-          .then((response) => {
-            const data = response.data
+        requestUrl = `/sendbird/users/${props.userId}/block`
 
-            setUserList(data.users)
-            setUserFilter('차단된 참여자')
-            setIsUserFilterMiniMenu(false)
-          })
-          .catch((error) => {
-            console.error('실패:', error)
-          })
+        responseData = await AxiosRequest({
+          url: requestUrl,
+          method: 'GET',
+          body: '',
+          token: '',
+        })
+
+        setUserList(responseData?.users)
+        setUserFilter('차단된 참여자')
+        setIsUserFilterMiniMenu(false)
         break
     }
   }
 
   const openChatMonitor = () => {
     const chatUrl = studioUrl + 'chat-monitor'
-    console.log(chatUrl, 'chatUrl')
     window.navigator.clipboard.writeText(chatUrl)
     setIsMoreMiniMenu(false)
   }

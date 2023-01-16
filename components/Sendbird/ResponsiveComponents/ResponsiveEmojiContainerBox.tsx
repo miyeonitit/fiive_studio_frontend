@@ -6,7 +6,8 @@ import React, {
   SetStateAction,
 } from 'react'
 import Image from 'next/image'
-import axios from 'axios'
+
+import AxiosRequest from '../../../utils/AxiosRequest'
 
 type props = {
   userId: string
@@ -23,12 +24,10 @@ const ResponsiveEmojiContainerBox = (props: props) => {
 
   const emojiModalRef = useRef<HTMLDivElement>(null)
 
-  const ApiStudio = process.env.NEXT_PUBLIC_API_BASE_URL
-  const apiToken = process.env.NEXT_PUBLIC_SENDBIRD_API_TOKEN
   const channel_url = process.env.NEXT_PUBLIC_SENDBIRD_TEST_CHANNEL_ID
   const message_id = props.messageInfomation.messageId
 
-  const addUserReaction = (emojiKey: string) => {
+  const addUserReaction = async (emojiKey: string) => {
     // 해당 메시지에 유저가 선택한 리액션 이모지가 이미 있을 경우, 이모지 제거
     const findAlreadyReactedEmoji = props.reactedEmojis.find(
       (emoji: any) => emoji.key === emojiKey
@@ -44,33 +43,33 @@ const ResponsiveEmojiContainerBox = (props: props) => {
     }
     // 해당 메시지에 유저가 선택한 리액션 이모지가 없을 경우
     else {
+      const requestUrl = `/sendbird/group_channels/${channel_url}/messages/${message_id}/reactions`
+
       const body = {
         user_id: props.userId,
         reaction: emojiKey,
       }
 
-      axios
-        .post(
-          `${ApiStudio}/sendbird/group_channels/${channel_url}/messages/${message_id}/reactions`,
-          body
-        )
-        .then((data) => {})
-        .catch((error) => {
-          console.error('실패:', error)
-        })
+      const responseData = await AxiosRequest({
+        url: requestUrl,
+        method: 'POST',
+        body: body,
+        token: '',
+      })
     }
   }
 
-  const removeUserReaction = (emojiKey: string) => {
-    axios
-      .delete(
-        `${ApiStudio}/sendbird/group_channels/${channel_url}/messages/${message_id}/reactions?user_id=${props.userId}&reaction=${emojiKey}`
-      )
-      .then((data) => {})
-      .catch((error) => {
-        console.error('실패:', error)
-      })
+  const removeUserReaction = async (emojiKey: string) => {
+    const requestUrl = `/sendbird/group_channels/${channel_url}/messages/${message_id}/reactions?user_id=${props.userId}&reaction=${emojiKey}`
+
+    const responseData = await AxiosRequest({
+      url: requestUrl,
+      method: 'DELETE',
+      body: '',
+      token: '',
+    })
   }
+
   const closeModal = () => {
     setIsCloseModal(true)
 

@@ -123,6 +123,7 @@
     transform: translate3d(0, 0, 0);
   }
 }
+
 @keyframes customFadeInUp {
   from {
     opacity: 0;
@@ -187,8 +188,8 @@
 
 /* 현재 적용중인 toast bottom right 영역 커스텀 */
 .Toastify__toast-container--bottom-right {
-  bottom: 10rem !important;
-  right: 0.8rem !important;
+  bottom: 12rem !important;
+  right: 1.5rem !important;
   transform: translateX(-50%);
 
   /* toast.success 일 때 */
@@ -277,7 +278,7 @@
   /* 현재 적용중인 toast bottom center 영역 커스텀 */
   .Toastify__toast-container--bottom-center {
     width: 100% !important;
-    bottom: 10rem !important;
+    bottom: 12rem !important;
     padding: 0px 12px !important;
     transform: translateX(-50%);
 
@@ -371,7 +372,7 @@
   /* 현재 적용중인 toast bottom center 영역 커스텀 */
   .Toastify__toast-container--bottom-center {
     width: 100% !important;
-    bottom: 10rem !important;
+    bottom: 12rem !important;
     padding: 0px 12px !important;
     transform: translateX(-50%);
 
@@ -466,7 +467,7 @@
   /* 현재 적용중인 toast bottom center 영역 커스텀 */
   .Toastify__toast-container--bottom-center {
     width: 100% !important;
-    bottom: 10rem !important;
+    bottom: 12rem !important;
     transform: translateX(-50%);
 
     .Toastify__toast--close-on-click {

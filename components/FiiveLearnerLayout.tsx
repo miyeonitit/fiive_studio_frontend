@@ -1,15 +1,20 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import Image from 'next/image'
 import { CSSProperties } from 'styled-components'
 
 import fiiveStudioUseStore from '../store/FiiveStudio'
 import ChannelService from '../utils/ChannelService'
 
+import MetaReactionEmojiList from './Metadata/MetaReactionEmojiList'
+
 const FiiveLayout = (props: any) => {
   const { children } = props
 
   // channelTalk open <> close toggle boolean state
   const [isOpenChannelTalk, setIsOpenChannelTalk] = useState(false)
+
+  // metadata emoji list open <> close toggle boolean state
+  const [isOpenEmojiList, setIsOpenEmojiList] = useState(false)
 
   // 반응형 미디어쿼리 스타일 지정을 위한 브라우저 넓이 측정 전역 state
   const offsetX = fiiveStudioUseStore((state: any) => state.offsetX)
@@ -23,12 +28,18 @@ const FiiveLayout = (props: any) => {
   const isChatOpen = fiiveStudioUseStore((state: any) => state.isChatOpen)
   const setIsChatOpen = fiiveStudioUseStore((state: any) => state.setIsChatOpen)
 
+  const emojiListRef = useRef<HTMLDivElement>(null)
+
   const responsiveZindexStyle: CSSProperties =
     offsetX < 1023 && isOpenResponsiveModal
       ? {
           zIndex: '-1',
         }
       : { zIndex: 'unset' }
+
+  const closeBrowser = () => {
+    window.open('about:blank', '_self').close()
+  }
 
   // channelTalk open <> close toggle
   const clickChannelTalk = () => {
@@ -46,6 +57,34 @@ const FiiveLayout = (props: any) => {
       setIsOpenChannelTalk(false)
     }
   }
+
+  // 더보기 미니 메뉴 outside click
+  const clickModalOutside = (e) => {
+    // 실시간 채팅, 리액션 버튼은 outside click 제외
+    if (
+      e.target.classList[0] === 'chat_icon' ||
+      e.target.classList[0] === 'reaction_icon' ||
+      e.target.classList[0] === 'live_reaction_box' ||
+      e.target.parentNode.classList[0] === 'live_reaction_box' ||
+      e.target.classList[0] === 'live_chat_box' ||
+      e.target.parentNode.classList[0] === 'live_chat_box'
+    ) {
+      return
+    }
+
+    if (isOpenEmojiList && !emojiListRef.current.contains(e.target)) {
+      setIsOpenEmojiList(false)
+    }
+  }
+
+  // 더보기 미니 메뉴 outside click
+  useEffect(() => {
+    document.addEventListener('mousedown', clickModalOutside)
+
+    return () => {
+      document.removeEventListener('mousedown', clickModalOutside)
+    }
+  }, [isOpenEmojiList])
 
   // 페이지 초기 로드시, channelTalk booting
   useEffect(() => {
@@ -172,11 +211,20 @@ const FiiveLayout = (props: any) => {
 
         {/* 위젯 메뉴 영역 */}
         <div className='widget_menu_wrapper'>
+          {/* metadata reaction emoji list */}
+          {isOpenEmojiList && (
+            <MetaReactionEmojiList
+              emojiListRef={emojiListRef}
+              setIsOpenEmojiList={setIsOpenEmojiList}
+            />
+          )}
+
           <div
             className='live_chat_box'
             onClick={() => setIsChatOpen(!isChatOpen)}
           >
             <Image
+              className='chat_icon'
               src={
                 isChatOpen
                   ? '../layouts/fiive/chat_icon_active.svg'
@@ -191,19 +239,31 @@ const FiiveLayout = (props: any) => {
             </span>
           </div>
 
-          <div className='live_reaction_box'>
+          <div
+            className='live_reaction_box'
+            onClick={() => setIsOpenEmojiList(!isOpenEmojiList)}
+          >
             <Image
-              src='../layouts/fiive/reaction_icon.svg'
+              className='reaction_icon'
+              src={
+                isOpenEmojiList
+                  ? '../layouts/fiive/reaction_icon_active.svg'
+                  : '../layouts/fiive/reaction_icon.svg'
+              }
               width={22}
               height={22}
               alt='reactionIcon'
             />
-            <span className='reaction_button_text'>리액션</span>
+            <span
+              className={`reaction_button_text ${isOpenEmojiList && 'active'}`}
+            >
+              리액션
+            </span>
           </div>
         </div>
 
         {/* 라이브 나가기 버튼 영역 */}
-        <div className='quit_button_wrapper'>
+        <div className='quit_button_wrapper' onClick={() => closeBrowser()}>
           <Image
             src='../layouts/fiive/quit_live_icon.svg'
             width={22}

@@ -1,0 +1,52 @@
+.MetaReactionEmojiList {
+  position: absolute;
+  top: -80px;
+  left: -60%;
+
+  .reaction_emoji_wrapper {
+    display: flex;
+    flex-direction: row;
+    padding: 6px;
+    border-radius: 8px;
+    border: 1px solid $bluegray-1;
+    box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.08),
+      0px 4px 10px rgba(0, 0, 0, 0.06);
+    background-color: white;
+
+    .reaction_emoji_box {
+      display: flex;
+
+      div {
+        width: 52px;
+        height: 52px;
+        padding: 8px;
+        border-radius: 4px;
+
+        &:last-child {
+          margin-right: unset;
+        }
+      }
+
+      div:hover {
+        background-color: $bluegray-2;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 1023px) {
+  .MetaReactionEmojiList {
+    top: -75px;
+    left: 0%;
+
+    .reaction_emoji_wrapper {
+      padding: 4px;
+
+      .reaction_emoji_box {
+        div {
+          padding: 4px;
+        }
+      }
+    }
+  }
+}
