@@ -29,6 +29,7 @@ import ResponsiveHandleErrorMessage from './ResponsiveComponents/ResponsiveHandl
 type props = {
   message: object
   userId: string
+  channelUrl: string
   emojiContainer: object
 }
 
@@ -46,7 +47,9 @@ const CustomChatRoom = (props: props) => {
   const deleteFileMessage = sendbirdSelectors.getDeleteMessage(globalStore)
 
   const messageInfomation = props.message?.message
-  const sender = messageInfomation?.sender
+
+  // const sender = messageInfomation?.sender
+  const [sender, setSender] = useState([])
 
   const [indexOfMessage, setIndexOfMessage] = useState(-1)
 
@@ -54,9 +57,7 @@ const CustomChatRoom = (props: props) => {
     messageInfomation.reactions ? messageInfomation.reactions : []
   )
 
-  const [userRole, setUserRole] = useState(
-    sender?.role === 'operator' ? sender.role : 'learner'
-  )
+  const [userRole, setUserRole] = useState('')
 
   const [allMessagesLength, setAllMessagesLength] = useState(allMessages.length)
 
@@ -65,12 +66,8 @@ const CustomChatRoom = (props: props) => {
   const [isMoreMiniMenu, setIsMoreMiniMenu] = useState(false)
   const [isMiniMenuTop, setIsMiniMenuTop] = useState(false)
 
-  // sender의 muted, blocked 여부 boolean state
-  const findMutedUser = currentGroupChannel.members.find(
-    (user: any) => user.userId === sender.userId
-  )
-  const [isMutedUser, setIsMutedUser] = useState(findMutedUser.isMuted)
-  const [isBlockUser, setIsBlockUser] = useState(sender?.isBlockedByMe)
+  const [isMutedUser, setIsMutedUser] = useState(false)
+  const [isBlockUser, setIsBlockUser] = useState(false)
 
   // 이모티콘 툴팁 노출 boolean state
   const [isReactionTopTooltip, setIsReactionTopTooltip] = useState(false)
@@ -96,8 +93,6 @@ const CustomChatRoom = (props: props) => {
   const editInputRef = useRef<HTMLTextAreaElement>(null)
   const reactionTopRef = useRef<HTMLDivElement>(null)
   const reactionBottomRef = useRef<HTMLDivElement>(null)
-
-  const currentChannelUrl = process.env.NEXT_PUBLIC_SENDBIRD_TEST_CHANNEL_ID
 
   const fadeUp = cssTransition({
     enter: 'animate__animated animate__customFadeInUp',
@@ -239,7 +234,7 @@ const CustomChatRoom = (props: props) => {
   }
 
   const muteUser = async (senderId: string) => {
-    const requestUrl = `/sendbird/group_channels/${currentChannelUrl}/mute`
+    const requestUrl = `/sendbird/group_channels/${props.channelUrl}/mute`
 
     const body = {
       user_id: senderId,
@@ -263,7 +258,7 @@ const CustomChatRoom = (props: props) => {
   }
 
   const unmuteUser = async (senderId: string) => {
-    const requestUrl = `/sendbird/group_channels/${currentChannelUrl}/mute/${senderId}`
+    const requestUrl = `/sendbird/group_channels/${props.channelUrl}/mute/${senderId}`
 
     const responseData = await AxiosRequest({
       url: requestUrl,
@@ -287,7 +282,7 @@ const CustomChatRoom = (props: props) => {
       return
     }
 
-    const requestUrl = `/sendbird/group_channels/${currentChannelUrl}/messages/${messageInfomation.messageId}`
+    const requestUrl = `/sendbird/group_channels/${props.channelUrl}/messages/${messageInfomation.messageId}`
 
     const body = {
       message_type: 'MESG',
@@ -368,6 +363,21 @@ const CustomChatRoom = (props: props) => {
     }
   }, [isMoreMiniMenu, isReactionTopBox, isReactionBottomBox])
 
+  // 신규 채팅방일 때의 조건 로직
+  useEffect(() => {
+    /* 신규 채팅방일 때는 sender가 없으므로, 있을 때의 조건을 걸어 가공 처리 */
+    if (messageInfomation?.sender) {
+      setSender(messageInfomation?.sender)
+      setUserRole(messageInfomation?.sender.role)
+
+      const findMutedUser = currentGroupChannel.members.find(
+        (user: any) => user?.userId === sender?.userId
+      )
+      setIsMutedUser(findMutedUser?.isMuted)
+      setIsBlockUser(messageInfomation?.sender?.isBlockedByMe)
+    }
+  }, [])
+
   // console.log(sender, 'sender')
   // console.log(messageInfomation, 'info')
   // console.log(emojiContainer, 'emojiContainer')
@@ -376,6 +386,8 @@ const CustomChatRoom = (props: props) => {
 
   return (
     <div className='CustomChatRoom'>
+      {/* 채팅방이 신규로 생성되었거나 누군가가 입장했을 때의 메시지를 숨김 처리 */}
+
       <div
         className={`message_wrapper ${isEditedMessage && 'edit'}`}
         onClick={() =>
@@ -653,8 +665,8 @@ const CustomChatRoom = (props: props) => {
                   <Image
                     className='defaultProfileImage'
                     src={
-                      sender.plainProfileUrl
-                        ? sender.plainProfileUrl
+                      sender?.plainProfileUrl
+                        ? sender?.plainProfileUrl
                         : '/Sendbird/Ellipse 8stateBadge.svg'
                     }
                     width={24}
@@ -665,10 +677,10 @@ const CustomChatRoom = (props: props) => {
 
                 <div
                   className={`user_nickname_box ${
-                    sender.role === 'operator' && 'teacher'
+                    sender?.role === 'operator' && 'teacher'
                   }`}
                 >
-                  {sender.userId}
+                  {sender?.userId}
                 </div>
 
                 <div className='massage_date_time'>

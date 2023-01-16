@@ -8,6 +8,7 @@ import ChannelUI from '@sendbird/uikit-react/Channel/components/ChannelUI'
 
 import { config } from '../utils/HeaderConfig'
 import useStore from '../store/Sendbird'
+import classRoomUseStore from '../store/classRoom'
 
 import CustomChatRoom from './Sendbird/CustomChatRoom'
 import CustomMessageInput from './Sendbird/CustomMessageInput'
@@ -33,6 +34,9 @@ const Chat = (props: props) => {
     (state: any) => state.addEmojiContainer
   )
 
+  // ivs, sendbird chat infomation 정보를 저장하는 state
+  const chatData = classRoomUseStore((state: any) => state.chatData)
+
   const [stringSet] = useState({
     TYPING_INDICATOR__AND: '님, ',
     TYPING_INDICATOR__IS_TYPING: '님이 입력 중이에요.',
@@ -43,7 +47,6 @@ const Chat = (props: props) => {
   })
 
   const appId = process.env.NEXT_PUBLIC_SENDBIRD_APP_ID
-  const currentChannelUrl = process.env.NEXT_PUBLIC_SENDBIRD_TEST_CHANNEL_ID
 
   useEffect(() => {
     contextAddEmojiContainer(props.emojiContainer)
@@ -58,7 +61,7 @@ const Chat = (props: props) => {
         dateLocale={kr}
       >
         <ChannelProvider
-          channelUrl={currentChannelUrl}
+          channelUrl={chatData.channel_url}
           isReactionEnabled={true}
         >
           <ChannelUI
@@ -76,6 +79,7 @@ const Chat = (props: props) => {
               <CustomChatRoom
                 message={message}
                 userId={userId}
+                channelUrl={chatData.channel_url}
                 emojiContainer={props.emojiContainer}
               />
             )}

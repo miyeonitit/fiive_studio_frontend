@@ -98,7 +98,7 @@ const Reactions = (props: any) => {
         type: item.type,
         style: {
           top: '150px',
-          left: `${bottom}px`,
+          // left: `${bottom}px`,
           // bottom: `-${bottom}px`,
         },
       })
