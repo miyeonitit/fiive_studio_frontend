@@ -1,79 +1,127 @@
-import useStore from "../store/video";
-// import { CSSTransitionGroup } from "react-transition-group";
-import CSSTransitionGroup from "react-transition-group/CSSTransitionGroup";
+import Image from 'next/image'
+
+import useStore from '../store/video'
+// import { CSSTransitionGroup } from 'react-transition-group'
+import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup'
 
 const Reactions = (props: any) => {
-  const reactions = useStore((state: any) => state.reactions);
-  const addReaction = useStore((state: any) => state.addREaction);
-  const removeReaction = useStore((state: any) => state.removeReaction);
+  const reactions = useStore((state: any) => state.reactions)
+  const addReaction = useStore((state: any) => state.addREaction)
+  const removeReaction = useStore((state: any) => state.removeReaction)
 
   const reaction = (type: string) => {
-    let img;
+    let img
 
     switch (type) {
-      case "LIKE":
-        img = <img src="/components/submit-reaction/like.v2.svg" alt="Like" />;
-        break;
-      case "HEART":
+      case 'THUMBS_UP':
         img = (
-          <img src="/components/submit-reaction/heart.v2.svg" alt="Heart" />
-        );
-        break;
-      case "LIT":
-        img = <img src="/components/submit-reaction/lit.v2.svg" alt="Lit" />;
-        break;
-      case "SMILE":
+          <Image
+            src='../components/live-reaction-emoji/thumbs_up.png'
+            width={20}
+            height={20}
+            alt='THUMBS_UP'
+          />
+        )
+        break
+      case 'HEART':
         img = (
-          <img src="/components/submit-reaction/smile.v2.svg" alt="Smile" />
-        );
-        break;
-      case "SHAKE":
+          <Image
+            src='../components/live-reaction-emoji/heart.png'
+            width={20}
+            height={20}
+            alt='HEART'
+          />
+        )
+        break
+      case 'FIRE':
         img = (
-          <img src="/components/submit-reaction/shake.v2.svg" alt="Shake" />
-        );
-        break;
-      case "FANFARE":
+          <Image
+            src='../components/live-reaction-emoji/fire.png'
+            width={20}
+            height={20}
+            alt='FIRE'
+          />
+        )
+        break
+      case 'CLAP':
         img = (
-          <img src="/components/submit-reaction/fanfare.v2.svg" alt="Fanfare" />
-        );
-        break;
+          <Image
+            src='../components/live-reaction-emoji/clap.png'
+            width={20}
+            height={20}
+            alt='CLAP'
+          />
+        )
+        break
+      case 'SMILE':
+        img = (
+          <Image
+            src='../components/live-reaction-emoji/smile_face.png'
+            width={20}
+            height={20}
+            alt='SMILE'
+          />
+        )
+        break
+      case 'GRINNING':
+        img = (
+          <Image
+            src='../components/live-reaction-emoji/grinning_face.png'
+            width={20}
+            height={20}
+            alt='GRINNING'
+          />
+        )
+        break
+      case 'CRY':
+        img = (
+          <Image
+            src='../components/live-reaction-emoji/crying_face.png'
+            width={20}
+            height={20}
+            alt='CRY'
+          />
+        )
+        break
     }
 
-    return img;
-  };
+    return img
+  }
 
   const items = reactions.map((item: any) => {
-    const swarm = [];
+    const swarm = []
 
-    for (let number = 1; number <= 20; number++) {
-      const bottom = Math.floor(Math.random() * 400);
+    for (let number = 1; number <= 1; number++) {
+      const bottom = Math.floor(Math.random() * 400)
       swarm.push({
         key: `${item.id}-${number}`,
         type: item.type,
         style: {
-          bottom: `-${bottom}px`,
+          top: '150px',
+          // left: `${bottom}px`,
+          // bottom: `-${bottom}px`,
         },
-      });
+      })
     }
 
     return swarm.map((item: any) => (
-      <div className="item" style={item.style} key={item.key}>
+      <div className='item' style={item.style} key={item.key}>
         {reaction(item.type)}
       </div>
-    ));
-  });
+    ))
+  })
 
   return (
-    <div className="reactions-component">
+    <div className='reactions-component'>
       <CSSTransitionGroup
-        transitionName="example"
+        transitionName='example'
         transitionEnterTimeout={2000}
         transitionLeaveTimeout={0}
       >
         {items}
       </CSSTransitionGroup>
     </div>
-  );
-};
+  )
+}
 
-export default Reactions;
+export default Reactions

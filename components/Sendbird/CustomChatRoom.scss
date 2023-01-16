@@ -1,6 +1,7 @@
 .CustomChatRoom {
   .date_separator {
     padding: 0px 12px;
+    margin: 12px 0px;
     @include btn-sm-500;
     color: $bluegray-6;
   }
@@ -190,6 +191,7 @@
       .reaction_emoji_wrapper {
         display: flex;
         align-items: center;
+        flex-wrap: wrap;
         margin-top: 10px;
         margin-left: 32px;
 

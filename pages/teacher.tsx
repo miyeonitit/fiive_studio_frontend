@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic'
 import { CSSProperties } from 'styled-components'
 import axios from 'axios'
 
+import AxiosRequest from '../utils/AxiosRequest'
 import fiiveStudioUseStore from '../store/FiiveStudio'
 
 import { NextPageWithLayout } from '../types/NextPageWithLayout'
@@ -19,14 +20,16 @@ import TimerModal from '../components/TimerModal'
 import Timer from '../components/Timer'
 import Reactions from '../components/Reactions'
 
-import class_thumbnail_image from '../public/placeholders/class_thumbnail.png'
+type props = {
+  emoji_data: { id: number; key: string; url: string }
+}
 
 const Chat = dynamic(() => import('../components/Chat'), {
   ssr: false,
   loading: () => <div>Loading...</div>,
 })
 
-const TeacherPage: NextPageWithLayout = () => {
+const TeacherPage: NextPageWithLayout = (props: props) => {
   // 반응형 미디어쿼리 스타일 지정을 위한 브라우저 넓이 측정 전역 state
   const offsetX = fiiveStudioUseStore((state: any) => state.offsetX)
 
@@ -46,7 +49,7 @@ const TeacherPage: NextPageWithLayout = () => {
   const [chatOffsetHeight, setChatOffsetHeight] = useState(0)
 
   // custom reaction emoji list state
-  const [emojiContainer, setEmojiContainer] = useState([])
+  const [emojiContainer, setEmojiContainer] = useState(props.emoji_data?.emojis)
 
   const playerHeightRef = useRef<HTMLElement>(null)
 
@@ -94,9 +97,9 @@ const TeacherPage: NextPageWithLayout = () => {
 
   return (
     <div className='fiive teacher page'>
-      {/* <Head>
+      <Head>
         <title>fiive studio || teacher page</title>
-      </Head> */}
+      </Head>
 
       {/* <aside className='utilities'>
         <section className='tools'>
@@ -202,6 +205,25 @@ const TeacherPage: NextPageWithLayout = () => {
 
 TeacherPage.getLayout = (page: ReactElement) => {
   return <Layout>{page}</Layout>
+}
+
+export const getStaticProps: GetStaticProps = async (context) => {
+  const emojiCategoryId = process.env.NEXT_PUBLIC_SENDBIRD_EMOJI_CATEGORY_ID
+
+  const requestUrl = `/sendbird/emoji_categories/${emojiCategoryId}`
+
+  const responseData = await AxiosRequest({
+    url: requestUrl,
+    method: 'GET',
+    body: '',
+    token: '',
+  })
+
+  return {
+    props: {
+      emoji_data: responseData,
+    },
+  }
 }
 
 export default TeacherPage

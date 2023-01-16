@@ -6,7 +6,6 @@ import React, {
   SetStateAction,
 } from 'react'
 import Image from 'next/image'
-import axios from 'axios'
 import { ToastContainer, toast, cssTransition } from 'react-toastify'
 
 import { useChannelContext } from '@sendbird/uikit-react/Channel/context'
@@ -17,7 +16,8 @@ import ImageRenderer from '@sendbird/uikit-react/ui/ImageRenderer'
 
 import 'animate.css'
 import '../../node_modules/react-toastify/dist/ReactToastify.css'
-import { config } from '../../utils/HeaderConfig'
+
+import AxiosRequest from '../../utils/AxiosRequest'
 import fiiveStudioUseStore from '../../store/FiiveStudio'
 
 import MessageTooltip from './components/MessageTooltip'
@@ -29,6 +29,7 @@ import ResponsiveHandleErrorMessage from './ResponsiveComponents/ResponsiveHandl
 type props = {
   message: object
   userId: string
+  channelUrl: string
   emojiContainer: object
 }
 
@@ -46,7 +47,9 @@ const CustomChatRoom = (props: props) => {
   const deleteFileMessage = sendbirdSelectors.getDeleteMessage(globalStore)
 
   const messageInfomation = props.message?.message
-  const sender = messageInfomation?.sender
+
+  // const sender = messageInfomation?.sender
+  const [sender, setSender] = useState([])
 
   const [indexOfMessage, setIndexOfMessage] = useState(-1)
 
@@ -54,9 +57,7 @@ const CustomChatRoom = (props: props) => {
     messageInfomation.reactions ? messageInfomation.reactions : []
   )
 
-  const [userRole, setUserRole] = useState(
-    sender?.role === 'operator' ? sender.role : 'learner'
-  )
+  const [userRole, setUserRole] = useState('')
 
   const [allMessagesLength, setAllMessagesLength] = useState(allMessages.length)
 
@@ -65,12 +66,8 @@ const CustomChatRoom = (props: props) => {
   const [isMoreMiniMenu, setIsMoreMiniMenu] = useState(false)
   const [isMiniMenuTop, setIsMiniMenuTop] = useState(false)
 
-  // sender의 muted, blocked 여부 boolean state
-  const findMutedUser = currentGroupChannel.members.find(
-    (user: any) => user.userId === sender.userId
-  )
-  const [isMutedUser, setIsMutedUser] = useState(findMutedUser.isMuted)
-  const [isBlockUser, setIsBlockUser] = useState(sender?.isBlockedByMe)
+  const [isMutedUser, setIsMutedUser] = useState(false)
+  const [isBlockUser, setIsBlockUser] = useState(false)
 
   // 이모티콘 툴팁 노출 boolean state
   const [isReactionTopTooltip, setIsReactionTopTooltip] = useState(false)
@@ -96,10 +93,6 @@ const CustomChatRoom = (props: props) => {
   const editInputRef = useRef<HTMLTextAreaElement>(null)
   const reactionTopRef = useRef<HTMLDivElement>(null)
   const reactionBottomRef = useRef<HTMLDivElement>(null)
-
-  const ApiStudio = process.env.NEXT_PUBLIC_API_BASE_URL
-  const apiToken = process.env.NEXT_PUBLIC_SENDBIRD_API_TOKEN
-  const currentChannelUrl = process.env.NEXT_PUBLIC_SENDBIRD_TEST_CHANNEL_ID
 
   const fadeUp = cssTransition({
     enter: 'animate__animated animate__customFadeInUp',
@@ -151,7 +144,7 @@ const CustomChatRoom = (props: props) => {
       .then((message) => {})
       .catch((error) => {
         console.log(error, 'error')
-        alert('다시 시도해 주세요.')
+        controlToastPopup(false, '다시 시도해 주세요.')
       })
   }
 
@@ -163,186 +156,26 @@ const CustomChatRoom = (props: props) => {
       .then((message) => {})
       .catch((error) => {
         console.log(error, 'error')
-        alert('다시 시도해 주세요.')
+        controlToastPopup(false, '다시 시도해 주세요.')
       })
   }
 
-  const blockUser = (senderId: string) => {
-    const body = {
-      target_id: senderId,
-    }
-
-    axios
-      .post(`${ApiStudio}/sendbird/users/${props.userId}/block`, body)
-      .then((response) => {
-        toast.success(
-          <div className='toast_success_box'>
-            <Image
-              src='/Sendbird/toast_success_icon.svg'
-              width={16}
-              height={16}
-              alt='toastSuccessIcon'
-            />
-            <span className='toast_success_text'>
-              {senderId} 님을 차단했어요.
-            </span>
-          </div>,
-          { transition: fadeUp }
-        )
-        setIsBlockUser(true)
-        setIsMoreMiniMenu(false)
-      })
-      .catch((error) => {
-        console.error('실패:', error)
-        toast.error(
-          <div className='toast_error_box'>
-            <Image
-              src='/Sendbird/toast_warning_icon.svg'
-              width={16}
-              height={16}
-              alt='toastWarningIcon'
-            />
-            <span className='toast_error_text'>
-              네트워크 문제로 차단하지 못했어요.
-            </span>
-          </div>,
-          { transition: fadeUp }
-        )
-      })
-  }
-
-  const unblockUser = (senderId: string) => {
-    axios
-      .delete(`${ApiStudio}/sendbird/users/${props.userId}/block/${senderId}`)
-      .then((data) => {
-        toast.success(
-          <div className='toast_success_box'>
-            <Image
-              src='/Sendbird/toast_success_icon.svg'
-              width={16}
-              height={16}
-              alt='toastSuccessIcon'
-            />
-            <span className='toast_success_text'>
-              {senderId} 님을 차단 해제했어요.
-            </span>
-          </div>,
-          { transition: fadeUp }
-        )
-        setIsBlockUser(false)
-        setIsMoreMiniMenu(false)
-      })
-      .catch((error) => {
-        console.error('실패:', error)
-        toast.error(
-          <div className='toast_error_box'>
-            <Image
-              src='/Sendbird/toast_warning_icon.svg'
-              width={16}
-              height={16}
-              alt='toastWarningIcon'
-            />
-            <span className='toast_error_text'>
-              네트워크 문제로 차단 해제 못했어요.
-            </span>
-          </div>,
-          { transition: fadeUp }
-        )
-      })
-  }
-
-  const muteUser = (senderId: string) => {
-    const body = {
-      user_id: senderId,
-      seconds: 600,
-    }
-
-    axios
-      .post(
-        `${ApiStudio}/sendbird/group_channels/${currentChannelUrl}/mute`,
-        body
+  // status가 true: toast 성공 <> false : toast 에러
+  const controlToastPopup = (status: boolean, contentText: string) => {
+    if (status) {
+      toast.success(
+        <div className='toast_success_box'>
+          <Image
+            src='/Sendbird/toast_success_icon.svg'
+            width={16}
+            height={16}
+            alt='toastSuccessIcon'
+          />
+          <span className='toast_success_text'>{contentText}</span>
+        </div>,
+        { transition: fadeUp }
       )
-      .then((data) => {
-        toast.success(
-          <div className='toast_success_box'>
-            <Image
-              src='/Sendbird/toast_success_icon.svg'
-              width={16}
-              height={16}
-              alt='toastSuccessIcon'
-            />
-            <span className='toast_success_text'>
-              {senderId} 님을 채팅 일시정지 했어요.
-            </span>
-          </div>,
-          { transition: fadeUp }
-        )
-        setIsMutedUser(true)
-        setIsMoreMiniMenu(false)
-      })
-      .catch((error) => {
-        console.error('실패:', error)
-        toast.error(
-          <div className='toast_error_box'>
-            <Image
-              src='/Sendbird/toast_warning_icon.svg'
-              width={16}
-              height={16}
-              alt='toastWarningIcon'
-            />
-            <span className='toast_error_text'>
-              네트워크 문제로 채팅 일시정지를 못했어요.
-            </span>
-          </div>,
-          { transition: fadeUp }
-        )
-      })
-  }
-
-  const unmuteUser = (senderId: string) => {
-    axios
-      .delete(
-        `${ApiStudio}/sendbird/group_channels/${currentChannelUrl}/mute/${senderId}`
-      )
-      .then((data) => {
-        toast.success(
-          <div className='toast_success_box'>
-            <Image
-              src='/Sendbird/toast_success_icon.svg'
-              width={16}
-              height={16}
-              alt='toastSuccessIcon'
-            />
-            <span className='toast_success_text'>
-              {senderId} 님의 채팅 일시정지를 해제했어요.
-            </span>
-          </div>,
-          { transition: fadeUp }
-        )
-        setIsMutedUser(false)
-        setIsMoreMiniMenu(false)
-      })
-      .catch((error) => {
-        console.error('실패:', error)
-        toast.error(
-          <div className='toast_error_box'>
-            <Image
-              src='/Sendbird/toast_warning_icon.svg'
-              width={16}
-              height={16}
-              alt='toastWarningIcon'
-            />
-            <span className='toast_error_text'>
-              네트워크 문제로 채팅 일시정지 해제를 못했어요.
-            </span>
-          </div>,
-          { transition: fadeUp }
-        )
-      })
-  }
-
-  const editMessage = () => {
-    if (editMessageValue === '' || editMessageValue.length < 1) {
+    } else {
       toast.error(
         <div className='toast_error_box'>
           <Image
@@ -351,43 +184,121 @@ const CustomChatRoom = (props: props) => {
             height={16}
             alt='toastWarningIcon'
           />
-          <span className='toast_error_text'>
-            수정할 메시지를 입력해 주세요.
-          </span>
+          <span className='toast_error_text'>{contentText}</span>
         </div>,
         { transition: fadeUp }
       )
+    }
+  }
+
+  const blockUser = async (senderId: string) => {
+    const requestUrl = `/sendbird/users/${props.userId}/block`
+
+    const body = {
+      target_id: senderId,
+    }
+
+    const responseData = await AxiosRequest({
+      url: requestUrl,
+      method: 'POST',
+      body: body,
+      token: '',
+    })
+
+    if (responseData !== 'AxiosError') {
+      controlToastPopup(true, `${senderId} 님을 차단했어요.`)
+      setIsBlockUser(true)
+      setIsMoreMiniMenu(false)
+    } else {
+      controlToastPopup(false, '네트워크 문제로 차단하지 못했어요.')
+    }
+  }
+
+  const unblockUser = async (senderId: string) => {
+    const requestUrl = `/sendbird/users/${props.userId}/block/${senderId}`
+
+    const responseData = await AxiosRequest({
+      url: requestUrl,
+      method: 'DELETE',
+      body: '',
+      token: '',
+    })
+
+    if (responseData !== 'AxiosError') {
+      controlToastPopup(true, `${senderId} 님을 차단 해제했어요.`)
+      setIsBlockUser(false)
+      setIsMoreMiniMenu(false)
+    } else {
+      controlToastPopup(false, '네트워크 문제로 차단 해제 못했어요.')
+    }
+  }
+
+  const muteUser = async (senderId: string) => {
+    const requestUrl = `/sendbird/group_channels/${props.channelUrl}/mute`
+
+    const body = {
+      user_id: senderId,
+      seconds: 600,
+    }
+
+    const responseData = await AxiosRequest({
+      url: requestUrl,
+      method: 'POST',
+      body: body,
+      token: '',
+    })
+
+    if (responseData !== 'AxiosError') {
+      controlToastPopup(true, `${senderId} 님을 채팅 일시정지 했어요.`)
+      setIsBlockUser(false)
+      setIsMoreMiniMenu(false)
+    } else {
+      controlToastPopup(false, '네트워크 문제로 채팅 일시정지를 못했어요.')
+    }
+  }
+
+  const unmuteUser = async (senderId: string) => {
+    const requestUrl = `/sendbird/group_channels/${props.channelUrl}/mute/${senderId}`
+
+    const responseData = await AxiosRequest({
+      url: requestUrl,
+      method: 'DELETE',
+      body: '',
+      token: '',
+    })
+
+    if (responseData !== 'AxiosError') {
+      controlToastPopup(true, `${senderId} 님의 채팅 일시정지를 해제했어요.`)
+      setIsBlockUser(false)
+      setIsMoreMiniMenu(false)
+    } else {
+      controlToastPopup(false, '네트워크 문제로 채팅 일시정지 해제를 못했어요.')
+    }
+  }
+
+  const editMessage = async () => {
+    if (editMessageValue === '' || editMessageValue.length < 1) {
+      controlToastPopup(false, '수정할 메시지를 입력해 주세요.')
       return
     }
+
+    const requestUrl = `/sendbird/group_channels/${props.channelUrl}/messages/${messageInfomation.messageId}`
 
     const body = {
       message_type: 'MESG',
       message: editMessageValue,
     }
 
-    axios
-      .put(
-        `${ApiStudio}/sendbird/group_channels/${currentChannelUrl}/messages/${messageInfomation.messageId}`,
-        body
-      )
-      .then((response) => {})
-      .catch((error) => {
-        console.error('실패:', error)
-        toast.error(
-          <div className='toast_error_box'>
-            <Image
-              src='/Sendbird/toast_warning_icon.svg'
-              width={16}
-              height={16}
-              alt='toastWarningIcon'
-            />
-            <span className='toast_error_text'>
-              네트워크 문제로 메시지 수정을 못했어요.
-            </span>
-          </div>,
-          { transition: fadeUp }
-        )
-      })
+    const responseData = await AxiosRequest({
+      url: requestUrl,
+      method: 'PUT',
+      body: body,
+      token: '',
+    })
+
+    if (responseData === 'AxiosError') {
+      controlToastPopup(false, '네트워크 문제로 메시지 수정을 못했어요.')
+    }
   }
 
   const controlEditedInputHeightsize = () => {
@@ -452,6 +363,21 @@ const CustomChatRoom = (props: props) => {
     }
   }, [isMoreMiniMenu, isReactionTopBox, isReactionBottomBox])
 
+  // 신규 채팅방일 때의 조건 로직
+  useEffect(() => {
+    /* 신규 채팅방일 때는 sender가 없으므로, 있을 때의 조건을 걸어 가공 처리 */
+    if (messageInfomation?.sender) {
+      setSender(messageInfomation?.sender)
+      setUserRole(messageInfomation?.sender.role)
+
+      const findMutedUser = currentGroupChannel.members.find(
+        (user: any) => user?.userId === sender?.userId
+      )
+      setIsMutedUser(findMutedUser?.isMuted)
+      setIsBlockUser(messageInfomation?.sender?.isBlockedByMe)
+    }
+  }, [])
+
   // console.log(sender, 'sender')
   // console.log(messageInfomation, 'info')
   // console.log(emojiContainer, 'emojiContainer')
@@ -460,6 +386,8 @@ const CustomChatRoom = (props: props) => {
 
   return (
     <div className='CustomChatRoom'>
+      {/* 채팅방이 신규로 생성되었거나 누군가가 입장했을 때의 메시지를 숨김 처리 */}
+
       <div
         className={`message_wrapper ${isEditedMessage && 'edit'}`}
         onClick={() =>
@@ -737,8 +665,8 @@ const CustomChatRoom = (props: props) => {
                   <Image
                     className='defaultProfileImage'
                     src={
-                      sender.plainProfileUrl
-                        ? sender.plainProfileUrl
+                      sender?.plainProfileUrl
+                        ? sender?.plainProfileUrl
                         : '/Sendbird/Ellipse 8stateBadge.svg'
                     }
                     width={24}
@@ -749,10 +677,10 @@ const CustomChatRoom = (props: props) => {
 
                 <div
                   className={`user_nickname_box ${
-                    sender.role === 'operator' && 'teacher'
+                    sender?.role === 'operator' && 'teacher'
                   }`}
                 >
-                  {sender.userId}
+                  {sender?.userId}
                 </div>
 
                 <div className='massage_date_time'>
