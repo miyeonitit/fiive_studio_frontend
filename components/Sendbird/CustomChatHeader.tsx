@@ -20,6 +20,7 @@ import ResponsiveUserFilterMenu from './ResponsiveComponents/ResponsiveUserFilte
 type props = {
   userId: string
   userRole: string
+  channelUrl: string
   isChatOpen: boolean
   setIsChatOpen: Dispatch<SetStateAction<boolean>>
 }
@@ -70,7 +71,6 @@ const CustomChatHeader = (props: props) => {
   const miniMenuRef = useRef<HTMLButtonElement>(null)
   const userFilterRef = useRef<HTMLDivElement>(null)
 
-  const currentChannelUrl = process.env.NEXT_PUBLIC_SENDBIRD_TEST_CHANNEL_ID
   const studioUrl = process.env.NEXT_PUBLIC_STUDIO_URL
 
   const saveComponentIndex = (index: number) => {
@@ -85,7 +85,7 @@ const CustomChatHeader = (props: props) => {
   }
 
   const controlFreezeChat = async () => {
-    const requestUrl = `/sendbird/group_channels/${currentChannelUrl}/freeze`
+    const requestUrl = `/sendbird/group_channels/${props.channelUrl}/freeze`
 
     const body = {
       freeze: !isFreezeChat,
@@ -98,8 +98,10 @@ const CustomChatHeader = (props: props) => {
       token: '',
     })
 
-    setIsFreezeChat(!isFreezeChat)
-    setIsMoreMiniMenu(false)
+    if (responseData !== 'AxiosError') {
+      setIsFreezeChat(!isFreezeChat)
+      setIsMoreMiniMenu(false)
+    }
   }
 
   const handleUserFilterStatus = async (status: string) => {
@@ -114,7 +116,7 @@ const CustomChatHeader = (props: props) => {
         break
 
       case 'muted':
-        requestUrl = `/sendbird/group_channels/${currentChannelUrl}/mute`
+        requestUrl = `/sendbird/group_channels/${props.channelUrl}/mute`
 
         responseData = await AxiosRequest({
           url: requestUrl,
@@ -123,9 +125,11 @@ const CustomChatHeader = (props: props) => {
           token: '',
         })
 
-        setUserList(responseData?.muted_list)
-        setUserFilter('채팅 정지된 참여자')
-        setIsUserFilterMiniMenu(false)
+        if (responseData !== 'AxiosError') {
+          setUserList(responseData?.muted_list)
+          setUserFilter('채팅 정지된 참여자')
+          setIsUserFilterMiniMenu(false)
+        }
         break
 
       case 'blocked':
@@ -138,9 +142,11 @@ const CustomChatHeader = (props: props) => {
           token: '',
         })
 
-        setUserList(responseData?.users)
-        setUserFilter('차단된 참여자')
-        setIsUserFilterMiniMenu(false)
+        if (responseData !== 'AxiosError') {
+          setUserList(responseData?.users)
+          setUserFilter('차단된 참여자')
+          setIsUserFilterMiniMenu(false)
+        }
         break
     }
   }

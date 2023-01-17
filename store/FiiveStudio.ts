@@ -17,6 +17,11 @@ interface FiiveStudioState {
   // sendbird chat UI open <> close toggle boolean state
   isChatOpen: boolean
   setIsChatOpen: (isChatOpen: boolean) => void
+
+  // ivs 재생 status string state
+  // waiting: 라이브 전 재생 대기중 <> play: 재생중 <> end: 라이브 종료 <> error : 재생 에러
+  ivsPlayStatus: string
+  setIvsPlayStatus: (ivsPlayStatus: string) => void
 }
 
 const useStore = create(
@@ -44,6 +49,12 @@ const useStore = create(
       setIsChatOpen: (isChatOpen) =>
         set(() => ({
           isChatOpen,
+        })),
+
+      ivsPlayStatus: 'waiting',
+      setIvsPlayStatus: (ivsPlayStatus) =>
+        set(() => ({
+          ivsPlayStatus,
         })),
     })
   )

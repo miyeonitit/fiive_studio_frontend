@@ -119,7 +119,6 @@ const UserListProfileCard = (props: props) => {
 
     if (responseData !== 'AxiosError') {
       controlToastPopup(true, `${senderId} 님을 차단 해제했어요.`)
-      setIsBlockUser(false)
       setIsMoreMiniMenu(false)
     } else {
       controlToastPopup(false, '네트워크 문제로 차단 해제 못했어요.')
@@ -143,7 +142,7 @@ const UserListProfileCard = (props: props) => {
 
     if (responseData !== 'AxiosError') {
       controlToastPopup(true, `${senderId} 님을 채팅 일시정지 했어요.`)
-      setIsBlockUser(false)
+      setIsMutedUser(true)
       setIsMoreMiniMenu(false)
     } else {
       controlToastPopup(false, '네트워크 문제로 채팅 일시정지를 못했어요.')
@@ -162,7 +161,7 @@ const UserListProfileCard = (props: props) => {
 
     if (responseData !== 'AxiosError') {
       controlToastPopup(true, `${senderId} 님의 채팅 일시정지를 해제했어요.`)
-      setIsBlockUser(false)
+      setIsMutedUser(false)
       setIsMoreMiniMenu(false)
     } else {
       controlToastPopup(false, '네트워크 문제로 채팅 일시정지 해제를 못했어요.')

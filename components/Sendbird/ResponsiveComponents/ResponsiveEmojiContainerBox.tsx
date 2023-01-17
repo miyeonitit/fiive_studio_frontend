@@ -16,6 +16,7 @@ type props = {
   setIsReactionBox: Dispatch<SetStateAction<boolean>>
   messageInfomation: any
   reactedEmojis: Array<any>
+  channelUrl: string
 }
 
 const ResponsiveEmojiContainerBox = (props: props) => {
@@ -24,7 +25,6 @@ const ResponsiveEmojiContainerBox = (props: props) => {
 
   const emojiModalRef = useRef<HTMLDivElement>(null)
 
-  const channel_url = process.env.NEXT_PUBLIC_SENDBIRD_TEST_CHANNEL_ID
   const message_id = props.messageInfomation.messageId
 
   const addUserReaction = async (emojiKey: string) => {
@@ -43,7 +43,7 @@ const ResponsiveEmojiContainerBox = (props: props) => {
     }
     // 해당 메시지에 유저가 선택한 리액션 이모지가 없을 경우
     else {
-      const requestUrl = `/sendbird/group_channels/${channel_url}/messages/${message_id}/reactions`
+      const requestUrl = `/sendbird/group_channels/${props.channelUrl}/messages/${message_id}/reactions`
 
       const body = {
         user_id: props.userId,
@@ -60,7 +60,7 @@ const ResponsiveEmojiContainerBox = (props: props) => {
   }
 
   const removeUserReaction = async (emojiKey: string) => {
-    const requestUrl = `/sendbird/group_channels/${channel_url}/messages/${message_id}/reactions?user_id=${props.userId}&reaction=${emojiKey}`
+    const requestUrl = `/sendbird/group_channels/${props.channelUrl}/messages/${message_id}/reactions?user_id=${props.userId}&reaction=${emojiKey}`
 
     const responseData = await AxiosRequest({
       url: requestUrl,

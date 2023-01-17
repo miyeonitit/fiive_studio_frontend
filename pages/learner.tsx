@@ -7,9 +7,9 @@ import dynamic from 'next/dynamic'
 import { CSSProperties } from 'styled-components'
 
 import AxiosRequest from '../utils/AxiosRequest'
-import sendbirdUseStore from '../store/Sendbird'
 import classRoomUseStore from '../store/classRoom'
 import fiiveStudioUseStore from '../store/FiiveStudio'
+import useStore from '../store/video'
 
 import Layout from '../components/FiiveLearnerLayout'
 import Video from '../components/Video'
@@ -18,7 +18,7 @@ import QuestionModal from '../components/QuestionModal'
 import SubmitReaction from '../components/SubmitReaction'
 import Timer from '../components/Timer'
 import Reactions from '../components/Reactions'
-import useStore from '../store/video'
+import LiveStatusVideoScreen from '../components/VideoComponents/LiveStatusVideoScreen'
 
 type props = {
   emoji_data: { id: number; key: string; url: string }
@@ -41,6 +41,9 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
   // sendbird Chat open <> close 동작을 위한 toggle boolean state
   const isChatOpen = fiiveStudioUseStore((state: any) => state.isChatOpen)
   const setIsChatOpen = fiiveStudioUseStore((state: any) => state.setIsChatOpen)
+
+  // waiting: 라이브 전 재생 대기중 <> play: 재생중 <> end: 라이브 종료 <> error : 재생 에러
+  const ivsPlayStatus = fiiveStudioUseStore((state: any) => state.ivsPlayStatus)
 
   // ivs, sendbird chat infomation 정보를 저장하는 state
   const ivsData = classRoomUseStore((state: any) => state.ivsData)
@@ -102,8 +105,18 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
         <section className='video-wrapper' ref={playerHeightRef}>
           <Announcements></Announcements>
           <Timer></Timer>
-          <Reactions></Reactions>
+
+          {/* metadata reaction emoji 컴포넌트 */}
+          <Reactions />
+
+          {/* ivs video player 영역 컴포넌트 */}
           <Video playbackUrl={ivsData?.playbackUrl} />
+
+          {/* live 시작 전, 재생 에러, live 종료일 때 띄우는 준비 화면 컴포넌트 */}
+          {ivsPlayStatus === 'waiting' ||
+            ivsPlayStatus === 'error' ||
+            ivsPlayStatus === 'end'}
+          <LiveStatusVideoScreen ivsPlayStatus={ivsPlayStatus} />
         </section>
 
         {/* class infomation 영역 */}

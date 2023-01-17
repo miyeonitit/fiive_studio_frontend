@@ -150,8 +150,9 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
                 </span>
               </div>
               <div className='notification_description_box'>
-                선생님과 수강생이 함께 소통하는 공간이에요. 피이브 커뮤니티
-                가이드를 준수하는 것을 잊지 마세요.
+                피이브 스튜디오에서 제공하는 수업 도구와 함께 수강생과 소통하며
+                라이브 수업을 운영해보세요! 수업 도구 사용법과 업데이트 소식이
+                궁금하다면 아래에서 확인해보세요.
               </div>
               <button className='community_guide_button'>
                 커뮤니티 가이드 알아보기
@@ -168,7 +169,7 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
       >
         <div className='chatroom'>
           <Chat
-            userId='teacher'
+            userId='user1'
             isChatOpen={isChatOpen}
             setIsChatOpen={setIsChatOpen}
             emojiContainer={emojiContainer}

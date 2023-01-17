@@ -1,9 +1,10 @@
 import React, { useRef, useEffect, useState } from 'react'
 
+import videoUseStore from '../store/video'
+import fiiveStudioUseStore from '../store/FiiveStudio'
 import AxiosRequest from '../utils/AxiosRequest'
 
 // import Messages from "../components/Messages";
-import videoUseStore from '../store/video'
 
 type props = {
   playbackUrl: string
@@ -21,6 +22,11 @@ const Video = (props: props) => {
   const addReaction = videoUseStore((state: any) => state.addReaction)
 
   const setTimer = videoUseStore((state: any) => state.setTimer)
+
+  // ivs Player status 상태 표현 state
+  const setIvsPlayStatus = fiiveStudioUseStore(
+    (state: any) => state.setIvsPlayStatus
+  )
 
   const [init, setInit] = useState(false)
   // const [messages, setMessages] = useState<any[]>([]);
@@ -115,6 +121,7 @@ const Video = (props: props) => {
       switch (type) {
         case 'ErrorNoSource':
         case 'ErrorNotAvailable':
+          setIvsPlayStatus('error')
           window.setTimeout(() => {
             player.load(playbackUrl)
             player.play()
@@ -128,6 +135,7 @@ const Video = (props: props) => {
     player.load(playbackUrl)
 
     player.play()
+    setIvsPlayStatus('play')
 
     setInit(true)
   }

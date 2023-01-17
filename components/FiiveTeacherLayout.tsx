@@ -20,6 +20,11 @@ const FiiveLayout = (props: any) => {
   const isChatOpen = fiiveStudioUseStore((state: any) => state.isChatOpen)
   const setIsChatOpen = fiiveStudioUseStore((state: any) => state.setIsChatOpen)
 
+  // ivs Player status 상태 표현 state
+  const setIvsPlayStatus = fiiveStudioUseStore(
+    (state: any) => state.setIvsPlayStatus
+  )
+
   const responsiveZindexStyle: CSSProperties =
     offsetX < 1023 && isOpenResponsiveModal
       ? {
@@ -147,7 +152,10 @@ const FiiveLayout = (props: any) => {
         </div>
 
         {/* 라이브 나가기 버튼 영역 */}
-        <div className='quit_button_wrapper'>
+        <div
+          className='quit_button_wrapper'
+          onClick={() => setIvsPlayStatus('end')}
+        >
           <Image
             src='../layouts/fiive/quit_live_icon.svg'
             width={22}

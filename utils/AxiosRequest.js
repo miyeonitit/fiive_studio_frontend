@@ -7,38 +7,26 @@ const AxiosRequest = async ({ url, method, body, token }) => {
 
   const ApiStudio = process.env.NEXT_PUBLIC_API_BASE_URL
 
-  switch (method) {
-    case 'GET':
-      try {
+  try {
+    switch (method) {
+      case 'GET':
         successData = await axios.get(`${ApiStudio}${url}`)
-      } catch (error) {
-        errorData = error
-      }
-      break
+        break
 
-    case 'POST':
-      try {
+      case 'POST':
         successData = await axios.post(`${ApiStudio}${url}`, body)
-      } catch (error) {
-        errorData = error
-      }
-      break
+        break
 
-    case 'PUT':
-      try {
+      case 'PUT':
         successData = await axios.put(`${ApiStudio}${url}`, body)
-      } catch (error) {
-        errorData = error
-      }
-      break
+        break
 
-    case 'DELETE':
-      try {
+      case 'DELETE':
         successData = await axios.delete(`${ApiStudio}${url}`)
-      } catch (error) {
-        errorData = error
-      }
-      break
+        break
+    }
+  } catch (error) {
+    errorData = error
   }
 
   return successData ? successData.data : errorData.name
