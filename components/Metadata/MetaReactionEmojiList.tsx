@@ -44,8 +44,6 @@ const MetaReactionEmojiList = (props: props) => {
       body: body,
       token: '',
     })
-
-    props.setIsOpenEmojiList(false)
   }
 
   useEffect(() => {

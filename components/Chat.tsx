@@ -71,6 +71,7 @@ const Chat = (props: props) => {
               <CustomChatHeader
                 userId={userId}
                 userRole='teacher'
+                channelUrl={chatData.channel_url}
                 isChatOpen={props.isChatOpen}
                 setIsChatOpen={props.setIsChatOpen}
               />

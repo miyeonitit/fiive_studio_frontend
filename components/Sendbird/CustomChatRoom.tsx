@@ -250,7 +250,12 @@ const CustomChatRoom = (props: props) => {
 
     if (responseData !== 'AxiosError') {
       controlToastPopup(true, `${senderId} 님을 채팅 일시정지 했어요.`)
-      setIsBlockUser(false)
+
+      const findMutedUser = currentGroupChannel.members.find(
+        (user: any) => user?.userId === sender?.userId
+      )
+
+      setIsMutedUser(findMutedUser?.isMuted)
       setIsMoreMiniMenu(false)
     } else {
       controlToastPopup(false, '네트워크 문제로 채팅 일시정지를 못했어요.')
@@ -269,7 +274,12 @@ const CustomChatRoom = (props: props) => {
 
     if (responseData !== 'AxiosError') {
       controlToastPopup(true, `${senderId} 님의 채팅 일시정지를 해제했어요.`)
-      setIsBlockUser(false)
+
+      const findMutedUser = currentGroupChannel.members.find(
+        (user: any) => user?.userId === sender?.userId
+      )
+
+      setIsMutedUser(findMutedUser?.isMuted)
       setIsMoreMiniMenu(false)
     } else {
       controlToastPopup(false, '네트워크 문제로 채팅 일시정지 해제를 못했어요.')
@@ -521,6 +531,7 @@ const CustomChatRoom = (props: props) => {
                   emojiContainer={props.emojiContainer}
                   setIsReactionBox={setIsReactionTopBox}
                   messageInfomation={messageInfomation}
+                  channelUrl={props.channelUrl}
                 />
               ) : (
                 <ResponsiveEmojiContainerBox
@@ -530,12 +541,13 @@ const CustomChatRoom = (props: props) => {
                   setIsReactionBox={setIsReactionTopBox}
                   messageInfomation={messageInfomation}
                   reactedEmojis={reactedEmojis}
+                  channelUrl={props.channelUrl}
                 />
               ))}
 
             {/* 더보기 버튼의 미니 메뉴 */}
             {isMoreMiniMenu &&
-              (props.userId === sender.userId ? (
+              (props.userId === sender?.userId ? (
                 <div
                   className={`more_mini_menu_wrapper ${
                     isMiniMenuTop && (offsetX < 1023 ? 'responsive_top' : 'top')
@@ -585,7 +597,7 @@ const CustomChatRoom = (props: props) => {
                         <div
                           className='list_in_menu'
                           onClick={() => {
-                            unmuteUser(sender.userId)
+                            unmuteUser(sender?.userId)
                           }}
                         >
                           <Image
@@ -600,7 +612,7 @@ const CustomChatRoom = (props: props) => {
                         <div
                           className='list_in_menu'
                           onClick={() => {
-                            muteUser(sender.userId)
+                            muteUser(sender?.userId)
                           }}
                         >
                           <Image
@@ -616,7 +628,7 @@ const CustomChatRoom = (props: props) => {
                     {isBlockUser ? (
                       <div
                         className='list_in_menu'
-                        onClick={() => unblockUser(sender.userId)}
+                        onClick={() => unblockUser(sender?.userId)}
                       >
                         <Image
                           src='/Sendbird/learner_uncert.svg'
@@ -629,7 +641,7 @@ const CustomChatRoom = (props: props) => {
                     ) : (
                       <div
                         className='list_in_menu'
-                        onClick={() => blockUser(sender.userId)}
+                        onClick={() => blockUser(sender?.userId)}
                       >
                         <Image
                           src='/Sendbird/learner_uncert.svg'
@@ -770,6 +782,7 @@ const CustomChatRoom = (props: props) => {
                         reactedEmojis={reactedEmojis}
                         emojiContainer={props.emojiContainer}
                         messageInfomation={messageInfomation}
+                        channelUrl={props.channelUrl}
                       />
                     ))}
                     <div
@@ -814,6 +827,7 @@ const CustomChatRoom = (props: props) => {
                         emojiContainer={props.emojiContainer}
                         setIsReactionBox={setIsReactionBottomBox}
                         messageInfomation={messageInfomation}
+                        channelUrl={props.channelUrl}
                       />
                     ) : (
                       <ResponsiveEmojiContainerBox
@@ -823,6 +837,7 @@ const CustomChatRoom = (props: props) => {
                         setIsReactionBox={setIsReactionBottomBox}
                         messageInfomation={messageInfomation}
                         reactedEmojis={reactedEmojis}
+                        channelUrl={props.channelUrl}
                       />
                     ))}
                 </>

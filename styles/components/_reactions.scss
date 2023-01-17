@@ -6,41 +6,65 @@
 
   .item {
     position: absolute;
-    display: none;
+    // display: none;
     width: 56px;
     left: 3%;
-    // transition: transform ease-out 1s, opacity ease-out 1s;
-    // transform: translateY(-400px);
-    // opacity: 0;
+
+    img {
+      transform: rotate(-50deg);
+    }
   }
 
   .example-enter {
     display: block;
     opacity: 1;
-
-    transform: rotate(-100deg) scale(0.1);
-    // transform: translateY(-0px);
+    transform: translateY(-0px);
   }
 
   .example-enter.example-enter-active {
     display: block;
-    opacity: 1;
-
-    transform: translateY(-300px) rotate(0deg) scale(1.3);
-    // transform: scale3d(0.3, 0.3, 0.3);
-    transition: transform ease 2s, opacity ease 2s;
-  }
-
-  .example-exit {
-    display: block;
-    opacity: 1;
-    transform: translateY(-0px);
-  }
-
-  .example-exit-active {
-    display: block;
     opacity: 0;
-    transform: translateY(300px);
+    transform: translateY(-400px);
     transition: transform ease-out 2s, opacity ease-out 2s;
   }
+
+  .example-leave {
+    display: block;
+    opacity: 1;
+  }
+
+  .example-leave.example-leave-active {
+    display: block;
+    opacity: 1;
+  }
+
+  // .example-enter {
+  //   display: block;
+  //   opacity: 1;
+
+  //   transform: scale(0.1);
+  //   transition: transform ease 8s, opacity ease 8s;
+  //   transform: translateY(-0px);
+  // }
+
+  // .example-enter.example-enter-active {
+  //   display: block;
+  //   opacity: 1;
+
+  //   transform: translateY(-300px) rotate(50deg);
+  //   // transform: scale3d(0.3, 0.3, 0.3);
+  //   transition: transform ease 4s, opacity ease 4s;
+  // }
+
+  // .example-leave {
+  //   display: block;
+  //   opacity: 1;
+  // }
+
+  // .example-leave-active {
+  //   display: block;
+  //   opacity: 1;
+  //   transform: translateY(300px);
+  //   transition: transform ease 4s, opacity ease 4s;
+  // }
 }

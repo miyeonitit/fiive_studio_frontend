@@ -1,7 +1,10 @@
 import dynamic from 'next/dynamic'
-import { SetStateAction } from 'react'
+import { Dispatch, SetStateAction } from 'react'
 
 type props = {
+  userId: string
+  isChatOpen: boolean
+  setIsChatOpen: Dispatch<SetStateAction<boolean>>
   emojiContainer: { id: number; key: string; url: string }
 }
 
@@ -24,7 +27,12 @@ const TeacherChatWidget = (props: props) => {
         </button>
       </h3> */}
 
-      <Chat userId='teacher' emojiContainer={props.emojiContainer} />
+      <Chat
+        userId='learne'
+        isChatOpen={props.isChatOpen}
+        setIsChatOpen={props.setIsChatOpen}
+        emojiContainer={props.emojiContainer}
+      />
     </div>
   )
 }

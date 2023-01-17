@@ -1,3 +1,4 @@
+import React, { useState } from 'react'
 import Image from 'next/image'
 
 import useStore from '../store/video'
@@ -8,6 +9,8 @@ const Reactions = (props: any) => {
   const reactions = useStore((state: any) => state.reactions)
   const addReaction = useStore((state: any) => state.addREaction)
   const removeReaction = useStore((state: any) => state.removeReaction)
+
+  const [isSwitchAnimation, setIsSwitchAnimation] = useState(false)
 
   const reaction = (type: string) => {
     let img
@@ -88,6 +91,8 @@ const Reactions = (props: any) => {
     return img
   }
 
+  console.log(isSwitchAnimation, 'isSwitchAnimation')
+
   const items = reactions.map((item: any) => {
     const swarm = []
 
@@ -97,7 +102,7 @@ const Reactions = (props: any) => {
         key: `${item.id}-${number}`,
         type: item.type,
         style: {
-          top: '150px',
+          // top: '150px',
           // left: `${bottom}px`,
           // bottom: `-${bottom}px`,
         },
@@ -114,9 +119,12 @@ const Reactions = (props: any) => {
   return (
     <div className='reactions-component'>
       <CSSTransitionGroup
+        unmountOnLeave
         transitionName='example'
         transitionEnterTimeout={2000}
-        transitionLeaveTimeout={0}
+        transitionLeaveTimeout={2000}
+        onEnter={() => setIsSwitchAnimation(true)}
+        onExited={() => setIsSwitchAnimation(true)}
       >
         {items}
       </CSSTransitionGroup>
