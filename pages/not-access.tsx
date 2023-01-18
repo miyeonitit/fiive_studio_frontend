@@ -16,9 +16,12 @@ const not_access = () => {
       <div className='dummy_body'>
         {/* 왼쪽 구성되어있는 선생님 수업화면 더미와 수업정보 관련 box */}
         <div className='dummy_live_box'>
-          <div className='live_obs_dummy' />
+          <div className='live_obs_dummy'>
+            <div className='live_obx_dummy_title'>선생님 수업 화면</div>
+          </div>
 
           <div className='live_information_dummy'>
+            <div className='live_information_dummy_title'>라이브 수업 정보</div>
             <div className='information_dummy_box'>
               {/* 첫번째 독립적인 네모 스켈레톤 */}
               <div className='first_skeleton_ractangle' />
@@ -39,6 +42,7 @@ const not_access = () => {
         {/* 오른쪽에 구성되어있는 실시간 채팅창 더미 box */}
         <div className='dummy_chat_box'>
           <div className='chat_box'>
+            <div className='dummy_chat_box_title'>실시간 채팅창</div>
             <div className='chat_header_box'>
               <div className='chat_title_box'>실시간 채팅</div>
               <div className='chat_the_menu_box'>

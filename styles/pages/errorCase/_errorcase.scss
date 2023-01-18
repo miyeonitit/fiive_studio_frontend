@@ -24,12 +24,32 @@
         background-color: black;
         background-position-x: center;
         background-position-y: center;
+        .live_obx_dummy_title {
+          display: flex;
+          align-items: center;
+          width: 100%;
+          height: 100%;
+          justify-content: center;
+          @include display-4;
+          color: white;
+        }
       }
     }
     .live_information_dummy {
+      position: relative;
       height: 244px;
       padding: 24px;
-      background-color: white;
+      background-color: rgba(255, 255, 255, 0.55);
+      .live_information_dummy_title {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: calc(100% - 48px);
+        @include display-4;
+        color: $bluegray-6;
+      }
       .first_skeleton_ractangle {
         width: 400px;
         height: 24px;
@@ -84,10 +104,21 @@
     }
 
     .dummy_chat_box {
+      position: relative;
       width: 100%;
       max-width: 340px;
       height: 100%;
       margin-left: 8px;
+      .dummy_chat_box_title {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: calc(100% - 32px);
+        width: calc(100% - 32px);
+        @include display-4;
+        color: $bluegray-6;
+      }
       .chat_box {
         display: flex;
         flex-direction: column;
@@ -95,7 +126,7 @@
 
         height: calc(100% - 82px);
         padding: 16px;
-        background-color: white;
+        background-color: rgba(255, 255, 255, 0.55);
         border-radius: 8px;
         .chat_header_box {
           display: flex;

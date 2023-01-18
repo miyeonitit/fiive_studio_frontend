@@ -113,10 +113,10 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
           <Video playbackUrl={ivsData?.playbackUrl} />
 
           {/* live 시작 전, 재생 에러, live 종료일 때 띄우는 준비 화면 컴포넌트 */}
-          {ivsPlayStatus === 'waiting' ||
+          {/* {ivsPlayStatus === 'waiting' ||
             ivsPlayStatus === 'error' ||
             ivsPlayStatus === 'end'}
-          <LiveStatusVideoScreen ivsPlayStatus={ivsPlayStatus} />
+          <LiveStatusVideoScreen ivsPlayStatus={ivsPlayStatus} /> */}
         </section>
 
         {/* class infomation 영역 */}
