@@ -87,6 +87,9 @@
     .chatroom {
       flex: 1 1 auto;
       min-height: 0;
+
+      /* sendbird fake chat */
+      @import './FakeChat.scss';
     }
 
     & > header {

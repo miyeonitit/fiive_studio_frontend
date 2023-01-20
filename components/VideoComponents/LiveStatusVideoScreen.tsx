@@ -129,10 +129,14 @@ const LiveStatusVideoScreen = (props: props) => {
           </div>
 
           <div className='video_main_text_box'>
-            <div className='video_main_text'>
-              {props.ivsPlayStatus === 'end'
-                ? '다음 라이브에서 만나요!'
-                : randomRollingTextList[randomCountIndex]}
+            <div
+              className={`video_main_text ${
+                props.ivsPlayStatus !== 'end' && 'rollig_text'
+              }`}
+            >
+              {props.ivsPlayStatus !== 'end'
+                ? randomRollingTextList[randomCountIndex]
+                : '다음 라이브에서 만나요!'}
             </div>
           </div>
         </div>

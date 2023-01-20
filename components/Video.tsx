@@ -1,16 +1,15 @@
 import React, { useRef, useEffect, useState } from 'react'
 
 import videoUseStore from '../store/video'
+import classRoomUseStore from '../store/classRoom'
 import fiiveStudioUseStore from '../store/FiiveStudio'
+
 import AxiosRequest from '../utils/AxiosRequest'
 
 // import Messages from "../components/Messages";
 
-type props = {
-  playbackUrl: string
-}
-
-const Video = (props: props) => {
+const Video = (props) => {
+  const { ivsData } = props
   const channel = videoUseStore((state: any) => state.channel)
   const setChannel = videoUseStore((state: any) => state.setChannel)
 
@@ -24,6 +23,7 @@ const Video = (props: props) => {
   const setTimer = videoUseStore((state: any) => state.setTimer)
 
   // ivs Player status 상태 표현 state
+  const ivsPlayStatus = fiiveStudioUseStore((state: any) => state.ivsPlayStatus)
   const setIvsPlayStatus = fiiveStudioUseStore(
     (state: any) => state.setIvsPlayStatus
   )
@@ -36,9 +36,7 @@ const Video = (props: props) => {
   const testIvsValue = process.env.NEXT_PUBLIC_TEST_IVS_CHANNEL_VALUE
 
   useEffect(() => {
-    if (typeof props.playbackUrl !== 'undefined') {
-      getChannelData()
-    }
+    initVideo()
   }, [props.playbackUrl])
 
   const getChannelData = async () => {
@@ -57,19 +55,23 @@ const Video = (props: props) => {
     })
 
     // user의 전용 token을 받아온 뒤, token을 파라미터로 전달하여 initVideo 호출
-    initVideo(responseData.token)
+    return responseData
   }
 
-  const initVideo = async (token: string) => {
+  const initVideo = async () => {
     // Bail if already initialized
     if (init) return
 
     // Bail if IVS sdk is not loaded
     const { IVSPlayer } = window
+
     if (typeof IVSPlayer === 'undefined') return
 
     // Bail if player is not supported
     if (!IVSPlayer.isPlayerSupported) return
+
+    // get user's token for ivs play
+    const { token } = await getChannelData()
 
     // get playbackUrl in channelData
     const playbackUrl = props.playbackUrl + `?token=${token}`
@@ -118,13 +120,15 @@ const Video = (props: props) => {
     player.addEventListener(IVSPlayer.PlayerEventType.ERROR, (error: any) => {
       const { type = null } = error
 
+      setIvsPlayStatus('error')
+
       switch (type) {
         case 'ErrorNoSource':
         case 'ErrorNotAvailable':
-          setIvsPlayStatus('error')
           window.setTimeout(() => {
             player.load(playbackUrl)
             player.play()
+            setIvsPlayStatus('play')
           }, 5000)
           break
       }
@@ -134,8 +138,9 @@ const Video = (props: props) => {
 
     player.load(playbackUrl)
 
-    player.play()
     setIvsPlayStatus('play')
+
+    player.play()
 
     setInit(true)
   }

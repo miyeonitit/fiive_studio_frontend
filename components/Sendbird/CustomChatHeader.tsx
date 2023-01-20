@@ -42,6 +42,9 @@ const CustomChatHeader = (props: props) => {
     (state: any) => state.setIsOpenResponsiveLiveMember
   )
 
+  // user auth token for API
+  const authToken = fiiveStudioUseStore((state: any) => state.authToken)
+
   // 유저 리스트 전역 state
   const contextSetIsUserList = sendBirdUseStore(
     (state: any) => state.setIsUserList
@@ -95,7 +98,7 @@ const CustomChatHeader = (props: props) => {
       url: requestUrl,
       method: 'POST',
       body: body,
-      token: '',
+      token: authToken,
     })
 
     if (responseData !== 'AxiosError') {
@@ -106,6 +109,7 @@ const CustomChatHeader = (props: props) => {
 
   const handleUserFilterStatus = async (status: string) => {
     let requestUrl = ''
+    let requestBody = {}
     let responseData = ''
 
     switch (status) {
@@ -122,7 +126,7 @@ const CustomChatHeader = (props: props) => {
           url: requestUrl,
           method: 'GET',
           body: '',
-          token: '',
+          token: authToken,
         })
 
         if (responseData !== 'AxiosError') {
@@ -139,7 +143,7 @@ const CustomChatHeader = (props: props) => {
           url: requestUrl,
           method: 'GET',
           body: '',
-          token: '',
+          token: authToken,
         })
 
         if (responseData !== 'AxiosError') {
@@ -210,7 +214,7 @@ const CustomChatHeader = (props: props) => {
           <div className='chat_the_menu_box'>
             <div className='more_button_box'>
               <Image
-                src='/Sendbird/more_button.svg'
+                src='/pages/Sendbird/more_button.svg'
                 onClick={() => setIsMoreMiniMenu(!isMoreMiniMenu)}
                 width={20}
                 height={20}
@@ -220,7 +224,7 @@ const CustomChatHeader = (props: props) => {
 
             <div className='close_button_box'>
               <Image
-                src='/Sendbird/responsive_close_button.svg'
+                src='/pages/Sendbird/responsive_close_button.svg'
                 onClick={() => {
                   props.setIsChatOpen(!props.isChatOpen)
                   setIsChatOpen(false)
@@ -241,7 +245,7 @@ const CustomChatHeader = (props: props) => {
                     }}
                   >
                     <Image
-                      src='/Sendbird/members_icon.svg'
+                      src='/pages/Sendbird/members_icon.svg'
                       width={16}
                       height={16}
                       alt='membersIcon'
@@ -258,7 +262,7 @@ const CustomChatHeader = (props: props) => {
                         }}
                       >
                         <Image
-                          src='/Sendbird/lock_icon.svg'
+                          src='/pages/Sendbird/lock_icon.svg'
                           width={16}
                           height={16}
                           alt='lockIcon'
@@ -275,7 +279,7 @@ const CustomChatHeader = (props: props) => {
                         onClick={() => openChatMonitor()}
                       >
                         <Image
-                          src='/Sendbird/share_chatting_icon.svg'
+                          src='/pages/Sendbird/share_chatting_icon.svg'
                           width={16}
                           height={16}
                           alt='shareIcon'
@@ -354,14 +358,14 @@ const CustomChatHeader = (props: props) => {
               <div className='list_filter_img_box'>
                 {isUserFilterMiniMenu ? (
                   <Image
-                    src='/Sendbird/list_down_icon.svg'
+                    src='/pages/Sendbird/list_down_icon.svg'
                     width={16}
                     height={16}
                     alt='listDownIcon'
                   />
                 ) : (
                   <Image
-                    src='/Sendbird/list_up_icon.svg'
+                    src='/pages/Sendbird/list_up_icon.svg'
                     width={16}
                     height={16}
                     alt='listUpIcon'
@@ -371,7 +375,7 @@ const CustomChatHeader = (props: props) => {
             </div>
             <div className='cancel_button'>
               <Image
-                src='/Sendbird/clear_button.svg'
+                src='/pages/Sendbird/clear_button.svg'
                 onClick={() => {
                   setIsUserList(false)
                 }}

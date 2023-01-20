@@ -8,6 +8,7 @@ import React, {
 import Image from 'next/image'
 
 import AxiosRequest from '../../../utils/AxiosRequest'
+import fiiveStudioUseStore from '../../../store/FiiveStudio'
 
 type props = {
   userId: string
@@ -20,6 +21,9 @@ type props = {
 }
 
 const ResponsiveEmojiContainerBox = (props: props) => {
+  // user auth token for API
+  const authToken = fiiveStudioUseStore((state: any) => state.authToken)
+
   // modal을 닫을 때, 애니메이션 효과와 setTimeout을 하기 위한 boolean state
   const [isCloseModal, setIsCloseModal] = useState(false)
 
@@ -54,7 +58,7 @@ const ResponsiveEmojiContainerBox = (props: props) => {
         url: requestUrl,
         method: 'POST',
         body: body,
-        token: '',
+        token: authToken,
       })
     }
   }
@@ -66,7 +70,7 @@ const ResponsiveEmojiContainerBox = (props: props) => {
       url: requestUrl,
       method: 'DELETE',
       body: '',
-      token: '',
+      token: authToken,
     })
   }
 
@@ -116,7 +120,7 @@ const ResponsiveEmojiContainerBox = (props: props) => {
           <div className='add_reaction_title_text'>반응 추가하기</div>
           <div className='close_modal_image_box' onClick={() => closeModal()}>
             <Image
-              src='/Sendbird/responsive_close_button.svg'
+              src='/pages/Sendbird/responsive_close_button.svg'
               width={20}
               height={20}
               alt='closeButton'

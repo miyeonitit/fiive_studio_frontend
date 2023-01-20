@@ -28,6 +28,9 @@ const FiiveLayout = (props: any) => {
   const isChatOpen = fiiveStudioUseStore((state: any) => state.isChatOpen)
   const setIsChatOpen = fiiveStudioUseStore((state: any) => state.setIsChatOpen)
 
+  // waiting: 라이브 전 재생 대기중 <> play: 재생중 <> end: 라이브 종료 <> error : 재생 에러
+  const ivsPlayStatus = fiiveStudioUseStore((state: any) => state.ivsPlayStatus)
+
   const emojiListRef = useRef<HTMLDivElement>(null)
 
   const responsiveZindexStyle: CSSProperties =
@@ -226,36 +229,52 @@ const FiiveLayout = (props: any) => {
             <Image
               className='chat_icon'
               src={
-                isChatOpen
-                  ? '../layouts/fiive/chat_icon_active.svg'
+                ivsPlayStatus !== 'end'
+                  ? isChatOpen
+                    ? '../layouts/fiive/chat_icon_active.svg'
+                    : '../layouts/fiive/chat_icon.svg'
                   : '../layouts/fiive/chat_icon.svg'
               }
               width={22}
               height={22}
               alt='chatIcon'
             />
-            <span className={`chat_button_text ${isChatOpen && 'active'}`}>
+            <span
+              className={`chat_button_text ${
+                ivsPlayStatus !== 'end' && isChatOpen && 'active'
+              }`}
+            >
               실시간 채팅
             </span>
           </div>
 
           <div
             className='live_reaction_box'
-            onClick={() => setIsOpenEmojiList(!isOpenEmojiList)}
+            onClick={() =>
+              ivsPlayStatus !== 'end'
+                ? setIsOpenEmojiList(!isOpenEmojiList)
+                : setIsOpenEmojiList(false)
+            }
           >
             <Image
               className='reaction_icon'
               src={
-                isOpenEmojiList
-                  ? '../layouts/fiive/reaction_icon_active.svg'
-                  : '../layouts/fiive/reaction_icon.svg'
+                ivsPlayStatus !== 'end'
+                  ? isOpenEmojiList
+                    ? '../layouts/fiive/reaction_icon_active.svg'
+                    : '../layouts/fiive/reaction_icon.svg'
+                  : '../layouts/fiive/reaction_icon_non_active.svg'
               }
               width={22}
               height={22}
               alt='reactionIcon'
             />
             <span
-              className={`reaction_button_text ${isOpenEmojiList && 'active'}`}
+              className={`reaction_button_text ${
+                ivsPlayStatus !== 'end'
+                  ? isOpenEmojiList && 'active'
+                  : 'non_active'
+              }`}
             >
               리액션
             </span>

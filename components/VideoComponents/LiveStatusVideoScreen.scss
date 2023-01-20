@@ -76,7 +76,9 @@
           font-size: 32px;
           line-height: 100%;
           letter-spacing: -0.005em;
+        }
 
+        .video_main_text.rollig_text {
           -webkit-animation: slideUp 5s infinite;
           animation: slideUp 5s infinite;
 
@@ -120,7 +122,14 @@
 
       .loading_spinner_box {
         top: 24%;
-        left: 47%;
+        left: 50%;
+
+        .loading_spinner {
+          width: 20px;
+          height: 20px;
+          border: 2px solid $bluegray-10;
+          border-top: 2px solid $bluegray-4;
+        }
       }
     }
   }
@@ -147,6 +156,13 @@
       .loading_spinner_box {
         top: 24%;
         left: 47%;
+
+        .loading_spinner {
+          width: 20px;
+          height: 20px;
+          border: 2px solid $bluegray-10;
+          border-top: 2px solid $bluegray-4;
+        }
       }
     }
   }

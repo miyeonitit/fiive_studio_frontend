@@ -14,10 +14,11 @@ import CustomChatRoom from './Sendbird/CustomChatRoom'
 import CustomMessageInput from './Sendbird/CustomMessageInput'
 import CustomDateSeparator from './Sendbird/CustomDateSeparator'
 import CustomChatHeader from './Sendbird/CustomChatHeader'
-import { ConnectionHandler, SessionHandler } from '@sendbird/chat'
 
 type props = {
   userId: string
+  userRole: string
+  currentUrl: string
   isChatOpen: boolean
   setIsChatOpen: React.Dispatch<React.SetStateAction<boolean>>
   emojiContainer: object
@@ -33,9 +34,6 @@ const Chat = (props: props) => {
   const contextAddEmojiContainer = useStore(
     (state: any) => state.addEmojiContainer
   )
-
-  // ivs, sendbird chat infomation 정보를 저장하는 state
-  const chatData = classRoomUseStore((state: any) => state.chatData)
 
   const [stringSet] = useState({
     TYPING_INDICATOR__AND: '님, ',
@@ -56,22 +54,20 @@ const Chat = (props: props) => {
     <>
       <SendbirdProvider
         appId={appId}
-        userId={userId}
+        userId={props.userId}
+        // accessToken='3b6ca60ca19e11b8234b29ab07d200868045dd75'
         stringSet={stringSet}
         dateLocale={kr}
       >
-        <ChannelProvider
-          channelUrl={chatData.channel_url}
-          isReactionEnabled={true}
-        >
+        <ChannelProvider channelUrl={props.currentUrl} isReactionEnabled={true}>
           <ChannelUI
             hasSeparator={true}
             isReactionEnabled={true}
             renderChannelHeader={() => (
               <CustomChatHeader
-                userId={userId}
-                userRole='teacher'
-                channelUrl={chatData.channel_url}
+                userId={props.userId}
+                userRole={props.userId}
+                channelUrl={props.currentUrl}
                 isChatOpen={props.isChatOpen}
                 setIsChatOpen={props.setIsChatOpen}
               />
@@ -79,8 +75,8 @@ const Chat = (props: props) => {
             renderMessage={(message: {}) => (
               <CustomChatRoom
                 message={message}
-                userId={userId}
-                channelUrl={chatData.channel_url}
+                userId={props.userId}
+                channelUrl={props.currentUrl}
                 emojiContainer={props.emojiContainer}
               />
             )}
@@ -88,7 +84,10 @@ const Chat = (props: props) => {
               isUserList ? (
                 <></>
               ) : (
-                <CustomMessageInput userId={userId} userRole='learner' />
+                <CustomMessageInput
+                  userId={props.userId}
+                  userRole={props.userRole}
+                />
               )
             }
             renderCustomSeparator={() => <div></div>}
@@ -101,6 +100,3 @@ const Chat = (props: props) => {
 }
 
 export default Chat
-function issueSessionToken(appInfo: any) {
-  throw new Error('Function not implemented.')
-}

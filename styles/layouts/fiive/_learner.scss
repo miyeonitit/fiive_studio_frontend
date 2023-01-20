@@ -156,6 +156,10 @@
       span.active {
         color: $fiivepurple-5;
       }
+
+      span.non_active {
+        color: $bluegray-4;
+      }
     }
 
     .quit_button_wrapper {
@@ -165,7 +169,7 @@
     }
   }
 
-  // metadata reaction emoji list css
+  /* metadata reaction emoji list css */
   @import '../../../components/Metadata/MetaReactionEmojiList.scss';
 }
 

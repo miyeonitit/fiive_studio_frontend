@@ -10,8 +10,6 @@ const Reactions = (props: any) => {
   const addReaction = useStore((state: any) => state.addREaction)
   const removeReaction = useStore((state: any) => state.removeReaction)
 
-  const [isSwitchAnimation, setIsSwitchAnimation] = useState(false)
-
   const reaction = (type: string) => {
     let img
 
@@ -91,8 +89,6 @@ const Reactions = (props: any) => {
     return img
   }
 
-  console.log(isSwitchAnimation, 'isSwitchAnimation')
-
   const items = reactions.map((item: any) => {
     const swarm = []
 
@@ -119,12 +115,9 @@ const Reactions = (props: any) => {
   return (
     <div className='reactions-component'>
       <CSSTransitionGroup
-        unmountOnLeave
         transitionName='example'
         transitionEnterTimeout={2000}
         transitionLeaveTimeout={2000}
-        onEnter={() => setIsSwitchAnimation(true)}
-        onExited={() => setIsSwitchAnimation(true)}
       >
         {items}
       </CSSTransitionGroup>

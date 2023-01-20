@@ -22,6 +22,14 @@ interface FiiveStudioState {
   // waiting: 라이브 전 재생 대기중 <> play: 재생중 <> end: 라이브 종료 <> error : 재생 에러
   ivsPlayStatus: string
   setIvsPlayStatus: (ivsPlayStatus: string) => void
+
+  // user auth token for API
+  authToken: string
+  setAuthToken: (authToken: string) => void
+
+  // user infomation object state
+  userInfomation: object
+  setUserInfomation: (userInfomation: object) => void
 }
 
 const useStore = create(
@@ -55,6 +63,18 @@ const useStore = create(
       setIvsPlayStatus: (ivsPlayStatus) =>
         set(() => ({
           ivsPlayStatus,
+        })),
+
+      authToken: '',
+      setAuthToken: (authToken) =>
+        set(() => ({
+          authToken,
+        })),
+
+      userInfomation: {},
+      setUserInfomation: (userInfomation) =>
+        set(() => ({
+          userInfomation,
         })),
     })
   )

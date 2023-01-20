@@ -1,5 +1,5 @@
-import dynamic from 'next/dynamic'
 import { Dispatch, SetStateAction } from 'react'
+import dynamic from 'next/dynamic'
 
 type props = {
   userId: string

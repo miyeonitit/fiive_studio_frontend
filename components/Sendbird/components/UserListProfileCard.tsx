@@ -8,6 +8,7 @@ import 'animate.css'
 import '../../../node_modules/react-toastify/dist/ReactToastify.css'
 
 import AxiosRequest from '../../../utils/AxiosRequest'
+import fiiveStudioUseStore from '../../../store/FiiveStudio'
 
 import MessageTooltip from './MessageTooltip'
 
@@ -26,6 +27,9 @@ type props = {
 
 const UserListProfileCard = (props: props) => {
   const { currentGroupChannel } = useChannelContext()
+
+  // user auth token for API
+  const authToken = fiiveStudioUseStore((state: any) => state.authToken)
 
   // 더보기 버튼과 메뉴 노출 boolean state
   const [isHoverMoreMenu, setIsHoverMoreMenu] = useState(false)
@@ -59,7 +63,7 @@ const UserListProfileCard = (props: props) => {
       toast.success(
         <div className='toast_success_box'>
           <Image
-            src='/Sendbird/toast_success_icon.svg'
+            src='/pages/Sendbird/toast_success_icon.svg'
             width={16}
             height={16}
             alt='toastSuccessIcon'
@@ -72,7 +76,7 @@ const UserListProfileCard = (props: props) => {
       toast.error(
         <div className='toast_error_box'>
           <Image
-            src='/Sendbird/toast_warning_icon.svg'
+            src='/pages/Sendbird/toast_warning_icon.svg'
             width={16}
             height={16}
             alt='toastWarningIcon'
@@ -95,8 +99,10 @@ const UserListProfileCard = (props: props) => {
       url: requestUrl,
       method: 'POST',
       body: body,
-      token: '',
+      token: authToken,
     })
+    console.log(responseData, 'responseData')
+    console.log(authToken, 'authToken')
 
     if (responseData !== 'AxiosError') {
       controlToastPopup(true, `${senderId} 님을 차단했어요.`)
@@ -114,11 +120,12 @@ const UserListProfileCard = (props: props) => {
       url: requestUrl,
       method: 'DELETE',
       body: '',
-      token: '',
+      token: authToken,
     })
 
     if (responseData !== 'AxiosError') {
       controlToastPopup(true, `${senderId} 님을 차단 해제했어요.`)
+      setIsBlockUser(false)
       setIsMoreMiniMenu(false)
     } else {
       controlToastPopup(false, '네트워크 문제로 차단 해제 못했어요.')
@@ -137,7 +144,7 @@ const UserListProfileCard = (props: props) => {
       url: requestUrl,
       method: 'POST',
       body: body,
-      token: '',
+      token: authToken,
     })
 
     if (responseData !== 'AxiosError') {
@@ -156,7 +163,7 @@ const UserListProfileCard = (props: props) => {
       url: requestUrl,
       method: 'DELETE',
       body: '',
-      token: '',
+      token: authToken,
     })
 
     if (responseData !== 'AxiosError') {
@@ -252,7 +259,7 @@ const UserListProfileCard = (props: props) => {
               src={
                 props.user.plainProfileUrl
                   ? props.user.plainProfileUrl
-                  : '/Sendbird/user_list_fiive_default_img.svg'
+                  : '/pages/Sendbird/user_list_fiive_default_img.svg'
               }
               width={32}
               height={32}
@@ -266,8 +273,8 @@ const UserListProfileCard = (props: props) => {
                 <Image
                   src={
                     props.user.connectionStatus === 'online'
-                      ? '/Sendbird/online_status.svg'
-                      : '/Sendbird/offline_status.svg'
+                      ? '/pages/Sendbird/online_status.svg'
+                      : '/pages/Sendbird/offline_status.svg'
                   }
                   width={6}
                   height={6}
@@ -282,7 +289,7 @@ const UserListProfileCard = (props: props) => {
               {isBlockUser && (
                 <div className='user_blocked_status_box'>
                   <Image
-                    src='/Sendbird/blocked_user_by_me.svg'
+                    src='/pages/Sendbird/blocked_user_by_me.svg'
                     onMouseOver={() => setIsBlockedUserTooltip(true)}
                     onMouseOut={() => setIsBlockedUserTooltip(false)}
                     width={14}
@@ -303,7 +310,7 @@ const UserListProfileCard = (props: props) => {
               {isMutedUser && (
                 <div className='user_muted_status_box'>
                   <Image
-                    src='/Sendbird/muted_user_by_me.svg'
+                    src='/pages/Sendbird/muted_user_by_me.svg'
                     onMouseOver={() => setIsMutedUserTooltip(true)}
                     onMouseOut={() => setIsMutedUserTooltip(false)}
                     width={14}
@@ -332,7 +339,7 @@ const UserListProfileCard = (props: props) => {
         {isHoverMoreMenu && (
           <div className={`more_menu_box ${isMoreMiniMenu && 'active'}`}>
             <Image
-              src='/Sendbird/more_button.svg'
+              src='/pages/Sendbird/more_button.svg'
               onClick={() => handleMoreMenuButton()}
               width={16}
               height={16}
@@ -354,7 +361,7 @@ const UserListProfileCard = (props: props) => {
                     }}
                   >
                     <Image
-                      src='/Sendbird/mute_outlined.svg'
+                      src='/pages/Sendbird/mute_outlined.svg'
                       width={16}
                       height={16}
                       alt='mutedButton'
@@ -369,7 +376,7 @@ const UserListProfileCard = (props: props) => {
                     }}
                   >
                     <Image
-                      src='/Sendbird/mute_outlined.svg'
+                      src='/pages/Sendbird/mute_outlined.svg'
                       width={16}
                       height={16}
                       alt='mutedButton'
@@ -384,7 +391,7 @@ const UserListProfileCard = (props: props) => {
                   onClick={() => unblockUser(props.user.userId)}
                 >
                   <Image
-                    src='/Sendbird/learner_uncert.svg'
+                    src='/pages/Sendbird/learner_uncert.svg'
                     width={16}
                     height={16}
                     alt='blockButton'
@@ -397,7 +404,7 @@ const UserListProfileCard = (props: props) => {
                   onClick={() => blockUser(props.user.userId)}
                 >
                   <Image
-                    src='/Sendbird/learner_uncert.svg'
+                    src='/pages/Sendbird/learner_uncert.svg'
                     width={16}
                     height={16}
                     alt='blockButton'

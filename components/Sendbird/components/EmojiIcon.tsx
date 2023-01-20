@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { useChannelContext } from '@sendbird/uikit-react/Channel/context'
 
 import AxiosRequest from '../../../utils/AxiosRequest'
+import fiiveStudioUseStore from '../../../store/FiiveStudio'
 
 import MessageTooltip from '../components/MessageTooltip'
 
@@ -17,6 +18,9 @@ type props = {
 
 const EmojiIcon = (props: props) => {
   const { currentGroupChannel } = useChannelContext()
+
+  // user auth token for API
+  const authToken = fiiveStudioUseStore((state: any) => state.authToken)
 
   // 이모티콘 누른 user list 노출 boolean state
   const [isReactedUser, setIsReactedUser] = useState(false)
@@ -61,7 +65,7 @@ const EmojiIcon = (props: props) => {
         url: requestUrl,
         method: 'POST',
         body: body,
-        token: '',
+        token: authToken,
       })
     }
   }
@@ -73,7 +77,7 @@ const EmojiIcon = (props: props) => {
       url: requestUrl,
       method: 'DELETE',
       body: '',
-      token: '',
+      token: authToken,
     })
   }
 

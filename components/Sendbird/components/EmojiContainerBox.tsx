@@ -1,6 +1,7 @@
 import React, { useState, Dispatch, SetStateAction, Ref } from 'react'
 
 import AxiosRequest from '../../../utils/AxiosRequest'
+import fiiveStudioUseStore from '../../../store/FiiveStudio'
 
 type props = {
   userId: string
@@ -17,6 +18,9 @@ type props = {
 }
 
 const EmojiContainerBox = (props: props) => {
+  // user auth token for API
+  const authToken = fiiveStudioUseStore((state: any) => state.authToken)
+
   const message_id = props?.messageInfomation.messageId
 
   const boxStyle = {
@@ -51,7 +55,7 @@ const EmojiContainerBox = (props: props) => {
         url: requestUrl,
         method: 'POST',
         body: body,
-        token: '',
+        token: authToken,
       })
     }
   }
@@ -63,7 +67,7 @@ const EmojiContainerBox = (props: props) => {
       url: requestUrl,
       method: 'DELETE',
       body: '',
-      token: '',
+      token: authToken,
     })
   }
 
