@@ -66,7 +66,7 @@ const Chat = (props: props) => {
             renderChannelHeader={() => (
               <CustomChatHeader
                 userId={props.userId}
-                userRole={props.userId}
+                userRole={props.userRole}
                 channelUrl={props.currentUrl}
                 isChatOpen={props.isChatOpen}
                 setIsChatOpen={props.setIsChatOpen}

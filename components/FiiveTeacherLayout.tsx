@@ -42,7 +42,7 @@ const FiiveLayout = (props: any) => {
   const liveEndBefore1Minutes = {
     title_text: '수업 시간이 더 필요하신가요? ✨',
     first_sub_text: '예정된 수업 시간보다 1시간 더 할 수 있어요.',
-    second_sub_text: '수업이 끝나면 라이브 종료를 꼭 눌러 주세요!',
+    second_sub_text: '수업이 끝나면 라이브 종료를 꼭 눌러주세요!',
   }
 
   const responsiveZindexStyle: CSSProperties =

@@ -101,8 +101,6 @@ const UserListProfileCard = (props: props) => {
       body: body,
       token: authToken,
     })
-    console.log(responseData, 'responseData')
-    console.log(authToken, 'authToken')
 
     if (responseData !== 'AxiosError') {
       controlToastPopup(true, `${senderId} 님을 차단했어요.`)
@@ -268,7 +266,7 @@ const UserListProfileCard = (props: props) => {
           </div>
           <div className='user_infomation_box'>
             <div className='user_infomations'>
-              <div className='user_nickname_box'>nickname</div>
+              <div className='user_nickname_box'>{props.user?.nickname}</div>
               <div className='user_online_status_box'>
                 <Image
                   src={

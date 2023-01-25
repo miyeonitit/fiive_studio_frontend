@@ -107,8 +107,12 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
       token: props.auth_token,
     })
 
-    setUserInfomation(responseData)
-    // [backlog] 유저 식별에 실패하면 수강권한 없다는 페이지로 이동되어야 함!
+    if (responseData !== 'AxiosError') {
+      setUserInfomation(responseData)
+    } else {
+      console.log('수강 권한 없음')
+      // [backlog] 유저 식별에 실패하면 수강권한 없다는 페이지로 이동되어야 함!
+    }
   }
 
   const getChatEmojiContainer = async () => {
