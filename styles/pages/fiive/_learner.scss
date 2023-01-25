@@ -15,6 +15,9 @@
       .messages {
         display: none;
       }
+
+      /* live 시작 전, 재생 에러, live 종료일 때 띄우는 준비 화면 컴포넌트 css */
+      @import '../../../components/VideoComponents/LiveStatusVideoScreen.scss';
     }
 
     .class-wrapper {
@@ -84,6 +87,9 @@
     .chatroom {
       flex: 1 1 auto;
       min-height: 0;
+
+      /* sendbird fake chat */
+      @import './FakeChat.scss';
     }
 
     & > header {

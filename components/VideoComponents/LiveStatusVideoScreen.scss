@@ -1,0 +1,169 @@
+.LiveStatusVideoScreen {
+  position: absolute;
+  top: 0px;
+  width: 100%;
+
+  .video_screen_wrapper {
+    position: relative;
+    background-color: black;
+
+    .video_screen_image_box {
+      opacity: 0.5;
+
+      img {
+        width: 100%;
+        height: 500px;
+        object-fit: cover;
+      }
+    }
+
+    .loading_spinner_box {
+      position: absolute;
+      top: 30%;
+      left: 48%;
+
+      .loading_spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid $bluegray-10;
+        border-top: 4px solid $bluegray-4;
+        border-radius: 50%;
+
+        -webkit-animation: spin 1s linear infinite;
+        animation: spin 1s linear infinite;
+
+        @keyframes spin {
+          0% {
+            transform: rotate(0deg);
+          }
+          100% {
+            transform: rotate(360deg);
+          }
+        }
+      }
+    }
+
+    .video_screen_information_box {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      color: white;
+
+      .video_sub_text {
+        margin-bottom: 4px;
+        font-family: 'Pretendard';
+        font-style: normal;
+        font-weight: 700;
+        font-size: 14px;
+        line-height: 100%;
+        letter-spacing: -0.01em;
+      }
+
+      .video_main_text_box {
+        display: inline-block;
+        overflow: hidden;
+
+        .video_main_text {
+          font-family: 'Pretendard';
+          font-style: normal;
+          font-weight: 700;
+          font-size: 32px;
+          line-height: 100%;
+          letter-spacing: -0.005em;
+        }
+
+        .video_main_text.rollig_text {
+          -webkit-animation: slideUp 5s infinite;
+          animation: slideUp 5s infinite;
+
+          @keyframes slideUp {
+            0% {
+              transform: translateY(80px);
+            }
+            40% {
+              transform: translateY(0);
+            }
+            80% {
+              transform: translateY(0);
+            }
+            100% {
+              transform: translateY(-55px);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+  .LiveStatusVideoScreen {
+    .video_screen_wrapper {
+      .video_screen_image_box {
+        img {
+          width: 100%;
+          height: auto;
+        }
+
+        .video_sub_text {
+          @include body-3-700;
+        }
+
+        .video_main_text_box {
+          @include display-4;
+        }
+      }
+
+      .loading_spinner_box {
+        top: 24%;
+        left: 50%;
+
+        .loading_spinner {
+          width: 20px;
+          height: 20px;
+          border: 2px solid $bluegray-10;
+          border-top: 2px solid $bluegray-4;
+        }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .LiveStatusVideoScreen {
+    .video_screen_wrapper {
+      .video_screen_image_box {
+        img {
+          width: 100%;
+          height: auto;
+        }
+
+        .video_sub_text {
+          @include body-3-700;
+        }
+
+        .video_main_text_box {
+          @include display-4;
+        }
+      }
+
+      .loading_spinner_box {
+        top: 24%;
+        left: 47%;
+
+        .loading_spinner {
+          width: 20px;
+          height: 20px;
+          border: 2px solid $bluegray-10;
+          border-top: 2px solid $bluegray-4;
+        }
+      }
+    }
+  }
+}

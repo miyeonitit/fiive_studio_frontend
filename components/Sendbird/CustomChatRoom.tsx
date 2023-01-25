@@ -42,6 +42,9 @@ const CustomChatRoom = (props: props) => {
     (state: any) => state.setIsOpenResponsiveModal
   )
 
+  // user auth token for API
+  const authToken = fiiveStudioUseStore((state: any) => state.authToken)
+
   const { currentGroupChannel, allMessages } = useChannelContext()
   const globalStore = useSendbirdStateContext()
   const deleteFileMessage = sendbirdSelectors.getDeleteMessage(globalStore)
@@ -99,16 +102,6 @@ const CustomChatRoom = (props: props) => {
     exit: 'animate__animated animate__fadeOut',
   })
 
-  const formatDateTime = (date: number) => {
-    const dateTime = new Date(date)
-
-    const year = dateTime.getFullYear()
-    const month = `0${dateTime.getMonth() + 1}`.slice(-2)
-    const day = `0${dateTime.getDate()}`.slice(-2)
-
-    return `${year}년 ${month}월 ${day}일`
-  }
-
   const formatMessageTime = (date: number) => {
     const dateTime = new Date(date)
 
@@ -119,7 +112,7 @@ const CustomChatRoom = (props: props) => {
       return `오전 ${hours < 10 ? '0' + hours.toString() : hours}:${minutes}`
     } else {
       return `오후 ${
-        hours - 12 < 10 ? '0' + (hours - 12).toString() : hours
+        hours - 12 <= 10 ? (hours - 12).toString() : hours
       }:${minutes}`
     }
   }
@@ -166,7 +159,7 @@ const CustomChatRoom = (props: props) => {
       toast.success(
         <div className='toast_success_box'>
           <Image
-            src='/Sendbird/toast_success_icon.svg'
+            src='/pages/Sendbird/toast_success_icon.svg'
             width={16}
             height={16}
             alt='toastSuccessIcon'
@@ -179,7 +172,7 @@ const CustomChatRoom = (props: props) => {
       toast.error(
         <div className='toast_error_box'>
           <Image
-            src='/Sendbird/toast_warning_icon.svg'
+            src='/pages/Sendbird/toast_warning_icon.svg'
             width={16}
             height={16}
             alt='toastWarningIcon'
@@ -202,7 +195,7 @@ const CustomChatRoom = (props: props) => {
       url: requestUrl,
       method: 'POST',
       body: body,
-      token: '',
+      token: authToken,
     })
 
     if (responseData !== 'AxiosError') {
@@ -221,7 +214,7 @@ const CustomChatRoom = (props: props) => {
       url: requestUrl,
       method: 'DELETE',
       body: '',
-      token: '',
+      token: authToken,
     })
 
     if (responseData !== 'AxiosError') {
@@ -245,12 +238,17 @@ const CustomChatRoom = (props: props) => {
       url: requestUrl,
       method: 'POST',
       body: body,
-      token: '',
+      token: authToken,
     })
 
     if (responseData !== 'AxiosError') {
       controlToastPopup(true, `${senderId} 님을 채팅 일시정지 했어요.`)
-      setIsBlockUser(false)
+
+      const findMutedUser = currentGroupChannel.members.find(
+        (user: any) => user?.userId === sender?.userId
+      )
+
+      setIsMutedUser(findMutedUser?.isMuted)
       setIsMoreMiniMenu(false)
     } else {
       controlToastPopup(false, '네트워크 문제로 채팅 일시정지를 못했어요.')
@@ -264,12 +262,17 @@ const CustomChatRoom = (props: props) => {
       url: requestUrl,
       method: 'DELETE',
       body: '',
-      token: '',
+      token: authToken,
     })
 
     if (responseData !== 'AxiosError') {
       controlToastPopup(true, `${senderId} 님의 채팅 일시정지를 해제했어요.`)
-      setIsBlockUser(false)
+
+      const findMutedUser = currentGroupChannel.members.find(
+        (user: any) => user?.userId === sender?.userId
+      )
+
+      setIsMutedUser(findMutedUser?.isMuted)
       setIsMoreMiniMenu(false)
     } else {
       controlToastPopup(false, '네트워크 문제로 채팅 일시정지 해제를 못했어요.')
@@ -293,7 +296,7 @@ const CustomChatRoom = (props: props) => {
       url: requestUrl,
       method: 'PUT',
       body: body,
-      token: '',
+      token: authToken,
     })
 
     if (responseData === 'AxiosError') {
@@ -458,7 +461,7 @@ const CustomChatRoom = (props: props) => {
                     onMouseOut={() => setIsReactionTopTooltip(false)}
                   >
                     <Image
-                      src='/Sendbird/add_reaction_emoji.svg'
+                      src='/pages/Sendbird/add_reaction_emoji.svg'
                       width={16}
                       height={16}
                       alt='reactionButton'
@@ -466,7 +469,7 @@ const CustomChatRoom = (props: props) => {
                   </div>
                   <div className={`more_button ${isMoreMiniMenu && 'active'}`}>
                     <Image
-                      src='/Sendbird/more_button.svg'
+                      src='/pages/Sendbird/more_button.svg'
                       onClick={() => clickMiniMenu()}
                       width={16}
                       height={16}
@@ -482,7 +485,7 @@ const CustomChatRoom = (props: props) => {
                     onMouseOut={() => setIsReactionTopTooltip(false)}
                   >
                     <Image
-                      src='/Sendbird/retry_button.svg'
+                      src='/pages/Sendbird/retry_button.svg'
                       onClick={() => resendMessage()}
                       width={16}
                       height={16}
@@ -495,7 +498,7 @@ const CustomChatRoom = (props: props) => {
                     onMouseOut={() => setIsMessageDeleteTooltip(false)}
                   >
                     <Image
-                      src='/Sendbird/clear_button.svg'
+                      src='/pages/Sendbird/clear_button.svg'
                       onClick={() => deleteMessage()}
                       width={16}
                       height={16}
@@ -521,6 +524,7 @@ const CustomChatRoom = (props: props) => {
                   emojiContainer={props.emojiContainer}
                   setIsReactionBox={setIsReactionTopBox}
                   messageInfomation={messageInfomation}
+                  channelUrl={props.channelUrl}
                 />
               ) : (
                 <ResponsiveEmojiContainerBox
@@ -530,12 +534,13 @@ const CustomChatRoom = (props: props) => {
                   setIsReactionBox={setIsReactionTopBox}
                   messageInfomation={messageInfomation}
                   reactedEmojis={reactedEmojis}
+                  channelUrl={props.channelUrl}
                 />
               ))}
 
             {/* 더보기 버튼의 미니 메뉴 */}
             {isMoreMiniMenu &&
-              (props.userId === sender.userId ? (
+              (props.userId === sender?.userId ? (
                 <div
                   className={`more_mini_menu_wrapper ${
                     isMiniMenuTop && (offsetX < 1023 ? 'responsive_top' : 'top')
@@ -550,7 +555,7 @@ const CustomChatRoom = (props: props) => {
                       }}
                     >
                       <Image
-                        src='/Sendbird/edit_icon.svg'
+                        src='/pages/Sendbird/edit_icon.svg'
                         width={16}
                         height={16}
                         alt='editIcon'
@@ -563,7 +568,7 @@ const CustomChatRoom = (props: props) => {
                       onClick={() => deleteMessage()}
                     >
                       <Image
-                        src='/Sendbird/delete_button.svg'
+                        src='/pages/Sendbird/delete_button.svg'
                         width={16}
                         height={16}
                         alt='deleteButton'
@@ -585,11 +590,11 @@ const CustomChatRoom = (props: props) => {
                         <div
                           className='list_in_menu'
                           onClick={() => {
-                            unmuteUser(sender.userId)
+                            unmuteUser(sender?.userId)
                           }}
                         >
                           <Image
-                            src='/Sendbird/mute_outlined.svg'
+                            src='/pages/Sendbird/mute_outlined.svg'
                             width={16}
                             height={16}
                             alt='mutedButton'
@@ -600,11 +605,11 @@ const CustomChatRoom = (props: props) => {
                         <div
                           className='list_in_menu'
                           onClick={() => {
-                            muteUser(sender.userId)
+                            muteUser(sender?.userId)
                           }}
                         >
                           <Image
-                            src='/Sendbird/mute_outlined.svg'
+                            src='/pages/Sendbird/mute_outlined.svg'
                             width={16}
                             height={16}
                             alt='mutedButton'
@@ -616,10 +621,10 @@ const CustomChatRoom = (props: props) => {
                     {isBlockUser ? (
                       <div
                         className='list_in_menu'
-                        onClick={() => unblockUser(sender.userId)}
+                        onClick={() => unblockUser(sender?.userId)}
                       >
                         <Image
-                          src='/Sendbird/learner_uncert.svg'
+                          src='/pages/Sendbird/learner_uncert.svg'
                           width={16}
                           height={16}
                           alt='blockButton'
@@ -629,10 +634,10 @@ const CustomChatRoom = (props: props) => {
                     ) : (
                       <div
                         className='list_in_menu'
-                        onClick={() => blockUser(sender.userId)}
+                        onClick={() => blockUser(sender?.userId)}
                       >
                         <Image
-                          src='/Sendbird/learner_uncert.svg'
+                          src='/pages/Sendbird/learner_uncert.svg'
                           width={16}
                           height={16}
                           alt='blockButton'
@@ -647,7 +652,7 @@ const CustomChatRoom = (props: props) => {
                         onClick={() => deleteMessage()}
                       >
                         <Image
-                          src='/Sendbird/delete_button.svg'
+                          src='/pages/Sendbird/delete_button.svg'
                           width={16}
                           height={16}
                           alt='deleteButton'
@@ -667,7 +672,7 @@ const CustomChatRoom = (props: props) => {
                     src={
                       sender?.plainProfileUrl
                         ? sender?.plainProfileUrl
-                        : '/Sendbird/Ellipse 8stateBadge.svg'
+                        : '/pages/Sendbird/Ellipse 8stateBadge.svg'
                     }
                     width={24}
                     height={24}
@@ -743,7 +748,7 @@ const CustomChatRoom = (props: props) => {
               {messageInfomation.sendingStatus === 'failed' && (
                 <div className='message_sending_status'>
                   <Image
-                    src='/Sendbird/warning_icon.svg'
+                    src='/pages/Sendbird/warning_icon.svg'
                     width={12}
                     height={12}
                     alt='warningIcon'
@@ -770,6 +775,7 @@ const CustomChatRoom = (props: props) => {
                         reactedEmojis={reactedEmojis}
                         emojiContainer={props.emojiContainer}
                         messageInfomation={messageInfomation}
+                        channelUrl={props.channelUrl}
                       />
                     ))}
                     <div
@@ -790,7 +796,7 @@ const CustomChatRoom = (props: props) => {
                       )}
 
                       <Image
-                        src='/Sendbird/add_reaction_emoji_bottom.svg'
+                        src='/pages/Sendbird/add_reaction_emoji_bottom.svg'
                         onClick={() =>
                           setIsReactionBottomBox(!isReactionBottomBox)
                         }
@@ -814,6 +820,7 @@ const CustomChatRoom = (props: props) => {
                         emojiContainer={props.emojiContainer}
                         setIsReactionBox={setIsReactionBottomBox}
                         messageInfomation={messageInfomation}
+                        channelUrl={props.channelUrl}
                       />
                     ) : (
                       <ResponsiveEmojiContainerBox
@@ -823,6 +830,7 @@ const CustomChatRoom = (props: props) => {
                         setIsReactionBox={setIsReactionBottomBox}
                         messageInfomation={messageInfomation}
                         reactedEmojis={reactedEmojis}
+                        channelUrl={props.channelUrl}
                       />
                     ))}
                 </>

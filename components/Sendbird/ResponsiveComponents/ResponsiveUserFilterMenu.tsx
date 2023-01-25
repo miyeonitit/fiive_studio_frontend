@@ -68,7 +68,7 @@ const ResponsiveUserFilterMenu = (props: props) => {
           <div className='add_reaction_title_text'>참여자 목록 보기</div>
           <div className='close_modal_image_box' onClick={() => closeModal()}>
             <Image
-              src='/Sendbird/responsive_close_button.svg'
+              src='/pages/Sendbird/responsive_close_button.svg'
               width={20}
               height={20}
               alt='closeButton'
@@ -85,8 +85,8 @@ const ResponsiveUserFilterMenu = (props: props) => {
               <Image
                 src={
                   props.userFilter === '라이브 참여자'
-                    ? '/Sendbird/active_members_icon.svg'
-                    : '/Sendbird/members_icon.svg'
+                    ? '/pages/Sendbird/active_members_icon.svg'
+                    : '/pages/Sendbird/members_icon.svg'
                 }
                 width={18}
                 height={18}
@@ -110,8 +110,8 @@ const ResponsiveUserFilterMenu = (props: props) => {
               <Image
                 src={
                   props.userFilter === '채팅 정지된 참여자'
-                    ? '/Sendbird/active_mute_outlined.svg'
-                    : '/Sendbird/mute_outlined.svg'
+                    ? '/pages/Sendbird/active_mute_outlined.svg'
+                    : '/pages/Sendbird/mute_outlined.svg'
                 }
                 width={18}
                 height={18}
@@ -135,8 +135,8 @@ const ResponsiveUserFilterMenu = (props: props) => {
               <Image
                 src={
                   props.userFilter === '차단된 참여자'
-                    ? '/Sendbird/active_learner_uncert.svg'
-                    : '/Sendbird/learner_uncert.svg'
+                    ? '/pages/Sendbird/active_learner_uncert.svg'
+                    : '/pages/Sendbird/learner_uncert.svg'
                 }
                 width={18}
                 height={18}

@@ -81,7 +81,7 @@ const CustomMessageInput = ({ userId, userRole }) => {
       toast.error(
         <div className='toast_error_box'>
           <Image
-            src='/Sendbird/toast_warning_icon.svg'
+            src='/pages/Sendbird/toast_warning_icon.svg'
             width={16}
             height={16}
             alt='toastWarningIcon'
@@ -108,7 +108,7 @@ const CustomMessageInput = ({ userId, userRole }) => {
           toast.error(
             <div className='toast_error_box'>
               <Image
-                src='/Sendbird/toast_warning_icon.svg'
+                src='/pages/Sendbird/toast_warning_icon.svg'
                 width={16}
                 height={16}
                 alt='toastWarningIcon'
@@ -177,7 +177,7 @@ const CustomMessageInput = ({ userId, userRole }) => {
       {currentGroupChannel.isFrozen && (
         <div className='chat_frozen_status_wrapper'>
           <Image
-            src='/Sendbird/lock_white_icon.svg'
+            src='/pages/Sendbird/lock_white_icon.svg'
             width={18}
             height={18}
             alt='lockIcon'
@@ -189,7 +189,7 @@ const CustomMessageInput = ({ userId, userRole }) => {
       {currentGroupChannel.myMutedState === 'muted' && (
         <div className='chat_muted_status_wrapper'>
           <Image
-            src='/Sendbird/toast_warning_icon.svg'
+            src='/pages/Sendbird/toast_warning_icon.svg'
             width={16}
             height={16}
             alt='toastWarningIcon'
@@ -235,8 +235,8 @@ const CustomMessageInput = ({ userId, userRole }) => {
           className='sendMessageIcon'
           src={
             messageText !== ''
-              ? '/Sendbird/active_send_message_icon.svg'
-              : '/Sendbird/non_active_send_message_icon.svg'
+              ? '/pages/Sendbird/active_send_message_icon.svg'
+              : '/pages/Sendbird/non_active_send_message_icon.svg'
           }
           onClick={() => handleSendMessage()}
           width={24}

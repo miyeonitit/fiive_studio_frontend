@@ -78,7 +78,7 @@ const ResponsiveChatHeaderMenu = (props: props) => {
           <div className='add_reaction_title_text'>채팅 관리</div>
           <div className='close_modal_image_box' onClick={() => closeModal()}>
             <Image
-              src='/Sendbird/responsive_close_button.svg'
+              src='/pages/Sendbird/responsive_close_button.svg'
               width={20}
               height={20}
               alt='closeButton'
@@ -93,7 +93,7 @@ const ResponsiveChatHeaderMenu = (props: props) => {
           >
             <div className='user_list_button_image_box'>
               <Image
-                src='/Sendbird/members_icon.svg'
+                src='/pages/Sendbird/members_icon.svg'
                 width={18}
                 height={18}
                 alt='retryButton'
@@ -110,7 +110,7 @@ const ResponsiveChatHeaderMenu = (props: props) => {
               >
                 <div className='freeze_button_image_box'>
                   <Image
-                    src='/Sendbird/lock_icon.svg'
+                    src='/pages/Sendbird/lock_icon.svg'
                     width={18}
                     height={18}
                     alt='deleteButton'
@@ -129,7 +129,7 @@ const ResponsiveChatHeaderMenu = (props: props) => {
               >
                 <div className='share_chat_button_image_box'>
                   <Image
-                    src='/Sendbird/share_chatting_icon.svg'
+                    src='/pages/Sendbird/share_chatting_icon.svg'
                     width={18}
                     height={18}
                     alt='deleteButton'

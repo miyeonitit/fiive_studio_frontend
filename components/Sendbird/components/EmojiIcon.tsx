@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { useChannelContext } from '@sendbird/uikit-react/Channel/context'
 
 import AxiosRequest from '../../../utils/AxiosRequest'
+import fiiveStudioUseStore from '../../../store/FiiveStudio'
 
 import MessageTooltip from '../components/MessageTooltip'
 
@@ -12,10 +13,14 @@ type props = {
   reactedEmojis: Array<any>
   emojiContainer: any
   messageInfomation: any
+  channelUrl: string
 }
 
 const EmojiIcon = (props: props) => {
   const { currentGroupChannel } = useChannelContext()
+
+  // user auth token for API
+  const authToken = fiiveStudioUseStore((state: any) => state.authToken)
 
   // 이모티콘 누른 user list 노출 boolean state
   const [isReactedUser, setIsReactedUser] = useState(false)
@@ -23,7 +28,6 @@ const EmojiIcon = (props: props) => {
   const [userListTooltipTop, setUseListTooltipTop] = useState(0)
   const [userListTooltipRight, setUseListTooltipRight] = useState(0)
 
-  const channel_url = process.env.NEXT_PUBLIC_SENDBIRD_TEST_CHANNEL_ID
   const message_id = props.messageInfomation.messageId
 
   const findEmojiImageUrl = (emojiIcon: any) => {
@@ -50,7 +54,7 @@ const EmojiIcon = (props: props) => {
     }
     // 해당 메시지에 유저가 선택한 리액션 이모지가 없을 경우
     else {
-      const requestUrl = `/sendbird/group_channels/${channel_url}/messages/${message_id}/reactions`
+      const requestUrl = `/sendbird/group_channels/${props?.channelUrl}/messages/${message_id}/reactions`
 
       const body = {
         user_id: props.userId,
@@ -61,19 +65,19 @@ const EmojiIcon = (props: props) => {
         url: requestUrl,
         method: 'POST',
         body: body,
-        token: '',
+        token: authToken,
       })
     }
   }
 
   const removeUserReaction = async (emojiKey: string) => {
-    const requestUrl = `/sendbird/group_channels/${channel_url}/messages/${message_id}/reactions?user_id=${props.userId}&reaction=${emojiKey}`
+    const requestUrl = `/sendbird/group_channels/${props?.channelUrl}/messages/${message_id}/reactions?user_id=${props.userId}&reaction=${emojiKey}`
 
     const responseData = await AxiosRequest({
       url: requestUrl,
       method: 'DELETE',
       body: '',
-      token: '',
+      token: authToken,
     })
   }
 

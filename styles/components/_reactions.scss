@@ -6,41 +6,41 @@
 
   .item {
     position: absolute;
-    display: none;
+    // display: none;
     width: 56px;
     left: 3%;
-    // transition: transform ease-out 1s, opacity ease-out 1s;
-    // transform: translateY(-400px);
-    // opacity: 0;
+
+    img {
+      transform: rotate(-50deg);
+    }
   }
 
   .example-enter {
     display: block;
     opacity: 1;
 
-    transform: rotate(-100deg) scale(0.1);
-    // transform: translateY(-0px);
+    transform: scale(0.1);
+    transition: transform ease 8s, opacity ease 8s;
+    transform: translateY(-0px);
   }
 
   .example-enter.example-enter-active {
     display: block;
     opacity: 1;
 
-    transform: translateY(-300px) rotate(0deg) scale(1.3);
-    // transform: scale3d(0.3, 0.3, 0.3);
-    transition: transform ease 2s, opacity ease 2s;
+    transform: translateY(-300px) rotate(50deg);
+    transition: transform ease 4s, opacity ease 4s;
   }
 
-  .example-exit {
+  .example-leave {
     display: block;
     opacity: 1;
-    transform: translateY(-0px);
   }
 
-  .example-exit-active {
+  .example-leave-active {
     display: block;
-    opacity: 0;
+    opacity: 1;
     transform: translateY(300px);
-    transition: transform ease-out 2s, opacity ease-out 2s;
+    transition: transform ease 4s, opacity ease 4s;
   }
 }

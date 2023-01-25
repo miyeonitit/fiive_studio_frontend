@@ -1,3 +1,4 @@
+import React, { useState } from 'react'
 import Image from 'next/image'
 
 import useStore from '../store/video'
@@ -97,7 +98,7 @@ const Reactions = (props: any) => {
         key: `${item.id}-${number}`,
         type: item.type,
         style: {
-          top: '150px',
+          // top: '150px',
           // left: `${bottom}px`,
           // bottom: `-${bottom}px`,
         },
@@ -116,7 +117,7 @@ const Reactions = (props: any) => {
       <CSSTransitionGroup
         transitionName='example'
         transitionEnterTimeout={2000}
-        transitionLeaveTimeout={0}
+        transitionLeaveTimeout={2000}
       >
         {items}
       </CSSTransitionGroup>
