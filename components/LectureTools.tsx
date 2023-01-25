@@ -49,7 +49,7 @@ const LectureTools = (props: props) => {
             className='announcement'
           >
             <Image
-              src='/Sendbird/announce.svg'
+              src='/pages/Sendbird/announce.svg'
               alt='Announcement'
               width='24'
               height='24'
@@ -61,7 +61,7 @@ const LectureTools = (props: props) => {
         <li>
           <button onClick={openQuestionMonitor} type='button' className='qna'>
             <Image
-              src='/Sendbird/qna_outlined.svg'
+              src='/pages/Sendbird/qna_outlined.svg'
               alt='Q&amp;A'
               width='24'
               height='24'
@@ -79,7 +79,7 @@ const LectureTools = (props: props) => {
             className='timer'
           >
             <Image
-              src='/Sendbird/timer.svg'
+              src='/pages/Sendbird/timer.svg'
               alt='Timer'
               width='24'
               height='24'
@@ -91,7 +91,7 @@ const LectureTools = (props: props) => {
         <li>
           <button onClick={openChatMonitor} type='button' className='chat'>
             <Image
-              src='/Sendbird/comment_outlined.svg'
+              src='/pages/Sendbird/comment_outlined.svg'
               alt='Chat'
               width='24'
               height='24'
@@ -103,7 +103,10 @@ const LectureTools = (props: props) => {
 
       <div className='add-tool-button'>
         <button type='button'>
-          <img src='/Sendbird/components/lecture-tools/add.svg' alt='Add' />
+          <img
+            src='/pages/Sendbird/components/lecture-tools/add.svg'
+            alt='Add'
+          />
           <span>강의 도구 추가</span>
         </button>
       </div>

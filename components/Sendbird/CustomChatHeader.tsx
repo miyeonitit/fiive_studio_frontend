@@ -20,6 +20,7 @@ import ResponsiveUserFilterMenu from './ResponsiveComponents/ResponsiveUserFilte
 type props = {
   userId: string
   userRole: string
+  channelUrl: string
   isChatOpen: boolean
   setIsChatOpen: Dispatch<SetStateAction<boolean>>
 }
@@ -40,6 +41,9 @@ const CustomChatHeader = (props: props) => {
   const setIsOpenResponsiveLiveMember = fiiveStudioUseStore(
     (state: any) => state.setIsOpenResponsiveLiveMember
   )
+
+  // user auth token for API
+  const authToken = fiiveStudioUseStore((state: any) => state.authToken)
 
   // 유저 리스트 전역 state
   const contextSetIsUserList = sendBirdUseStore(
@@ -70,7 +74,6 @@ const CustomChatHeader = (props: props) => {
   const miniMenuRef = useRef<HTMLButtonElement>(null)
   const userFilterRef = useRef<HTMLDivElement>(null)
 
-  const currentChannelUrl = process.env.NEXT_PUBLIC_SENDBIRD_TEST_CHANNEL_ID
   const studioUrl = process.env.NEXT_PUBLIC_STUDIO_URL
 
   const saveComponentIndex = (index: number) => {
@@ -85,7 +88,7 @@ const CustomChatHeader = (props: props) => {
   }
 
   const controlFreezeChat = async () => {
-    const requestUrl = `/sendbird/group_channels/${currentChannelUrl}/freeze`
+    const requestUrl = `/sendbird/group_channels/${props.channelUrl}/freeze`
 
     const body = {
       freeze: !isFreezeChat,
@@ -95,15 +98,18 @@ const CustomChatHeader = (props: props) => {
       url: requestUrl,
       method: 'POST',
       body: body,
-      token: '',
+      token: authToken,
     })
 
-    setIsFreezeChat(!isFreezeChat)
-    setIsMoreMiniMenu(false)
+    if (responseData !== 'AxiosError') {
+      setIsFreezeChat(!isFreezeChat)
+      setIsMoreMiniMenu(false)
+    }
   }
 
   const handleUserFilterStatus = async (status: string) => {
     let requestUrl = ''
+    let requestBody = {}
     let responseData = ''
 
     switch (status) {
@@ -114,18 +120,20 @@ const CustomChatHeader = (props: props) => {
         break
 
       case 'muted':
-        requestUrl = `/sendbird/group_channels/${currentChannelUrl}/mute`
+        requestUrl = `/sendbird/group_channels/${props.channelUrl}/mute`
 
         responseData = await AxiosRequest({
           url: requestUrl,
           method: 'GET',
           body: '',
-          token: '',
+          token: authToken,
         })
 
-        setUserList(responseData?.muted_list)
-        setUserFilter('채팅 정지된 참여자')
-        setIsUserFilterMiniMenu(false)
+        if (responseData !== 'AxiosError') {
+          setUserList(responseData?.muted_list)
+          setUserFilter('채팅 정지된 참여자')
+          setIsUserFilterMiniMenu(false)
+        }
         break
 
       case 'blocked':
@@ -135,12 +143,14 @@ const CustomChatHeader = (props: props) => {
           url: requestUrl,
           method: 'GET',
           body: '',
-          token: '',
+          token: authToken,
         })
 
-        setUserList(responseData?.users)
-        setUserFilter('차단된 참여자')
-        setIsUserFilterMiniMenu(false)
+        if (responseData !== 'AxiosError') {
+          setUserList(responseData?.users)
+          setUserFilter('차단된 참여자')
+          setIsUserFilterMiniMenu(false)
+        }
         break
     }
   }
@@ -204,7 +214,7 @@ const CustomChatHeader = (props: props) => {
           <div className='chat_the_menu_box'>
             <div className='more_button_box'>
               <Image
-                src='/Sendbird/more_button.svg'
+                src='/pages/Sendbird/more_button.svg'
                 onClick={() => setIsMoreMiniMenu(!isMoreMiniMenu)}
                 width={20}
                 height={20}
@@ -214,7 +224,7 @@ const CustomChatHeader = (props: props) => {
 
             <div className='close_button_box'>
               <Image
-                src='/Sendbird/responsive_close_button.svg'
+                src='/pages/Sendbird/responsive_close_button.svg'
                 onClick={() => {
                   props.setIsChatOpen(!props.isChatOpen)
                   setIsChatOpen(false)
@@ -235,7 +245,7 @@ const CustomChatHeader = (props: props) => {
                     }}
                   >
                     <Image
-                      src='/Sendbird/members_icon.svg'
+                      src='/pages/Sendbird/members_icon.svg'
                       width={16}
                       height={16}
                       alt='membersIcon'
@@ -252,7 +262,7 @@ const CustomChatHeader = (props: props) => {
                         }}
                       >
                         <Image
-                          src='/Sendbird/lock_icon.svg'
+                          src='/pages/Sendbird/lock_icon.svg'
                           width={16}
                           height={16}
                           alt='lockIcon'
@@ -269,7 +279,7 @@ const CustomChatHeader = (props: props) => {
                         onClick={() => openChatMonitor()}
                       >
                         <Image
-                          src='/Sendbird/share_chatting_icon.svg'
+                          src='/pages/Sendbird/share_chatting_icon.svg'
                           width={16}
                           height={16}
                           alt='shareIcon'
@@ -348,14 +358,14 @@ const CustomChatHeader = (props: props) => {
               <div className='list_filter_img_box'>
                 {isUserFilterMiniMenu ? (
                   <Image
-                    src='/Sendbird/list_down_icon.svg'
+                    src='/pages/Sendbird/list_down_icon.svg'
                     width={16}
                     height={16}
                     alt='listDownIcon'
                   />
                 ) : (
                   <Image
-                    src='/Sendbird/list_up_icon.svg'
+                    src='/pages/Sendbird/list_up_icon.svg'
                     width={16}
                     height={16}
                     alt='listUpIcon'
@@ -365,7 +375,7 @@ const CustomChatHeader = (props: props) => {
             </div>
             <div className='cancel_button'>
               <Image
-                src='/Sendbird/clear_button.svg'
+                src='/pages/Sendbird/clear_button.svg'
                 onClick={() => {
                   setIsUserList(false)
                 }}

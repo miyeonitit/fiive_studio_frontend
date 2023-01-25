@@ -3,7 +3,7 @@
 const nextConfig = {
   reactStrictMode: false,
   swcMinify: false,
-  trailingSlash: true,
+  // trailingSlash: true,
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -11,6 +11,9 @@ const nextConfig = {
     loader: 'akamai',
     path: '/pages',
   },
+  // experimental: {
+  //   allowMiddlewareResponseBody: true,
+  // },
 }
 
 module.exports = nextConfig
