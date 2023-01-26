@@ -11,6 +11,7 @@ import AxiosRequest from '../utils/AxiosRequest'
 type props = {
   authToken: string
   playbackUrl: string
+  classId: string
 }
 
 const Video = (props: props) => {
@@ -37,8 +38,6 @@ const Video = (props: props) => {
 
   const ivsPlayer = useRef<HTMLVideoElement>(null)
 
-  const testIvsValue = '63a2d5f57fea0553c495337f'
-
   useEffect(() => {
     if (ivsPlayStatus !== 'play') {
       initVideo()
@@ -46,7 +45,7 @@ const Video = (props: props) => {
   }, [props?.playbackUrl])
 
   const getChannelData = async () => {
-    const requestUrl = `/classroom/${testIvsValue}/ivs/key`
+    const requestUrl = `/classroom/${props.classId}/ivs/key`
 
     const body = {
       expiration: 14400,

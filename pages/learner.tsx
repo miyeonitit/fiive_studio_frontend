@@ -107,8 +107,11 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
       token: props.auth_token,
     })
 
+    console.log(props.auth_token, 'learner - auth props.auth_token')
+
     if (responseData !== 'AxiosError') {
       setUserInfomation(responseData)
+      console.log(responseData, 'learner - auth responseData')
     } else {
       console.log('수강 권한 없음')
       // [backlog] 유저 식별에 실패하면 수강권한 없다는 페이지로 이동되어야 함!
@@ -126,6 +129,8 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
       body: '',
       token: props.auth_token,
     })
+
+    console.log(props.auth_token, 'learner - emoji props.auth_token')
 
     addEmojiContainer(responseData.emojis)
   }
@@ -158,6 +163,8 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
     getChatEmojiContainer()
   }, [])
 
+  console.log(props, 'leanrer props')
+
   return (
     <div className='fiive learner page'>
       <Head>
@@ -176,7 +183,8 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
           {/* ivs video player 영역 컴포넌트 */}
           <Video
             playbackUrl={props?.classroom?.ivs?.channel?.playbackUrl}
-            authToken={props.auth_token}
+            authToken={props?.auth_token}
+            classId={userInfomation?.classId}
           />
 
           {/* live 시작 전, 재생 에러, live 종료일 때 띄우는 준비 화면 컴포넌트 */}
