@@ -4,6 +4,7 @@ import Lottie from 'lottie-web'
 
 import AxiosRequest from '../../utils/AxiosRequest'
 import classRoomUseStore from '../../store/classRoom'
+import fiiveStudioUseStore from '../../store/FiiveStudio'
 
 type props = {
   emojiListRef: RefObject<HTMLDivElement>
@@ -13,6 +14,9 @@ type props = {
 const MetaReactionEmojiList = (props: props) => {
   // ivs, sendbird chat infomation 정보를 저장하는 state
   const ivsData = classRoomUseStore((state: any) => state.ivsData)
+
+  // user auth token for API
+  const authToken = fiiveStudioUseStore((state: any) => state.authToken)
 
   const thumbsUpRef = useRef<HTMLDivElement>(null)
   const heartRef = useRef<HTMLDivElement>(null)
@@ -42,7 +46,7 @@ const MetaReactionEmojiList = (props: props) => {
       url: requestUrl,
       method: 'POST',
       body: body,
-      token: '',
+      token: authToken,
     })
   }
 

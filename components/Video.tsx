@@ -8,8 +8,12 @@ import AxiosRequest from '../utils/AxiosRequest'
 
 // import Messages from "../components/Messages";
 
-const Video = (props) => {
-  const { ivsData } = props
+type props = {
+  authToken: string
+  playbackUrl: string
+}
+
+const Video = (props: props) => {
   const channel = videoUseStore((state: any) => state.channel)
   const setChannel = videoUseStore((state: any) => state.setChannel)
 
@@ -33,11 +37,13 @@ const Video = (props) => {
 
   const ivsPlayer = useRef<HTMLVideoElement>(null)
 
-  const testIvsValue = process.env.NEXT_PUBLIC_TEST_IVS_CHANNEL_VALUE
+  const testIvsValue = '63a2d5f57fea0553c495337f'
 
   useEffect(() => {
-    initVideo()
-  }, [props.playbackUrl])
+    if (ivsPlayStatus !== 'play') {
+      initVideo()
+    }
+  }, [props?.playbackUrl])
 
   const getChannelData = async () => {
     const requestUrl = `/classroom/${testIvsValue}/ivs/key`
@@ -51,7 +57,7 @@ const Video = (props) => {
       url: requestUrl,
       method: 'POST',
       body: body,
-      token: '',
+      token: props?.authToken,
     })
 
     // user의 전용 token을 받아온 뒤, token을 파라미터로 전달하여 initVideo 호출
@@ -120,20 +126,21 @@ const Video = (props) => {
     player.addEventListener(IVSPlayer.PlayerEventType.ERROR, (error: any) => {
       const { type = null } = error
 
-      setIvsPlayStatus('error')
-
       switch (type) {
         case 'ErrorNoSource':
+        case 'ErrorNetworkIO':
         case 'ErrorNotAvailable':
+          setIvsPlayStatus('error')
+
           window.setTimeout(() => {
             player.load(playbackUrl)
             player.play()
-            setIvsPlayStatus('play')
           }, 5000)
+
+          setIvsPlayStatus('play')
           break
       }
     })
-
     player.attachHTMLVideoElement(ivsPlayer.current)
 
     player.load(playbackUrl)

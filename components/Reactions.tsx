@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 
 import useStore from '../store/video'
@@ -10,76 +10,51 @@ const Reactions = (props: any) => {
   const addReaction = useStore((state: any) => state.addREaction)
   const removeReaction = useStore((state: any) => state.removeReaction)
 
+  const [isSwitchReaction, setIsSwitchReaction] = useState(false)
+
   const reaction = (type: string) => {
     let img
 
     switch (type) {
       case 'THUMBS_UP':
         img = (
-          <Image
-            src='../components/live-reaction-emoji/thumbs_up.png'
-            width={20}
-            height={20}
+          <img
+            src='/components/live-reaction-emoji/thumbs_up.png'
             alt='THUMBS_UP'
           />
         )
         break
       case 'HEART':
         img = (
-          <Image
-            src='../components/live-reaction-emoji/heart.png'
-            width={20}
-            height={20}
-            alt='HEART'
-          />
+          <img src='/components/live-reaction-emoji/heart.png' alt='HEART' />
         )
         break
       case 'FIRE':
-        img = (
-          <Image
-            src='../components/live-reaction-emoji/fire.png'
-            width={20}
-            height={20}
-            alt='FIRE'
-          />
-        )
+        img = <img src='/components/live-reaction-emoji/fire.png' alt='FIRE' />
         break
       case 'CLAP':
-        img = (
-          <Image
-            src='../components/live-reaction-emoji/clap.png'
-            width={20}
-            height={20}
-            alt='CLAP'
-          />
-        )
+        img = <img src='/components/live-reaction-emoji/clap.png' alt='CLAP' />
         break
       case 'SMILE':
         img = (
-          <Image
-            src='../components/live-reaction-emoji/smile_face.png'
-            width={20}
-            height={20}
+          <img
+            src='/components/live-reaction-emoji/smile_face.png'
             alt='SMILE'
           />
         )
         break
       case 'GRINNING':
         img = (
-          <Image
-            src='../components/live-reaction-emoji/grinning_face.png'
-            width={20}
-            height={20}
+          <img
+            src='/components/live-reaction-emoji/grinning_face.png'
             alt='GRINNING'
           />
         )
         break
       case 'CRY':
         img = (
-          <Image
-            src='../components/live-reaction-emoji/crying_face.png'
-            width={20}
-            height={20}
+          <img
+            src='/components/live-reaction-emoji/crying_face.png'
             alt='CRY'
           />
         )
@@ -110,7 +85,21 @@ const Reactions = (props: any) => {
         {reaction(item.type)}
       </div>
     ))
+    // dom으로 메서드 잡아서 2000초 뒤에 종료시키는 example-leave 클래스네임 집어넣을 생각중
   })
+
+  // 애니메이션의 시작점에서는 애니메이션이 작동이 되지만(enter animation), 애니메이션의 종료점에서는 애니메이션 작동이 되지 않아(leave animation)
+  // 종료 애니메이션이 작동되게끔, 애니메이션 작동 2000초 후에 종료 애니메이션의 className을 강제로 넣어주는 로직
+  useEffect(() => {
+    // 1. 리액션 배열 중 마지막 요소를 잡는다.
+    const lastReactionOrder =
+      document.getElementsByClassName('item')[reactions.length - 1]
+
+    // 2. 애니메이션 작동 2000초 후에 종료 애니메이션의 className을 강제로 넣어준다.
+    setTimeout(() => {
+      lastReactionOrder.classList.add('example-leave-active')
+    }, 2000)
+  }, [reactions])
 
   return (
     <div className='reactions-component'>

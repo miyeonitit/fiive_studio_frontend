@@ -112,7 +112,7 @@ MyApp.getInitialProps = async ({ Component, ctx }: AppContext) => {
       case 'classId':
         class_id = queryProperty[1]
         break
-      case 'sessionId':
+      case 'sessionIdx':
         session_id = queryProperty[1]
         break
     }
@@ -127,9 +127,6 @@ MyApp.getInitialProps = async ({ Component, ctx }: AppContext) => {
     body: '',
     token: authoriztion['auth-token'],
   })
-
-  console.log(requestUrl, 'requestUrl')
-  console.log(classroom, 'learner classroom')
 
   pageProps = { ...pageProps, classroom, auth_token }
 

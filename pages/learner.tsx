@@ -148,12 +148,13 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
     // get offsetX
     reset()
 
+    // 1. get user auth_token
     setAuthToken(props.auth_token)
 
-    // get user infomation with user auth_token
+    // 2. get user infomation with user auth_token
     getUserInfomation()
 
-    // get chat's emoji list container
+    // 3. get chat's emoji list container
     getChatEmojiContainer()
   }, [])
 
@@ -173,15 +174,16 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
           <Reactions />
 
           {/* ivs video player 영역 컴포넌트 */}
-          {/* <Video playbackUrl={props?.classroom?.ivs?.channel?.playbackUrl} /> */}
+          <Video
+            playbackUrl={props?.classroom?.ivs?.channel?.playbackUrl}
+            authToken={props.auth_token}
+          />
 
           {/* live 시작 전, 재생 에러, live 종료일 때 띄우는 준비 화면 컴포넌트 */}
           {/* <LiveStatusVideoScreen ivsPlayStatus={ivsPlayStatus} /> */}
-          {/* {(ivsPlayStatus === 'waiting' ||
-            ivsPlayStatus === 'error' ||
-            ivsPlayStatus === 'end') && (
+          {ivsPlayStatus !== 'play' && (
             <LiveStatusVideoScreen ivsPlayStatus={ivsPlayStatus} />
-          )} */}
+          )}
         </section>
 
         {/* class infomation 영역 */}
