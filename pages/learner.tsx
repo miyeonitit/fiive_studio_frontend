@@ -98,17 +98,17 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
   //   return question
   // }
 
-  const getUserInfomation = async () => {
+  const getUserInfomation = async (token: string) => {
     const requestUrl = `/auth`
 
     const responseData = await AxiosRequest({
       url: requestUrl,
       method: 'GET',
       body: '',
-      token: props.auth_token,
+      token: token,
     })
 
-    console.log(props.auth_token, 'learner - auth props.auth_token')
+    console.log(token, 'learner - auth token')
 
     if (responseData !== 'AxiosError') {
       setUserInfomation(responseData)
@@ -119,7 +119,7 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
     }
   }
 
-  const getChatEmojiContainer = async () => {
+  const getChatEmojiContainer = async (token: string) => {
     const emojiCategoryId = process.env.NEXT_PUBLIC_SENDBIRD_EMOJI_CATEGORY_ID
 
     const requestUrl = `/sendbird/emoji_categories/${emojiCategoryId}`
@@ -128,10 +128,10 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
       url: requestUrl,
       method: 'GET',
       body: '',
-      token: props.auth_token,
+      token: token,
     })
 
-    console.log(props.auth_token, 'learner - emoji props.auth_token')
+    console.log(token, 'learner - emoji token')
 
     addEmojiContainer(responseData.emojis)
   }
@@ -154,24 +154,25 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
     // get offsetX
     reset()
 
-    // 1. get user auth_token
-    setAuthToken(props.auth_token)
-
     console.log(props, '컴디마 - leanrer props')
   }, [])
 
   useEffect(() => {
-    if (authToken && authToken.length !== 0) {
-      console.log(authToken, '1111 authToken')
-      console.log(authToken.length, '2222 authToken.length')
-      console.log(props, '컴디업 - leanrer props')
+    // 1. get user auth_token
+    setAuthToken(props.auth_token)
+
+    console.log(props, '컴디업 - leanrer props')
+
+    if (props.auth_token && props.auth_token.length !== 0) {
+      console.log(props.auth_token, '1111 props.auth_token')
+      console.log(props.auth_token.length, '2222 props.auth_token.length')
       // 2. get user infomation with user auth_token
-      getUserInfomation()
+      getUserInfomation(props.auth_token)
 
       // 3. get chat's emoji list container
-      getChatEmojiContainer()
+      getChatEmojiContainer(props.auth_token)
     }
-  }, [authToken])
+  }, [props.auth_token])
 
   return (
     <div className='fiive learner page'>
