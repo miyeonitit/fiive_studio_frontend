@@ -101,7 +101,7 @@ MyApp.getInitialProps = async ({ Component, ctx }: AppContext) => {
 
   // 3. declare class_id, session_id for classroom API
   let class_id
-  let session_id
+  let session_idx
 
   // 4. save class_id, session_id value for classroom API
   queryArr?.forEach((value, idx) => {
@@ -113,13 +113,13 @@ MyApp.getInitialProps = async ({ Component, ctx }: AppContext) => {
         class_id = queryProperty[1]
         break
       case 'sessionIdx':
-        session_id = queryProperty[1]
+        session_idx = queryProperty[1]
         break
     }
   })
 
   // 5. get user's classroom infomation API
-  const requestUrl = `/classroom/${class_id}/session/${session_id}`
+  const requestUrl = `/classroom/${class_id}/session/${session_idx}`
 
   const classroom = await AxiosRequest({
     url: requestUrl,
@@ -127,6 +127,8 @@ MyApp.getInitialProps = async ({ Component, ctx }: AppContext) => {
     body: '',
     token: authoriztion['auth-token'],
   })
+
+  console.log(classroom, 'classroom')
 
   pageProps = { ...pageProps, classroom, auth_token }
 
