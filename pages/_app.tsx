@@ -112,8 +112,7 @@ MyApp.getInitialProps = async ({ Component, ctx }: AppContext) => {
       case 'classId':
         class_id = queryProperty[1]
         break
-      case 'sessionId':
-        session_id = queryProperty[1]
+      case 'sessionIdx':
         break
     }
   })

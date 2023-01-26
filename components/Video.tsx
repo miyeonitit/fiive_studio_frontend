@@ -124,8 +124,6 @@ const Video = (props: props) => {
     player.addEventListener(IVSPlayer.PlayerEventType.ERROR, (error: any) => {
       const { type = null } = error
 
-      console.log(error, 'error')
-
       setIvsPlayStatus('error')
 
       switch (type) {
@@ -133,19 +131,13 @@ const Video = (props: props) => {
         case 'ErrorNetworkIO':
         case 'ErrorNotAvailable':
           window.setTimeout(() => {
-            console.log('111111')
             player.load(playbackUrl)
-            console.log('22222')
             player.play()
-            console.log('33333')
-
-            console.log('44444')
           }, 5000)
           // setIvsPlayStatus('play')
           break
       }
     })
-
     player.attachHTMLVideoElement(ivsPlayer.current)
 
     player.load(playbackUrl)
