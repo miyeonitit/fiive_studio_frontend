@@ -66,6 +66,7 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
   )
 
   // user auth token for API
+  const authToken = fiiveStudioUseStore((state: any) => state.authToken)
   const setAuthToken = fiiveStudioUseStore((state: any) => state.setAuthToken)
 
   // save sendbird emoji list container
@@ -156,14 +157,21 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
     // 1. get user auth_token
     setAuthToken(props.auth_token)
 
-    // 2. get user infomation with user auth_token
-    getUserInfomation()
-
-    // 3. get chat's emoji list container
-    getChatEmojiContainer()
+    console.log(props, '컴디마 - leanrer props')
   }, [])
 
-  console.log(props, 'leanrer props')
+  useEffect(() => {
+    if (authToken && authToken.length !== 0) {
+      console.log(authToken, '1111 authToken')
+      console.log(authToken.length, '2222 authToken.length')
+      console.log(props, '컴디업 - leanrer props')
+      // 2. get user infomation with user auth_token
+      getUserInfomation()
+
+      // 3. get chat's emoji list container
+      getChatEmojiContainer()
+    }
+  }, [authToken])
 
   return (
     <div className='fiive learner page'>
