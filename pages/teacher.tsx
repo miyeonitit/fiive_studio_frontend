@@ -139,14 +139,16 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
   }, [chatOffsetHeight])
 
   useEffect(() => {
+    // get offsetX
     reset()
 
+    // 1. get user auth_token
     setAuthToken(props.auth_token)
 
-    // get user infomation with user auth_token
+    // 2. get user infomation with user auth_token
     getUserInfomation()
 
-    // get chat's emoji list container
+    // 3. get chat's emoji list container
     getChatEmojiContainer()
   }, [])
 

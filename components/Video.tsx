@@ -40,7 +40,9 @@ const Video = (props: props) => {
   const testIvsValue = '63a2d5f57fea0553c495337f'
 
   useEffect(() => {
-    initVideo()
+    if (ivsPlayStatus !== 'play') {
+      initVideo()
+    }
   }, [props?.playbackUrl])
 
   const getChannelData = async () => {
@@ -124,17 +126,18 @@ const Video = (props: props) => {
     player.addEventListener(IVSPlayer.PlayerEventType.ERROR, (error: any) => {
       const { type = null } = error
 
-      setIvsPlayStatus('error')
-
       switch (type) {
         case 'ErrorNoSource':
         case 'ErrorNetworkIO':
         case 'ErrorNotAvailable':
+          setIvsPlayStatus('error')
+
           window.setTimeout(() => {
             player.load(playbackUrl)
             player.play()
           }, 5000)
-          // setIvsPlayStatus('play')
+
+          setIvsPlayStatus('play')
           break
       }
     })

@@ -88,6 +88,19 @@ const Reactions = (props: any) => {
     // dom으로 메서드 잡아서 2000초 뒤에 종료시키는 example-leave 클래스네임 집어넣을 생각중
   })
 
+  // 애니메이션의 시작점에서는 애니메이션이 작동이 되지만(enter animation), 애니메이션의 종료점에서는 애니메이션 작동이 되지 않아(leave animation)
+  // 종료 애니메이션이 작동되게끔, 애니메이션 작동 2000초 후에 종료 애니메이션의 className을 강제로 넣어주는 로직
+  useEffect(() => {
+    // 1. 리액션 배열 중 마지막 요소를 잡는다.
+    const lastReactionOrder =
+      document.getElementsByClassName('item')[reactions.length - 1]
+
+    // 2. 애니메이션 작동 2000초 후에 종료 애니메이션의 className을 강제로 넣어준다.
+    setTimeout(() => {
+      lastReactionOrder.classList.add('example-leave-active')
+    }, 2000)
+  }, [reactions])
+
   return (
     <div className='reactions-component'>
       <CSSTransitionGroup
