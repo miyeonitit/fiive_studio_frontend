@@ -6,8 +6,12 @@ import React, {
   SetStateAction,
 } from 'react'
 import Image from 'next/image'
+import { ToastContainer, toast, cssTransition } from 'react-toastify'
 
 import { useChannelContext } from '@sendbird/uikit-react/Channel/context'
+
+import 'animate.css'
+import '../../node_modules/react-toastify/dist/ReactToastify.css'
 
 import AxiosRequest from '../../utils/AxiosRequest'
 import sendBirdUseStore from '../../store/Sendbird'
@@ -76,6 +80,42 @@ const CustomChatHeader = (props: props) => {
 
   const studioUrl = process.env.NEXT_PUBLIC_STUDIO_URL
 
+  const fadeUp = cssTransition({
+    enter: 'animate__animated animate__customFadeInUp',
+    exit: 'animate__animated animate__fadeOut',
+  })
+
+  // status가 true: toast 성공 <> false : toast 에러
+  const controlToastPopup = (status: boolean, contentText: string) => {
+    if (status) {
+      toast.success(
+        <div className='toast_success_box'>
+          <Image
+            src='/pages/Sendbird/toast_success_icon.svg'
+            width={16}
+            height={16}
+            alt='toastSuccessIcon'
+          />
+          <span className='toast_success_text'>{contentText}</span>
+        </div>,
+        { transition: fadeUp }
+      )
+    } else {
+      toast.error(
+        <div className='toast_error_box'>
+          <Image
+            src='/pages/Sendbird/toast_warning_icon.svg'
+            width={16}
+            height={16}
+            alt='toastWarningIcon'
+          />
+          <span className='toast_error_text'>{contentText}</span>
+        </div>,
+        { transition: fadeUp }
+      )
+    }
+  }
+
   const saveComponentIndex = (index: number) => {
     setSaveIndex(index)
   }
@@ -96,7 +136,7 @@ const CustomChatHeader = (props: props) => {
 
     const responseData = await AxiosRequest({
       url: requestUrl,
-      method: 'POST',
+      method: 'PUT',
       body: body,
       token: authToken,
     })
@@ -109,7 +149,6 @@ const CustomChatHeader = (props: props) => {
 
   const handleUserFilterStatus = async (status: string) => {
     let requestUrl = ''
-    let requestBody = {}
     let responseData = ''
 
     switch (status) {
@@ -128,6 +167,12 @@ const CustomChatHeader = (props: props) => {
           body: '',
           token: authToken,
         })
+
+        console.log(props.channelUrl, 'props.channelUrl')
+
+        console.log(requestUrl, 'requestUrl')
+        console.log(authToken, 'authToken')
+        console.log(responseData, 'responseData')
 
         if (responseData !== 'AxiosError') {
           setUserList(responseData?.muted_list)
@@ -156,9 +201,10 @@ const CustomChatHeader = (props: props) => {
   }
 
   const openChatMonitor = () => {
-    const chatUrl = studioUrl + 'chat-monitor'
+    const chatUrl = studioUrl + '/chat-monitor'
     window.navigator.clipboard.writeText(chatUrl)
     setIsMoreMiniMenu(false)
+    controlToastPopup(true, '채팅방 URL을 복사했어요.')
   }
 
   // 더보기 미니 메뉴 outside click
@@ -205,6 +251,8 @@ const CustomChatHeader = (props: props) => {
     contextSetIsUserList(isUserList)
     setIsOpenResponsiveLiveMember(isUserList)
   }, [isUserList])
+
+  console.log(currentGroupChannel, 'currentGroupChannel')
 
   return (
     <div className='CustomChatHeader'>
@@ -395,6 +443,7 @@ const CustomChatHeader = (props: props) => {
                   index={idx}
                   userId={props.userId}
                   userRole={props.userRole}
+                  channelUrl={props.channelUrl}
                   isUserList={isUserList}
                   userFilter={userFilter}
                   isUserFilterMiniMenu={isUserFilterMiniMenu}
@@ -406,6 +455,20 @@ const CustomChatHeader = (props: props) => {
           </div>
         </div>
       )}
+
+      <ToastContainer
+        position={offsetX > 1023 ? 'bottom-right' : 'bottom-center'}
+        autoClose={2000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme='colored'
+        transition={fadeUp}
+      />
     </div>
   )
 }

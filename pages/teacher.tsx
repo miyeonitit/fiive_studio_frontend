@@ -39,7 +39,7 @@ type props = {
 
 const Chat = dynamic(() => import('../components/Chat'), {
   ssr: false,
-  loading: () => <div>Loading...</div>,
+  loading: () => <FakeChat status='loading' />,
 })
 
 const TeacherPage: NextPageWithLayout = (props: props) => {
@@ -246,7 +246,7 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
               emojiContainer={emojiContainer}
             />
           ) : (
-            <FakeChat chatHeightStyle={chatHeightStyle} />
+            <FakeChat status='liveEnd' chatHeightStyle={chatHeightStyle} />
           )}
         </div>
       </aside>

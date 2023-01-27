@@ -27,25 +27,31 @@ const Video = (props: props) => {
 
   const setTimer = videoUseStore((state: any) => state.setTimer)
 
+  // user infomation state
+  const userInfomation = fiiveStudioUseStore(
+    (state: any) => state.userInfomation
+  )
+
   // ivs Player status 상태 표현 state
   const ivsPlayStatus = fiiveStudioUseStore((state: any) => state.ivsPlayStatus)
   const setIvsPlayStatus = fiiveStudioUseStore(
     (state: any) => state.setIvsPlayStatus
   )
 
+  // console.log(props, 'video props')
   const [init, setInit] = useState(false)
   // const [messages, setMessages] = useState<any[]>([]);
 
   const ivsPlayer = useRef<HTMLVideoElement>(null)
 
   useEffect(() => {
-    if (ivsPlayStatus !== 'play') {
+    if (Object.keys(userInfomation).length !== 0 && ivsPlayStatus !== 'play') {
       initVideo()
     }
-  }, [props?.playbackUrl])
+  }, [userInfomation])
 
   const getChannelData = async () => {
-    const requestUrl = `/classroom/${props.classId}/ivs/key`
+    const requestUrl = `/classroom/${userInfomation.classId}/ivs/key`
 
     const body = {
       expiration: 14400,

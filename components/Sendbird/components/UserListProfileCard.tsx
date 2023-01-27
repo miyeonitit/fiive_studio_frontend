@@ -17,6 +17,7 @@ type props = {
   index: number
   userId: string
   userRole: string
+  channelUrl: string
   isUserList: boolean
   userFilter: string
   isUserFilterMiniMenu: boolean
@@ -44,8 +45,6 @@ const UserListProfileCard = (props: props) => {
   const [isBlockedUserTooltip, setIsBlockedUserTooltip] = useState(false)
 
   const miniMenuRef = useRef<HTMLButtonElement>(null)
-
-  const currentChannelUrl = process.env.NEXT_PUBLIC_SENDBIRD_TEST_CHANNEL_ID
 
   const fadeUp = cssTransition({
     enter: 'animate__animated animate__customFadeInUp',
@@ -88,7 +87,7 @@ const UserListProfileCard = (props: props) => {
     }
   }
 
-  const blockUser = async (senderId: string) => {
+  const blockUser = async (senderId: string, senderNickName: string) => {
     const requestUrl = `/sendbird/users/${props.userId}/block`
 
     const body = {
@@ -103,7 +102,7 @@ const UserListProfileCard = (props: props) => {
     })
 
     if (responseData !== 'AxiosError') {
-      controlToastPopup(true, `${senderId} 님을 차단했어요.`)
+      controlToastPopup(true, `${senderNickName} 님을 차단했어요.`)
       setIsBlockUser(true)
       setIsMoreMiniMenu(false)
     } else {
@@ -111,7 +110,7 @@ const UserListProfileCard = (props: props) => {
     }
   }
 
-  const unblockUser = async (senderId: string) => {
+  const unblockUser = async (senderId: string, senderNickName: string) => {
     const requestUrl = `/sendbird/users/${props.userId}/block/${senderId}`
 
     const responseData = await AxiosRequest({
@@ -122,7 +121,7 @@ const UserListProfileCard = (props: props) => {
     })
 
     if (responseData !== 'AxiosError') {
-      controlToastPopup(true, `${senderId} 님을 차단 해제했어요.`)
+      controlToastPopup(true, `${senderNickName} 님을 차단 해제했어요.`)
       setIsBlockUser(false)
       setIsMoreMiniMenu(false)
     } else {
@@ -130,8 +129,8 @@ const UserListProfileCard = (props: props) => {
     }
   }
 
-  const muteUser = async (senderId: string) => {
-    const requestUrl = `/sendbird/group_channels/${currentChannelUrl}/mute`
+  const muteUser = async (senderId: string, senderNickName: string) => {
+    const requestUrl = `/sendbird/group_channels/${props.channelUrl}/mute`
 
     const body = {
       user_id: senderId,
@@ -146,7 +145,7 @@ const UserListProfileCard = (props: props) => {
     })
 
     if (responseData !== 'AxiosError') {
-      controlToastPopup(true, `${senderId} 님을 채팅 일시정지 했어요.`)
+      controlToastPopup(true, `${senderNickName} 님을 채팅 일시정지 했어요.`)
       setIsMutedUser(true)
       setIsMoreMiniMenu(false)
     } else {
@@ -154,8 +153,8 @@ const UserListProfileCard = (props: props) => {
     }
   }
 
-  const unmuteUser = async (senderId: string) => {
-    const requestUrl = `/sendbird/group_channels/${currentChannelUrl}/mute/${senderId}`
+  const unmuteUser = async (senderId: string, senderNickName: string) => {
+    const requestUrl = `/sendbird/group_channels/${props.channelUrl}/mute/${senderId}`
 
     const responseData = await AxiosRequest({
       url: requestUrl,
@@ -165,7 +164,10 @@ const UserListProfileCard = (props: props) => {
     })
 
     if (responseData !== 'AxiosError') {
-      controlToastPopup(true, `${senderId} 님의 채팅 일시정지를 해제했어요.`)
+      controlToastPopup(
+        true,
+        `${senderNickName} 님의 채팅 일시정지를 해제했어요.`
+      )
       setIsMutedUser(false)
       setIsMoreMiniMenu(false)
     } else {
@@ -221,7 +223,6 @@ const UserListProfileCard = (props: props) => {
         // 해당 유저가 muted 되었는지 여부 확인
         const isUserMuted =
           currentGroupChannel.members[indexOfMutedUser].isMuted
-
         setIsMutedUser(isUserMuted)
         break
 
@@ -238,7 +239,6 @@ const UserListProfileCard = (props: props) => {
         // 해당 유저가 blocked 되었는지 여부 확인
         const isUserBlocked =
           currentGroupChannel.members[indexOfFindedUser].isBlockedByMe
-
         setIsBlockUser(isUserBlocked)
         break
     }
@@ -266,7 +266,9 @@ const UserListProfileCard = (props: props) => {
           </div>
           <div className='user_infomation_box'>
             <div className='user_infomations'>
-              <div className='user_nickname_box'>{props.user?.nickname}</div>
+              <div className='user_nickname_box'>
+                {props.user?.nickname ? props.user?.nickname : 'learner'}
+              </div>
               <div className='user_online_status_box'>
                 <Image
                   src={
@@ -281,7 +283,9 @@ const UserListProfileCard = (props: props) => {
               </div>
 
               {props.userRole !== 'learner' && (
-                <div className='user_name_box'>name</div>
+                <div className='user_name_box'>
+                  {props.user?.metaData?.name}
+                </div>
               )}
 
               {isBlockUser && (
@@ -355,7 +359,12 @@ const UserListProfileCard = (props: props) => {
                   <div
                     className='list_in_menu'
                     onClick={() => {
-                      unmuteUser(props.user.userId)
+                      unmuteUser(
+                        props.userFilter === '라이브 참여자'
+                          ? props.user?.userId
+                          : props.user?.user_id,
+                        props.user?.nickname
+                      )
                     }}
                   >
                     <Image
@@ -370,7 +379,12 @@ const UserListProfileCard = (props: props) => {
                   <div
                     className='list_in_menu'
                     onClick={() => {
-                      muteUser(props.user.userId)
+                      muteUser(
+                        props.userFilter === '라이브 참여자'
+                          ? props.user?.userId
+                          : props.user?.user_id,
+                        props.user?.nickname
+                      )
                     }}
                   >
                     <Image
@@ -386,7 +400,14 @@ const UserListProfileCard = (props: props) => {
               {isBlockUser ? (
                 <div
                   className='list_in_menu'
-                  onClick={() => unblockUser(props.user.userId)}
+                  onClick={() =>
+                    unblockUser(
+                      props.userFilter === '라이브 참여자'
+                        ? props.user?.userId
+                        : props.user?.user_id,
+                      props.user?.nickname
+                    )
+                  }
                 >
                   <Image
                     src='/pages/Sendbird/learner_uncert.svg'
@@ -399,7 +420,14 @@ const UserListProfileCard = (props: props) => {
               ) : (
                 <div
                   className='list_in_menu'
-                  onClick={() => blockUser(props.user.userId)}
+                  onClick={() =>
+                    blockUser(
+                      props.userFilter === '라이브 참여자'
+                        ? props.user?.userId
+                        : props.user?.user_id,
+                      props.user?.nickname
+                    )
+                  }
                 >
                   <Image
                     src='/pages/Sendbird/learner_uncert.svg'

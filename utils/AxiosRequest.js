@@ -58,7 +58,7 @@ const AxiosRequest = async ({ url, method, body, token }) => {
     errorData = error
   }
 
-  return successData ? successData.data : errorData
+  return successData ? successData.data : errorData.name
 }
 
 export default AxiosRequest

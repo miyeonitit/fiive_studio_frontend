@@ -128,8 +128,6 @@ MyApp.getInitialProps = async ({ Component, ctx }: AppContext) => {
     token: authoriztion['auth-token'],
   })
 
-  console.log(classroom, 'classroom')
-
   pageProps = { ...pageProps, classroom, auth_token }
 
   return { pageProps }
