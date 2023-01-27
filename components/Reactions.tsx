@@ -98,6 +98,7 @@ const Reactions = (props: any) => {
 
       // 2. 애니메이션 작동 2000초 후에 종료 애니메이션의 className을 강제로 넣어준다.
       setTimeout(() => {
+        lastReactionOrder.classList.add('example-leave')
         lastReactionOrder.classList.add('example-leave-active')
       }, 2000)
     }

@@ -34,6 +34,9 @@
 @import './teacher';
 @import './question-monitor';
 
+/* sendbird fake chat */
+@import './FakeChat.scss';
+
 /* sendbird chat custom css styling */
 .sendbird-conversation {
   border: unset !important;

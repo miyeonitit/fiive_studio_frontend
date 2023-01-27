@@ -231,18 +231,21 @@ const CustomMessageInput = ({ userId, userRole }) => {
           type='text'
           placeholder={controlDisabledInputPlaceholder()}
         />
-        <Image
-          className='sendMessageIcon'
-          src={
-            messageText !== ''
-              ? '/pages/Sendbird/active_send_message_icon.svg'
-              : '/pages/Sendbird/non_active_send_message_icon.svg'
-          }
-          onClick={() => handleSendMessage()}
-          width={24}
-          height={24}
-          alt='sendMessageIcon'
-        />
+
+        <div className='send_image_box'>
+          <Image
+            className='sendMessageIcon'
+            src={
+              messageText !== ''
+                ? '/pages/Sendbird/active_send_message_icon.svg'
+                : '/pages/Sendbird/non_active_send_message_icon.svg'
+            }
+            onClick={() => handleSendMessage()}
+            width={24}
+            height={24}
+            alt='sendMessageIcon'
+          />
+        </div>
       </div>
 
       {/* <TypingIndicator members={currentGroupChannel?.getTypingUsers()} /> */}

@@ -38,7 +38,7 @@ type props = {
 
 const Chat = dynamic(() => import('../components/Chat'), {
   ssr: false,
-  loading: () => <div>Loading...</div>,
+  loading: () => <FakeChat status='loading' />,
 })
 
 const LearnerPage: NextPageWithLayout = (props: props) => {
@@ -108,14 +108,11 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
       token: token,
     })
 
-    console.log(token, 'learner - auth token')
-
     if (responseData !== 'AxiosError') {
       setUserInfomation(responseData)
-      console.log(responseData, 'learner - auth responseData')
     } else {
       console.log('수강 권한 없음')
-      // [backlog] 유저 식별에 실패하면 수강권한 없다는 페이지로 이동되어야 함!
+      // [backlog] 유저 식별에 실패하면 수강권 한 없다는 페이지로 이동되어야 함!
     }
   }
 
@@ -130,8 +127,6 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
       body: '',
       token: token,
     })
-
-    console.log(token, 'learner - emoji token')
 
     addEmojiContainer(responseData.emojis)
   }
@@ -153,19 +148,13 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
   useEffect(() => {
     // get offsetX
     reset()
-
-    console.log(props, '컴디마 - leanrer props')
   }, [])
 
   useEffect(() => {
-    // 1. get user auth_token
-    setAuthToken(props.auth_token)
-
-    console.log(props, '컴디업 - leanrer props')
-
     if (props.auth_token && props.auth_token.length !== 0) {
-      console.log(props.auth_token, '1111 props.auth_token')
-      console.log(props.auth_token.length, '2222 props.auth_token.length')
+      // 1. get user auth_token
+      setAuthToken(props.auth_token)
+
       // 2. get user infomation with user auth_token
       getUserInfomation(props.auth_token)
 
@@ -198,9 +187,9 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
 
           {/* live 시작 전, 재생 에러, live 종료일 때 띄우는 준비 화면 컴포넌트 */}
           {/* <LiveStatusVideoScreen ivsPlayStatus={ivsPlayStatus} /> */}
-          {ivsPlayStatus !== 'play' && (
+          {/* {ivsPlayStatus !== 'play' && (
             <LiveStatusVideoScreen ivsPlayStatus={ivsPlayStatus} />
-          )}
+          )} */}
         </section>
 
         {/* class infomation 영역 */}
@@ -280,7 +269,7 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
               emojiContainer={emojiContainer}
             />
           ) : (
-            <FakeChat chatHeightStyle={chatHeightStyle} />
+            <FakeChat status='liveEnd' chatHeightStyle={chatHeightStyle} />
           )}
         </div>
       </aside>

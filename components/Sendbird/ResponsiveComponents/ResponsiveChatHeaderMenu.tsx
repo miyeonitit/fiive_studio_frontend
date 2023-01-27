@@ -6,6 +6,10 @@ import React, {
   SetStateAction,
 } from 'react'
 import Image from 'next/image'
+import { ToastContainer, toast, cssTransition } from 'react-toastify'
+
+import 'animate.css'
+import '../../../node_modules/react-toastify/dist/ReactToastify.css'
 
 type props = {
   isMoreMiniMenu: boolean
@@ -22,13 +26,49 @@ const ResponsiveChatHeaderMenu = (props: props) => {
 
   const headerModalRef = useRef<HTMLDivElement>(null)
 
-  const studioUrl = process.env.NEXT_PUBLIC_STUDIO_URL
+  const studioUrl = process.env.NEXT_PUBLIC_TEST_STUDIO_URL
+
+  const fadeUp = cssTransition({
+    enter: 'animate__animated animate__customFadeInUp',
+    exit: 'animate__animated animate__fadeOut',
+  })
+
+  // status가 true: toast 성공 <> false : toast 에러
+  const controlToastPopup = (status: boolean, contentText: string) => {
+    if (status) {
+      toast.success(
+        <div className='toast_success_box'>
+          <Image
+            src='/pages/Sendbird/toast_success_icon.svg'
+            width={16}
+            height={16}
+            alt='toastSuccessIcon'
+          />
+          <span className='toast_success_text'>{contentText}</span>
+        </div>,
+        { transition: fadeUp }
+      )
+    } else {
+      toast.error(
+        <div className='toast_error_box'>
+          <Image
+            src='/pages/Sendbird/toast_warning_icon.svg'
+            width={16}
+            height={16}
+            alt='toastWarningIcon'
+          />
+          <span className='toast_error_text'>{contentText}</span>
+        </div>,
+        { transition: fadeUp }
+      )
+    }
+  }
 
   const openChatMonitor = () => {
-    const chatUrl = studioUrl + 'chat-monitor'
+    const chatUrl = studioUrl + '/chat-monitor'
     window.navigator.clipboard.writeText(chatUrl)
-
     props.setIsMoreMiniMenu(false)
+    controlToastPopup(true, '채팅방 URL을 복사했어요.')
   }
 
   const closeModal = () => {

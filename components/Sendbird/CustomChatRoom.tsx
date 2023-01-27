@@ -52,7 +52,7 @@ const CustomChatRoom = (props: props) => {
   const messageInfomation = props.message?.message
 
   // const sender = messageInfomation?.sender
-  const [sender, setSender] = useState([])
+  const [sender, setSender] = useState<any[]>([])
 
   const [indexOfMessage, setIndexOfMessage] = useState(-1)
 
@@ -184,7 +184,7 @@ const CustomChatRoom = (props: props) => {
     }
   }
 
-  const blockUser = async (senderId: string) => {
+  const blockUser = async (senderId: string, senderNickName: string) => {
     const requestUrl = `/sendbird/users/${props.userId}/block`
 
     const body = {
@@ -199,7 +199,7 @@ const CustomChatRoom = (props: props) => {
     })
 
     if (responseData !== 'AxiosError') {
-      controlToastPopup(true, `${senderId} 님을 차단했어요.`)
+      controlToastPopup(true, `${senderNickName} 님을 차단했어요.`)
       setIsBlockUser(true)
       setIsMoreMiniMenu(false)
     } else {
@@ -207,7 +207,7 @@ const CustomChatRoom = (props: props) => {
     }
   }
 
-  const unblockUser = async (senderId: string) => {
+  const unblockUser = async (senderId: string, senderNickName: string) => {
     const requestUrl = `/sendbird/users/${props.userId}/block/${senderId}`
 
     const responseData = await AxiosRequest({
@@ -218,7 +218,7 @@ const CustomChatRoom = (props: props) => {
     })
 
     if (responseData !== 'AxiosError') {
-      controlToastPopup(true, `${senderId} 님을 차단 해제했어요.`)
+      controlToastPopup(true, `${senderNickName} 님을 차단 해제했어요.`)
       setIsBlockUser(false)
       setIsMoreMiniMenu(false)
     } else {
@@ -226,7 +226,7 @@ const CustomChatRoom = (props: props) => {
     }
   }
 
-  const muteUser = async (senderId: string) => {
+  const muteUser = async (senderId: string, senderNickName: string) => {
     const requestUrl = `/sendbird/group_channels/${props.channelUrl}/mute`
 
     const body = {
@@ -242,7 +242,7 @@ const CustomChatRoom = (props: props) => {
     })
 
     if (responseData !== 'AxiosError') {
-      controlToastPopup(true, `${senderId} 님을 채팅 일시정지 했어요.`)
+      controlToastPopup(true, `${senderNickName} 님을 채팅 일시정지 했어요.`)
 
       const findMutedUser = currentGroupChannel.members.find(
         (user: any) => user?.userId === sender?.userId
@@ -255,7 +255,7 @@ const CustomChatRoom = (props: props) => {
     }
   }
 
-  const unmuteUser = async (senderId: string) => {
+  const unmuteUser = async (senderId: string, senderNickName: string) => {
     const requestUrl = `/sendbird/group_channels/${props.channelUrl}/mute/${senderId}`
 
     const responseData = await AxiosRequest({
@@ -266,7 +266,10 @@ const CustomChatRoom = (props: props) => {
     })
 
     if (responseData !== 'AxiosError') {
-      controlToastPopup(true, `${senderId} 님의 채팅 일시정지를 해제했어요.`)
+      controlToastPopup(
+        true,
+        `${senderNickName} 님의 채팅 일시정지를 해제했어요.`
+      )
 
       const findMutedUser = currentGroupChannel.members.find(
         (user: any) => user?.userId === sender?.userId
@@ -590,7 +593,7 @@ const CustomChatRoom = (props: props) => {
                         <div
                           className='list_in_menu'
                           onClick={() => {
-                            unmuteUser(sender?.userId)
+                            unmuteUser(sender?.userId, sender?.nickname)
                           }}
                         >
                           <Image
@@ -605,7 +608,7 @@ const CustomChatRoom = (props: props) => {
                         <div
                           className='list_in_menu'
                           onClick={() => {
-                            muteUser(sender?.userId)
+                            muteUser(sender?.userId, sender?.nickname)
                           }}
                         >
                           <Image
@@ -621,7 +624,9 @@ const CustomChatRoom = (props: props) => {
                     {isBlockUser ? (
                       <div
                         className='list_in_menu'
-                        onClick={() => unblockUser(sender?.userId)}
+                        onClick={() =>
+                          unblockUser(sender?.userId, sender?.nickname)
+                        }
                       >
                         <Image
                           src='/pages/Sendbird/learner_uncert.svg'
@@ -634,7 +639,9 @@ const CustomChatRoom = (props: props) => {
                     ) : (
                       <div
                         className='list_in_menu'
-                        onClick={() => blockUser(sender?.userId)}
+                        onClick={() =>
+                          blockUser(sender?.userId, sender?.nickname)
+                        }
                       >
                         <Image
                           src='/pages/Sendbird/learner_uncert.svg'
@@ -685,7 +692,7 @@ const CustomChatRoom = (props: props) => {
                     sender?.role === 'operator' && 'teacher'
                   }`}
                 >
-                  {sender?.userId}
+                  {sender?.nickname}
                 </div>
 
                 <div className='massage_date_time'>
