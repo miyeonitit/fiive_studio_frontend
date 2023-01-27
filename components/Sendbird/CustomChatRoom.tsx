@@ -94,8 +94,10 @@ const CustomChatRoom = (props: props) => {
   const miniMenuRef = useRef<HTMLButtonElement>(null)
   const responsiveMoreMenuRef = useRef<HTMLButtonElement>(null)
   const editInputRef = useRef<HTMLTextAreaElement>(null)
-  const reactionTopRef = useRef<HTMLDivElement>(null)
-  const reactionBottomRef = useRef<HTMLDivElement>(null)
+  const reactionTopRef =
+    React.useRef() as React.MutableRefObject<HTMLDivElement>
+  const reactionBottomRef =
+    React.useRef() as React.MutableRefObject<HTMLDivElement>
 
   const fadeUp = cssTransition({
     enter: 'animate__animated animate__customFadeInUp',
@@ -198,7 +200,7 @@ const CustomChatRoom = (props: props) => {
       token: authToken,
     })
 
-    if (responseData !== 'AxiosError') {
+    if (responseData.name !== 'AxiosError') {
       controlToastPopup(true, `${senderNickName} 님을 차단했어요.`)
       setIsBlockUser(true)
       setIsMoreMiniMenu(false)
@@ -217,7 +219,7 @@ const CustomChatRoom = (props: props) => {
       token: authToken,
     })
 
-    if (responseData !== 'AxiosError') {
+    if (responseData.name !== 'AxiosError') {
       controlToastPopup(true, `${senderNickName} 님을 차단 해제했어요.`)
       setIsBlockUser(false)
       setIsMoreMiniMenu(false)
@@ -241,7 +243,7 @@ const CustomChatRoom = (props: props) => {
       token: authToken,
     })
 
-    if (responseData !== 'AxiosError') {
+    if (responseData.name !== 'AxiosError') {
       controlToastPopup(true, `${senderNickName} 님을 채팅 일시정지 했어요.`)
 
       const findMutedUser = currentGroupChannel.members.find(
@@ -265,7 +267,7 @@ const CustomChatRoom = (props: props) => {
       token: authToken,
     })
 
-    if (responseData !== 'AxiosError') {
+    if (responseData.name !== 'AxiosError') {
       controlToastPopup(
         true,
         `${senderNickName} 님의 채팅 일시정지를 해제했어요.`

@@ -18,13 +18,13 @@ const MetaReactionEmojiList = (props: props) => {
   // user auth token for API
   const authToken = fiiveStudioUseStore((state: any) => state.authToken)
 
-  const thumbsUpRef = useRef<HTMLDivElement>(null)
-  const heartRef = useRef<HTMLDivElement>(null)
-  const fireRef = useRef<HTMLDivElement>(null)
-  const clappingRef = useRef<HTMLDivElement>(null)
-  const smilingRef = useRef<HTMLDivElement>(null)
-  const grinningRef = useRef<HTMLDivElement>(null)
-  const cryingRef = useRef<HTMLDivElement>(null)
+  const thumbsUpRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
+  const heartRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
+  const fireRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
+  const clappingRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
+  const smilingRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
+  const grinningRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
+  const cryingRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
 
   const testIvsValue = process.env.NEXT_PUBLIC_TEST_IVS_CHANNEL_VALUE
 

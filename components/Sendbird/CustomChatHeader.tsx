@@ -5,6 +5,7 @@ import React, {
   Dispatch,
   SetStateAction,
 } from 'react'
+import { MouseEvent } from 'react'
 import Image from 'next/image'
 import { ToastContainer, toast, cssTransition } from 'react-toastify'
 
@@ -20,6 +21,10 @@ import fiiveStudioUseStore from '../../store/FiiveStudio'
 import UserListProfileCard from './components/UserListProfileCard'
 import ResponsiveChatHeaderMenu from './ResponsiveComponents/ResponsiveChatHeaderMenu'
 import ResponsiveUserFilterMenu from './ResponsiveComponents/ResponsiveUserFilterMenu'
+
+type userOrderObj = {
+  role: string | null
+}
 
 type props = {
   userId: string
@@ -75,8 +80,8 @@ const CustomChatHeader = (props: props) => {
   // 라이브 참여자: live, 채팅 정지된 참여자: muted, 차단된 참여자: blocked
   const [userFilter, setUserFilter] = useState('라이브 참여자')
 
-  const miniMenuRef = useRef<HTMLButtonElement>(null)
-  const userFilterRef = useRef<HTMLDivElement>(null)
+  const miniMenuRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
+  const userFilterRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
 
   const studioUrl = process.env.NEXT_PUBLIC_STUDIO_URL
 
@@ -141,15 +146,15 @@ const CustomChatHeader = (props: props) => {
       token: authToken,
     })
 
-    if (responseData !== 'AxiosError') {
+    if (responseData.name !== 'AxiosError') {
       setIsFreezeChat(!isFreezeChat)
       setIsMoreMiniMenu(false)
     }
   }
 
   const handleUserFilterStatus = async (status: string) => {
-    let requestUrl = ''
-    let responseData = ''
+    let requestUrl: string = ''
+    let responseData: any = null || { muted_list: Array, next: '' }
 
     switch (status) {
       case 'live':
@@ -168,13 +173,7 @@ const CustomChatHeader = (props: props) => {
           token: authToken,
         })
 
-        console.log(props.channelUrl, 'props.channelUrl')
-
-        console.log(requestUrl, 'requestUrl')
-        console.log(authToken, 'authToken')
-        console.log(responseData, 'responseData')
-
-        if (responseData !== 'AxiosError') {
+        if (responseData.name !== 'AxiosError') {
           setUserList(responseData?.muted_list)
           setUserFilter('채팅 정지된 참여자')
           setIsUserFilterMiniMenu(false)
@@ -191,7 +190,7 @@ const CustomChatHeader = (props: props) => {
           token: authToken,
         })
 
-        if (responseData !== 'AxiosError') {
+        if (responseData.name !== 'AxiosError') {
           setUserList(responseData?.users)
           setUserFilter('차단된 참여자')
           setIsUserFilterMiniMenu(false)
@@ -208,14 +207,16 @@ const CustomChatHeader = (props: props) => {
   }
 
   // 더보기 미니 메뉴 outside click
-  const clickModalOutside = (e) => {
+  const clickModalOutside = (e: MouseEvent<HTMLElement>) => {
+    const event = e.target as HTMLDivElement
+
     // 반응형 header menu modal (ResponsiveChatHeaderMenu)에서는 작동하지 않게 if문 처리
     if (offsetX >= 1023) {
-      if (isMoreMiniMenu && !miniMenuRef.current.contains(e.target)) {
+      if (isMoreMiniMenu && !miniMenuRef.current.contains(event)) {
         setIsMoreMiniMenu(false)
       }
 
-      if (isUserFilterMiniMenu && !userFilterRef.current.contains(e.target)) {
+      if (isUserFilterMiniMenu && !userFilterRef.current.contains(event)) {
         setIsUserFilterMiniMenu(false)
       }
     }
@@ -251,8 +252,6 @@ const CustomChatHeader = (props: props) => {
     contextSetIsUserList(isUserList)
     setIsOpenResponsiveLiveMember(isUserList)
   }, [isUserList])
-
-  console.log(currentGroupChannel, 'currentGroupChannel')
 
   return (
     <div className='CustomChatHeader'>
@@ -436,22 +435,35 @@ const CustomChatHeader = (props: props) => {
 
           <div className='user_list_wrapper'>
             {userList &&
-              userList.map((user: any, idx: number) => (
-                <UserListProfileCard
-                  user={user}
-                  key={idx}
-                  index={idx}
-                  userId={props.userId}
-                  userRole={props.userRole}
-                  channelUrl={props.channelUrl}
-                  isUserList={isUserList}
-                  userFilter={userFilter}
-                  isUserFilterMiniMenu={isUserFilterMiniMenu}
-                  saveIndex={saveIndex}
-                  setSaveIndex={setSaveIndex}
-                  saveComponentIndex={saveComponentIndex}
-                />
-              ))}
+              userList
+                .sort((user1: userOrderObj, user2: userOrderObj) => {
+                  if (user1.role === 'operator' && user2.role === null) {
+                    // userRole이 operator일 경우, 앞에 정렬
+                    return -1
+                  } else if (user1.role === null && user2.role === 'operator') {
+                    // userRole이 operator일 경우, 뒤에 정렬
+                    return 1
+                  } else {
+                    // 동등할 경우
+                    return 0
+                  }
+                })
+                .map((user: any, idx: number) => (
+                  <UserListProfileCard
+                    user={user}
+                    key={idx}
+                    index={idx}
+                    userId={props.userId}
+                    userRole={props.userRole}
+                    channelUrl={props.channelUrl}
+                    isUserList={isUserList}
+                    userFilter={userFilter}
+                    isUserFilterMiniMenu={isUserFilterMiniMenu}
+                    saveIndex={saveIndex}
+                    setSaveIndex={setSaveIndex}
+                    saveComponentIndex={saveComponentIndex}
+                  />
+                ))}
           </div>
         </div>
       )}

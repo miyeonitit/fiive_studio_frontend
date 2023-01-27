@@ -24,7 +24,8 @@ const ResponsiveHandleErrorMessage = (props: props) => {
   // modal을 닫을 때, 애니메이션 효과와 setTimeout을 하기 위한 boolean state
   const [isCloseModal, setIsCloseModal] = useState(false)
 
-  const errorMsgModalRef = useRef<HTMLDivElement>(null)
+  const errorMsgModalRef =
+    React.useRef() as React.MutableRefObject<HTMLDivElement>
 
   const deleteMessage = () => {
     const deleteMessage = sendbirdSelectors.getDeleteMessage(globalStore)

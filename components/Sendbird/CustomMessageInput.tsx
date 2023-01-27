@@ -15,7 +15,12 @@ import {
   FileMessageCreateParams,
 } from '@sendbird/chat/message'
 
-const CustomMessageInput = ({ userId, userRole }) => {
+type props = {
+  userId: string
+  userRole: string
+}
+
+const CustomMessageInput = (props: props) => {
   const { currentGroupChannel } = useChannelContext()
   const globalStore = useSendbirdStateContext()
 
@@ -24,8 +29,10 @@ const CustomMessageInput = ({ userId, userRole }) => {
   const [isUserTyping, setIsUserTyping] = useState(false)
   const [typingUsersName, setTypingUsersName] = useState([])
 
-  const messageInputWrapperRef = useRef<HTMLDivElement>(null)
-  const messageInputRef = useRef<HTMLTextAreaElement>(null)
+  const messageInputWrapperRef =
+    React.useRef() as React.MutableRefObject<HTMLDivElement>
+  const messageInputRef =
+    React.useRef() as React.MutableRefObject<HTMLTextAreaElement>
 
   const params: UserMessageCreateParams = {
     message: messageText,
@@ -43,7 +50,7 @@ const CustomMessageInput = ({ userId, userRole }) => {
       return '10분 간 메시지를 보낼 수 없어요.'
     }
 
-    if (currentGroupChannel.isFrozen && userRole === 'learner') {
+    if (currentGroupChannel.isFrozen && props.userRole === 'learner') {
       return '선생님만 메시지를 보낼 수 있어요'
     }
 
@@ -102,9 +109,8 @@ const CustomMessageInput = ({ userId, userRole }) => {
       const sendUserMessage = sendbirdSelectors.getSendUserMessage(globalStore)
 
       sendUserMessage(currentGroupChannel, params)
-        .onPending((message) => {})
-        .onFailed((error, message) => {
-          console.log(error, message, 'error')
+        .onPending((message: any) => {})
+        .onFailed((error: any, message: any) => {
           toast.error(
             <div className='toast_error_box'>
               <Image
@@ -120,7 +126,7 @@ const CustomMessageInput = ({ userId, userRole }) => {
             { transition: fadeUp }
           )
         })
-        .onSucceeded((message) => {
+        .onSucceeded((message: any) => {
           const textArea = messageInputRef.current
 
           if (textArea) {
@@ -202,7 +208,7 @@ const CustomMessageInput = ({ userId, userRole }) => {
       {/* chat input div */}
       <div
         className={`message_input_box ${messageText !== '' && 'active'} ${
-          ((currentGroupChannel.isFrozen && userRole === 'learner') ||
+          ((currentGroupChannel.isFrozen && props.userRole === 'learner') ||
             currentGroupChannel.myMutedState === 'muted') &&
           'nonactive'
         }`}
@@ -210,7 +216,7 @@ const CustomMessageInput = ({ userId, userRole }) => {
       >
         <textarea
           className={`message_input ${
-            ((currentGroupChannel.isFrozen && userRole === 'learner') ||
+            ((currentGroupChannel.isFrozen && props.userRole === 'learner') ||
               currentGroupChannel.myMutedState === 'muted') &&
             'nonactive'
           }`}
@@ -222,7 +228,7 @@ const CustomMessageInput = ({ userId, userRole }) => {
           onKeyPress={(e) => controlPressEnter(e)}
           onKeyDown={(e) => controlInputHeightsize(e)}
           disabled={
-            (currentGroupChannel.isFrozen && userRole === 'learner') ||
+            (currentGroupChannel.isFrozen && props.userRole === 'learner') ||
             currentGroupChannel.myMutedState === 'muted'
               ? true
               : false

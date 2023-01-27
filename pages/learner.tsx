@@ -108,7 +108,7 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
       token: token,
     })
 
-    if (responseData !== 'AxiosError') {
+    if (responseData.name !== 'AxiosError') {
       setUserInfomation(responseData)
     } else {
       console.log('수강 권한 없음')

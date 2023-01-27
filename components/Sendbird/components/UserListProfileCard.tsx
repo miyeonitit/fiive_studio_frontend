@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { MouseEvent } from 'react'
 import Image from 'next/image'
 import { ToastContainer, toast, cssTransition } from 'react-toastify'
 
@@ -44,7 +45,7 @@ const UserListProfileCard = (props: props) => {
   const [isMutedUserTooltip, setIsMutedUserTooltip] = useState(false)
   const [isBlockedUserTooltip, setIsBlockedUserTooltip] = useState(false)
 
-  const miniMenuRef = useRef<HTMLButtonElement>(null)
+  const miniMenuRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
 
   const fadeUp = cssTransition({
     enter: 'animate__animated animate__customFadeInUp',
@@ -101,7 +102,7 @@ const UserListProfileCard = (props: props) => {
       token: authToken,
     })
 
-    if (responseData !== 'AxiosError') {
+    if (responseData.name !== 'AxiosError') {
       controlToastPopup(true, `${senderNickName} 님을 차단했어요.`)
       setIsBlockUser(true)
       setIsMoreMiniMenu(false)
@@ -120,7 +121,7 @@ const UserListProfileCard = (props: props) => {
       token: authToken,
     })
 
-    if (responseData !== 'AxiosError') {
+    if (responseData.name !== 'AxiosError') {
       controlToastPopup(true, `${senderNickName} 님을 차단 해제했어요.`)
       setIsBlockUser(false)
       setIsMoreMiniMenu(false)
@@ -144,7 +145,7 @@ const UserListProfileCard = (props: props) => {
       token: authToken,
     })
 
-    if (responseData !== 'AxiosError') {
+    if (responseData.name !== 'AxiosError') {
       controlToastPopup(true, `${senderNickName} 님을 채팅 일시정지 했어요.`)
       setIsMutedUser(true)
       setIsMoreMiniMenu(false)
@@ -163,7 +164,7 @@ const UserListProfileCard = (props: props) => {
       token: authToken,
     })
 
-    if (responseData !== 'AxiosError') {
+    if (responseData.name !== 'AxiosError') {
       controlToastPopup(
         true,
         `${senderNickName} 님의 채팅 일시정지를 해제했어요.`
@@ -176,8 +177,10 @@ const UserListProfileCard = (props: props) => {
   }
 
   // 더보기 미니 메뉴 outside click
-  const clickModalOutside = (e) => {
-    if (isMoreMiniMenu && !miniMenuRef.current.contains(e.target)) {
+  const clickModalOutside = (e: MouseEvent<HTMLElement>) => {
+    const event = e.target as HTMLDivElement
+
+    if (isMoreMiniMenu && !miniMenuRef.current.contains(event)) {
       setIsMoreMiniMenu(false)
     }
   }

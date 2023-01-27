@@ -24,7 +24,8 @@ const ResponsiveChatHeaderMenu = (props: props) => {
   // modal을 닫을 때, 애니메이션 효과와 setTimeout을 하기 위한 boolean state
   const [isCloseModal, setIsCloseModal] = useState(false)
 
-  const headerModalRef = useRef<HTMLDivElement>(null)
+  const headerModalRef =
+    React.useRef() as React.MutableRefObject<HTMLDivElement>
 
   const studioUrl = process.env.NEXT_PUBLIC_TEST_STUDIO_URL
 
