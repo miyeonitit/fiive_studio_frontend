@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import kr from 'date-fns/locale/ko'
+import { CSSProperties } from 'styled-components'
 
 import * as SendBird from 'sendbird'
 import SendbirdProvider from '@sendbird/uikit-react/SendbirdProvider'
@@ -7,7 +8,9 @@ import { ChannelProvider } from '@sendbird/uikit-react/Channel/context'
 import ChannelUI from '@sendbird/uikit-react/Channel/components/ChannelUI'
 
 import { config } from '../utils/HeaderConfig'
+import AxiosRequest from '../utils/AxiosRequest'
 import useStore from '../store/Sendbird'
+import fiiveStudioUseStore from '../store/FiiveStudio'
 import classRoomUseStore from '../store/classRoom'
 
 import CustomChatRoom from './Sendbird/CustomChatRoom'
@@ -22,6 +25,7 @@ type props = {
   isChatOpen: boolean
   setIsChatOpen: React.Dispatch<React.SetStateAction<boolean>>
   emojiContainer: object
+  chatHeightStyle: CSSProperties
 }
 
 const Chat = (props: props) => {
@@ -35,6 +39,12 @@ const Chat = (props: props) => {
     (state: any) => state.addEmojiContainer
   )
 
+  // user auth token for API
+  const authToken = fiiveStudioUseStore((state: any) => state.authToken)
+
+  // user access token for Senbird Access
+  const [accessToken, setAccessToken] = useState(false)
+
   const [stringSet] = useState({
     TYPING_INDICATOR__AND: '님, ',
     TYPING_INDICATOR__IS_TYPING: '님이 입력 중이에요.',
@@ -46,16 +56,50 @@ const Chat = (props: props) => {
 
   const appId = process.env.NEXT_PUBLIC_SENDBIRD_APP_ID
 
+  // Set default session token expiration period to 1 minute.
+  const DEFAULT_SESSION_TOKEN_PERIOD = 1 * 60 * 1000
+
+  const issueSessionToken = async () => {
+    const period = DEFAULT_SESSION_TOKEN_PERIOD
+
+    const requestUrl = `/user/token`
+
+    const body = {
+      expires_at: Date.now() + period,
+    }
+
+    const responseData = await AxiosRequest({
+      url: requestUrl,
+      method: 'POST',
+      body: body,
+      token: authToken,
+    })
+
+    const result = await responseData
+
+    return result.token
+  }
+
   useEffect(() => {
     contextAddEmojiContainer(props.emojiContainer)
   }, [])
+
+  useEffect(() => {
+    if (!accessToken) {
+      const intiateSession = async () => {
+        const token = await issueSessionToken()
+        setAccessToken(token)
+      }
+      intiateSession()
+    }
+  }, [accessToken])
 
   return (
     <>
       <SendbirdProvider
         appId={appId}
         userId={props.userId}
-        // accessToken='3b6ca60ca19e11b8234b29ab07d200868045dd75'
+        accessToken={accessToken}
         stringSet={stringSet}
         dateLocale={kr}
       >
@@ -70,6 +114,7 @@ const Chat = (props: props) => {
                 channelUrl={props.currentUrl}
                 isChatOpen={props.isChatOpen}
                 setIsChatOpen={props.setIsChatOpen}
+                chatHeightStyle={props.chatHeightStyle}
               />
             )}
             renderMessage={(message: {}) => (

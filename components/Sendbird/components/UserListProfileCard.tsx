@@ -16,6 +16,7 @@ import MessageTooltip from './MessageTooltip'
 type props = {
   user: any
   index: number
+  userLength: number
   userId: string
   userRole: string
   channelUrl: string
@@ -184,6 +185,8 @@ const UserListProfileCard = (props: props) => {
       setIsMoreMiniMenu(false)
     }
   }
+
+  console.log(props.user, 'user')
 
   // 더보기 미니 메뉴 outside click
   useEffect(() => {
@@ -355,7 +358,15 @@ const UserListProfileCard = (props: props) => {
 
         {/* 더보기 버튼 클릭시 뜨는 미니 메뉴 */}
         {isMoreMiniMenu && (
-          <div className='more_mini_menu_wrapper' ref={miniMenuRef}>
+          <div
+            className={`more_mini_menu_wrapper ${
+              props.index >= 1 &&
+              (props.userLength - 1 === props.index ||
+                props.userLength - 2 === props.index) &&
+              'top'
+            }`}
+            ref={miniMenuRef}
+          >
             <div className='more_mini_menu'>
               {props.userRole === 'teacher' &&
                 (isMutedUser ? (

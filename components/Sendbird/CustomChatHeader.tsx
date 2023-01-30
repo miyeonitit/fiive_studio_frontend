@@ -8,6 +8,7 @@ import React, {
 import { MouseEvent } from 'react'
 import Image from 'next/image'
 import { ToastContainer, toast, cssTransition } from 'react-toastify'
+import { CSSProperties } from 'styled-components'
 
 import { useChannelContext } from '@sendbird/uikit-react/Channel/context'
 
@@ -32,6 +33,7 @@ type props = {
   channelUrl: string
   isChatOpen: boolean
   setIsChatOpen: Dispatch<SetStateAction<boolean>>
+  chatHeightStyle: CSSProperties
 }
 
 const CustomChatHeader = (props: props) => {
@@ -349,7 +351,7 @@ const CustomChatHeader = (props: props) => {
           </div>
         </div>
       ) : (
-        <div className='chat_user_list_wrapper'>
+        <div className='chat_user_list_wrapper' style={props.chatHeightStyle}>
           <div className='user_list_header_box'>
             {isUserFilterMiniMenu &&
               (offsetX > 1023 ? (
@@ -453,6 +455,7 @@ const CustomChatHeader = (props: props) => {
                     user={user}
                     key={idx}
                     index={idx}
+                    userLength={userList.length}
                     userId={props.userId}
                     userRole={props.userRole}
                     channelUrl={props.channelUrl}

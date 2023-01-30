@@ -91,9 +91,12 @@ const CustomChatRoom = (props: props) => {
   const [isResponsiveErrorMsgModal, setIsResponsiveErrorMsgModal] =
     useState(false)
 
-  const miniMenuRef = useRef<HTMLButtonElement>(null)
-  const responsiveMoreMenuRef = useRef<HTMLButtonElement>(null)
-  const editInputRef = useRef<HTMLTextAreaElement>(null)
+  const miniMenuRef =
+    React.useRef() as React.MutableRefObject<HTMLButtonElement>
+  const responsiveMoreMenuRef =
+    React.useRef() as React.MutableRefObject<HTMLButtonElement>
+  const editInputRef =
+    React.useRef() as React.MutableRefObject<HTMLTextAreaElement>
   const reactionTopRef =
     React.useRef() as React.MutableRefObject<HTMLDivElement>
   const reactionBottomRef =
@@ -136,8 +139,8 @@ const CustomChatRoom = (props: props) => {
     const deleteMessge = sendbirdSelectors.getDeleteMessage(globalStore)
 
     deleteMessge(currentGroupChannel, messageInfomation)
-      .then((message) => {})
-      .catch((error) => {
+      .then((message: any) => {})
+      .catch((error: any) => {
         console.log(error, 'error')
         controlToastPopup(false, '다시 시도해 주세요.')
       })
@@ -148,8 +151,8 @@ const CustomChatRoom = (props: props) => {
       sendbirdSelectors.getResendUserMessage(globalStore)
 
     resendUserMessage(currentGroupChannel, messageInfomation)
-      .then((message) => {})
-      .catch((error) => {
+      .then((message: any) => {})
+      .catch((error: any) => {
         console.log(error, 'error')
         controlToastPopup(false, '다시 시도해 주세요.')
       })
@@ -321,6 +324,11 @@ const CustomChatRoom = (props: props) => {
   const clickMiniMenu = () => {
     // 더보기 미니 메뉴 on/off state
     setIsMoreMiniMenu(!isMoreMiniMenu)
+
+    // 초기 채팅방의 메시지가 2개 이하일 경우, 더보기 미니메뉴의 .top (위로 뜨는 현상)을 막는 로직
+    if (allMessages.length <= 2) {
+      return
+    }
 
     // 메시지가 맨밑에 있을 경우와 맨밑에서 두 번째 메시지일 경우, 미니 메뉴가 더보기 버튼 위에 뜨도록 해주는 스타일링 state
     if (
@@ -530,6 +538,9 @@ const CustomChatRoom = (props: props) => {
                   setIsReactionBox={setIsReactionTopBox}
                   messageInfomation={messageInfomation}
                   channelUrl={props.channelUrl}
+                  isChatFirstMessage={
+                    allMessages[0].messageId === messageInfomation.messageId
+                  }
                 />
               ) : (
                 <ResponsiveEmojiContainerBox

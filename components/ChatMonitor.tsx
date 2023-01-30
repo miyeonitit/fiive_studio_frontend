@@ -13,14 +13,16 @@ import { ChannelProvider } from '@sendbird/uikit-react/Channel/context'
 import ChannelUI from '@sendbird/uikit-react/Channel/components/ChannelUI'
 
 import classRoomUseStore from '../store/classRoom'
+import fiiveStudioUseStore from '../store/FiiveStudio'
 
 import CustomTeacherPopupChat from './Sendbird/CustomTeacherPopupChat'
 
 type props = {
   userId: string
+  channelUrl: string
 }
 
-const MessageList = () => {
+const MessageList = (props: props) => {
   const context = useSendbirdStateContext()
   const sdk = sendbirdSelectors.getSdk(context)
 
@@ -92,11 +94,11 @@ const ChatMonitor = (props: props) => {
     <div className='chat-monitor'>
       <SendbirdProvider
         appId={appId}
-        userId='learne'
+        userId={props.userId}
         stringSet={stringSet}
         dateLocale={kr}
       >
-        <ChannelProvider channelUrl={chatData?.channel_url}>
+        <ChannelProvider channelUrl={props.channelUrl}>
           <MessageList></MessageList>
         </ChannelProvider>
       </SendbirdProvider>

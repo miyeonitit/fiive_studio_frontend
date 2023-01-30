@@ -15,6 +15,7 @@ type props = {
   reactionBottomRef?: React.RefObject<HTMLDivElement>
   reactedEmojis: Array<any>
   channelUrl: string
+  isChatFirstMessage?: boolean
 }
 
 const EmojiContainerBox = (props: props) => {
@@ -24,9 +25,11 @@ const EmojiContainerBox = (props: props) => {
   const message_id = props?.messageInfomation.messageId
 
   const boxStyle = {
-    top: `${props?.topHeight}px`,
+    top: props.isChatFirstMessage ? '30px' : `${props?.topHeight}px`,
     right: `${props?.rightWidth}px`,
   }
+
+  console.log(props.isChatFirstMessage, 'props.isChatFirstMessage')
 
   const addUserReaction = async (emojiKey: string) => {
     // 해당 메시지에 유저가 선택한 리액션 이모지가 이미 있을 경우, 이모지 제거

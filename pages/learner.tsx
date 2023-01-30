@@ -83,11 +83,11 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
   // 반응형일 때, chat의 상대적 height state
   const [chatOffsetHeight, setChatOffsetHeight] = useState(0)
 
-  const playerHeightRef = useRef<HTMLElement>(null)
+  const playerHeightRef = React.useRef() as React.MutableRefObject<HTMLElement>
 
   // 반응형일 때, 전체 페이지 height(100vh) - ( Nav height(57px) + fix bottom height(82px) + content margin up & down(24px) = 163px )- Video height
   const chatHeightStyle: CSSProperties =
-    offsetX < 1023 && !isOpenResponsiveLiveMember
+    offsetX < 1023
       ? {
           height: `calc(100vh  - 163px - ${chatOffsetHeight}px)`,
         }
@@ -267,6 +267,7 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
               isChatOpen={isChatOpen}
               setIsChatOpen={setIsChatOpen}
               emojiContainer={emojiContainer}
+              chatHeightStyle={chatHeightStyle}
             />
           ) : (
             <FakeChat status='liveEnd' chatHeightStyle={chatHeightStyle} />
