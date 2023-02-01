@@ -1,12 +1,11 @@
 import React, { useState, useRef, useEffect, ReactElement } from 'react'
-import type { GetStaticProps } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
 import { CSSProperties } from 'styled-components'
-import axios from 'axios'
 
 import AxiosRequest from '../utils/AxiosRequest'
+import sendbirdUseStore from '../store/Sendbird'
 import fiiveStudioUseStore from '../store/FiiveStudio'
 
 import { NextPageWithLayout } from '../types/NextPageWithLayout'
@@ -19,14 +18,28 @@ import AnnouncementModal from '../components/AnnouncementModal'
 import TimerModal from '../components/TimerModal'
 import Timer from '../components/Timer'
 import Reactions from '../components/Reactions'
+import LiveStatusVideoScreen from '../components/VideoComponents/LiveStatusVideoScreen'
+import FakeChat from '../components/FakeChat'
+
+type ivsType = {
+  channel: { arn: string; authorized: boolean; playbackUrl: string }
+}
+
+type sendbirdChatType = {
+  name: string
+  channel_url: string
+  members: Array<object>
+}
 
 type props = {
-  emoji_data: { id: number; key: string; url: string }
+  emoji_data?: { emojis: Array<object>; id: number; name: string; url: string }
+  classroom: { ivs: ivsType; sendbird: sendbirdChatType }
+  auth_token: string
 }
 
 const Chat = dynamic(() => import('../components/Chat'), {
   ssr: false,
-  loading: () => <div>Loading...</div>,
+  loading: () => <FakeChat status='loading' />,
 })
 
 const TeacherPage: NextPageWithLayout = (props: props) => {
@@ -42,24 +55,74 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
   const isChatOpen = fiiveStudioUseStore((state: any) => state.isChatOpen)
   const setIsChatOpen = fiiveStudioUseStore((state: any) => state.setIsChatOpen)
 
-  const [announcementModal, toggleAnnouncementModal] = useState(false)
-  const [timerModal, toggleTimerModal] = useState(false)
+  // waiting: 라이브 전 재생 대기중 <> play: 재생중 <> end: 라이브 종료 <> error : 재생 에러
+  const ivsPlayStatus = fiiveStudioUseStore((state: any) => state.ivsPlayStatus)
+
+  // user infomation state
+  const userInfomation = fiiveStudioUseStore(
+    (state: any) => state.userInfomation
+  )
+  const setUserInfomation = fiiveStudioUseStore(
+    (state: any) => state.setUserInfomation
+  )
+
+  // user auth token for API
+  const setAuthToken = fiiveStudioUseStore((state: any) => state.setAuthToken)
+
+  // save sendbird emoji list container
+  const emojiContainer = sendbirdUseStore((state: any) => state.emojiContainer)
+  const addEmojiContainer = sendbirdUseStore(
+    (state: any) => state.addEmojiContainer
+  )
+
+  // const [announcementModal, toggleAnnouncementModal] = useState(false)
+  // const [timerModal, toggleTimerModal] = useState(false)
 
   // 반응형일 때, chat의 상대적 height state
   const [chatOffsetHeight, setChatOffsetHeight] = useState(0)
 
-  // custom reaction emoji list state
-  const [emojiContainer, setEmojiContainer] = useState(props.emoji_data?.emojis)
-
-  const playerHeightRef = useRef<HTMLElement>(null)
+  const playerHeightRef = React.useRef() as React.MutableRefObject<HTMLElement>
 
   // 반응형일 때, 전체 페이지 height(100vh) - ( Nav height(57px) + fix bottom height(82px) + content margin up & down(24px) = 163px )- Video height
   const chatHeightStyle: CSSProperties =
-    offsetX < 1023 && !isOpenResponsiveLiveMember
+    offsetX < 1023
       ? {
           height: `calc(100vh  - 163px - ${chatOffsetHeight}px)`,
         }
       : {}
+
+  const getUserInfomation = async () => {
+    const requestUrl = `/auth`
+
+    const responseData = await AxiosRequest({
+      url: requestUrl,
+      method: 'GET',
+      body: '',
+      token: props.auth_token,
+    })
+
+    if (responseData.name !== 'AxiosError') {
+      setUserInfomation(responseData)
+    } else {
+      console.log('수강 권한 없음')
+      // [backlog] 유저 식별에 실패하면 수강권한 없다는 페이지로 이동되어야 함!
+    }
+  }
+
+  const getChatEmojiContainer = async () => {
+    const emojiCategoryId = process.env.NEXT_PUBLIC_SENDBIRD_EMOJI_CATEGORY_ID
+
+    const requestUrl = `/sendbird/emoji_categories/${emojiCategoryId}`
+
+    const responseData = await AxiosRequest({
+      url: requestUrl,
+      method: 'GET',
+      body: '',
+      token: props.auth_token,
+    })
+
+    addEmojiContainer(responseData.emojis)
+  }
 
   // 브라우저 resize 할 때마다 <Video /> 의 height 감지
   const reset = () => {
@@ -76,23 +139,17 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
   }, [chatOffsetHeight])
 
   useEffect(() => {
+    // get offsetX
     reset()
-  }, [])
 
-  useEffect(() => {
-    const ApiStudio = process.env.NEXT_PUBLIC_API_BASE_URL
-    const emojiCategoryId = process.env.NEXT_PUBLIC_SENDBIRD_EMOJI_CATEGORY_ID
+    // 1. get user auth_token
+    setAuthToken(props.auth_token)
 
-    axios
-      .get(`${ApiStudio}/sendbird/emoji_categories/${emojiCategoryId}`)
-      .then((response) => {
-        const data = response.data
+    // 2. get user infomation with user auth_token
+    getUserInfomation()
 
-        setEmojiContainer(data.emojis)
-      })
-      .catch((error) => {
-        console.error('실패:', error)
-      })
+    // 3. get chat's emoji list container
+    getChatEmojiContainer()
   }, [])
 
   return (
@@ -117,9 +174,20 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
       <main>
         {/* ivs 영역 */}
         <section className='video-wrapper' ref={playerHeightRef}>
-          <Timer></Timer>
-          <Reactions></Reactions>
-          <Video />
+          {/* <Timer></Timer> */}
+
+          {/* metadata reaction emoji 컴포넌트 */}
+          <Reactions />
+
+          {/* ivs video player 영역 컴포넌트 */}
+          {/* <Video playbackUrl={props?.classroom?.ivs?.channel?.playbackUrl} /> */}
+
+          {/* live 시작 전, 재생 에러, live 종료일 때 띄우는 준비 화면 컴포넌트 */}
+          {/* {(ivsPlayStatus === 'waiting' ||
+            ivsPlayStatus === 'error' ||
+            ivsPlayStatus === 'end') && (
+            <LiveStatusVideoScreen ivsPlayStatus={ivsPlayStatus} />
+          )} */}
         </section>
 
         {/* class infomation 영역 */}
@@ -168,12 +236,18 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
         style={chatHeightStyle}
       >
         <div className='chatroom'>
-          <Chat
-            userId='user1'
-            isChatOpen={isChatOpen}
-            setIsChatOpen={setIsChatOpen}
-            emojiContainer={emojiContainer}
-          />
+          {ivsPlayStatus !== 'end' ? (
+            <Chat
+              userId={userInfomation.userId}
+              userRole={userInfomation.userRole}
+              currentUrl={props.classroom?.sendbird?.channel_url}
+              isChatOpen={isChatOpen}
+              setIsChatOpen={setIsChatOpen}
+              emojiContainer={emojiContainer}
+            />
+          ) : (
+            <FakeChat status='liveEnd' chatHeightStyle={chatHeightStyle} />
+          )}
         </div>
       </aside>
 
@@ -206,25 +280,6 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
 
 TeacherPage.getLayout = (page: ReactElement) => {
   return <Layout>{page}</Layout>
-}
-
-export const getStaticProps: GetStaticProps = async (context) => {
-  const emojiCategoryId = process.env.NEXT_PUBLIC_SENDBIRD_EMOJI_CATEGORY_ID
-
-  const requestUrl = `/sendbird/emoji_categories/${emojiCategoryId}`
-
-  const responseData = await AxiosRequest({
-    url: requestUrl,
-    method: 'GET',
-    body: '',
-    token: '',
-  })
-
-  return {
-    props: {
-      emoji_data: responseData,
-    },
-  }
 }
 
 export default TeacherPage

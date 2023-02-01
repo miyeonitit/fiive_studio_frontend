@@ -4,6 +4,7 @@ import Lottie from 'lottie-web'
 
 import AxiosRequest from '../../utils/AxiosRequest'
 import classRoomUseStore from '../../store/classRoom'
+import fiiveStudioUseStore from '../../store/FiiveStudio'
 
 type props = {
   emojiListRef: RefObject<HTMLDivElement>
@@ -14,13 +15,16 @@ const MetaReactionEmojiList = (props: props) => {
   // ivs, sendbird chat infomation 정보를 저장하는 state
   const ivsData = classRoomUseStore((state: any) => state.ivsData)
 
-  const thumbsUpRef = useRef<HTMLDivElement>(null)
-  const heartRef = useRef<HTMLDivElement>(null)
-  const fireRef = useRef<HTMLDivElement>(null)
-  const clappingRef = useRef<HTMLDivElement>(null)
-  const smilingRef = useRef<HTMLDivElement>(null)
-  const grinningRef = useRef<HTMLDivElement>(null)
-  const cryingRef = useRef<HTMLDivElement>(null)
+  // user auth token for API
+  const authToken = fiiveStudioUseStore((state: any) => state.authToken)
+
+  const thumbsUpRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
+  const heartRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
+  const fireRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
+  const clappingRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
+  const smilingRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
+  const grinningRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
+  const cryingRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
 
   const testIvsValue = process.env.NEXT_PUBLIC_TEST_IVS_CHANNEL_VALUE
 
@@ -42,7 +46,7 @@ const MetaReactionEmojiList = (props: props) => {
       url: requestUrl,
       method: 'POST',
       body: body,
-      token: '',
+      token: authToken,
     })
   }
 

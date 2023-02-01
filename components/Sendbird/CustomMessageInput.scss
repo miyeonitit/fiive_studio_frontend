@@ -61,6 +61,11 @@
     .sendMessageIcon {
       cursor: pointer;
     }
+
+    .send_image_box {
+      display: flex;
+      align-items: center;
+    }
   }
 
   .message_input_box.active {

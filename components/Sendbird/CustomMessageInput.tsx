@@ -15,7 +15,12 @@ import {
   FileMessageCreateParams,
 } from '@sendbird/chat/message'
 
-const CustomMessageInput = ({ userId, userRole }) => {
+type props = {
+  userId: string
+  userRole: string
+}
+
+const CustomMessageInput = (props: props) => {
   const { currentGroupChannel } = useChannelContext()
   const globalStore = useSendbirdStateContext()
 
@@ -24,8 +29,10 @@ const CustomMessageInput = ({ userId, userRole }) => {
   const [isUserTyping, setIsUserTyping] = useState(false)
   const [typingUsersName, setTypingUsersName] = useState([])
 
-  const messageInputWrapperRef = useRef<HTMLDivElement>(null)
-  const messageInputRef = useRef<HTMLTextAreaElement>(null)
+  const messageInputWrapperRef =
+    React.useRef() as React.MutableRefObject<HTMLDivElement>
+  const messageInputRef =
+    React.useRef() as React.MutableRefObject<HTMLTextAreaElement>
 
   const params: UserMessageCreateParams = {
     message: messageText,
@@ -43,7 +50,7 @@ const CustomMessageInput = ({ userId, userRole }) => {
       return '10분 간 메시지를 보낼 수 없어요.'
     }
 
-    if (currentGroupChannel.isFrozen && userRole === 'learner') {
+    if (currentGroupChannel.isFrozen && props.userRole === 'learner') {
       return '선생님만 메시지를 보낼 수 있어요'
     }
 
@@ -81,7 +88,7 @@ const CustomMessageInput = ({ userId, userRole }) => {
       toast.error(
         <div className='toast_error_box'>
           <Image
-            src='/Sendbird/toast_warning_icon.svg'
+            src='/pages/Sendbird/toast_warning_icon.svg'
             width={16}
             height={16}
             alt='toastWarningIcon'
@@ -102,13 +109,13 @@ const CustomMessageInput = ({ userId, userRole }) => {
       const sendUserMessage = sendbirdSelectors.getSendUserMessage(globalStore)
 
       sendUserMessage(currentGroupChannel, params)
-        .onPending((message) => {})
-        .onFailed((error, message) => {
-          console.log(error, message, 'error')
+        .onPending((message: any) => {})
+        .onFailed((error: any, message: any) => {
+          console.log(error, message, '에러왜뜸')
           toast.error(
             <div className='toast_error_box'>
               <Image
-                src='/Sendbird/toast_warning_icon.svg'
+                src='/pages/Sendbird/toast_warning_icon.svg'
                 width={16}
                 height={16}
                 alt='toastWarningIcon'
@@ -120,7 +127,7 @@ const CustomMessageInput = ({ userId, userRole }) => {
             { transition: fadeUp }
           )
         })
-        .onSucceeded((message) => {
+        .onSucceeded((message: any) => {
           const textArea = messageInputRef.current
 
           if (textArea) {
@@ -177,7 +184,7 @@ const CustomMessageInput = ({ userId, userRole }) => {
       {currentGroupChannel.isFrozen && (
         <div className='chat_frozen_status_wrapper'>
           <Image
-            src='/Sendbird/lock_white_icon.svg'
+            src='/pages/Sendbird/lock_white_icon.svg'
             width={18}
             height={18}
             alt='lockIcon'
@@ -189,7 +196,7 @@ const CustomMessageInput = ({ userId, userRole }) => {
       {currentGroupChannel.myMutedState === 'muted' && (
         <div className='chat_muted_status_wrapper'>
           <Image
-            src='/Sendbird/toast_warning_icon.svg'
+            src='/pages/Sendbird/toast_warning_icon.svg'
             width={16}
             height={16}
             alt='toastWarningIcon'
@@ -202,7 +209,7 @@ const CustomMessageInput = ({ userId, userRole }) => {
       {/* chat input div */}
       <div
         className={`message_input_box ${messageText !== '' && 'active'} ${
-          ((currentGroupChannel.isFrozen && userRole === 'learner') ||
+          ((currentGroupChannel.isFrozen && props.userRole === 'learner') ||
             currentGroupChannel.myMutedState === 'muted') &&
           'nonactive'
         }`}
@@ -210,7 +217,7 @@ const CustomMessageInput = ({ userId, userRole }) => {
       >
         <textarea
           className={`message_input ${
-            ((currentGroupChannel.isFrozen && userRole === 'learner') ||
+            ((currentGroupChannel.isFrozen && props.userRole === 'learner') ||
               currentGroupChannel.myMutedState === 'muted') &&
             'nonactive'
           }`}
@@ -222,7 +229,7 @@ const CustomMessageInput = ({ userId, userRole }) => {
           onKeyPress={(e) => controlPressEnter(e)}
           onKeyDown={(e) => controlInputHeightsize(e)}
           disabled={
-            (currentGroupChannel.isFrozen && userRole === 'learner') ||
+            (currentGroupChannel.isFrozen && props.userRole === 'learner') ||
             currentGroupChannel.myMutedState === 'muted'
               ? true
               : false
@@ -231,18 +238,21 @@ const CustomMessageInput = ({ userId, userRole }) => {
           type='text'
           placeholder={controlDisabledInputPlaceholder()}
         />
-        <Image
-          className='sendMessageIcon'
-          src={
-            messageText !== ''
-              ? '/Sendbird/active_send_message_icon.svg'
-              : '/Sendbird/non_active_send_message_icon.svg'
-          }
-          onClick={() => handleSendMessage()}
-          width={24}
-          height={24}
-          alt='sendMessageIcon'
-        />
+
+        <div className='send_image_box'>
+          <Image
+            className='sendMessageIcon'
+            src={
+              messageText !== ''
+                ? '/pages/Sendbird/active_send_message_icon.svg'
+                : '/pages/Sendbird/non_active_send_message_icon.svg'
+            }
+            onClick={() => handleSendMessage()}
+            width={24}
+            height={24}
+            alt='sendMessageIcon'
+          />
+        </div>
       </div>
 
       {/* <TypingIndicator members={currentGroupChannel?.getTypingUsers()} /> */}

@@ -12,13 +12,17 @@ import useSendbirdStateContext from '@sendbird/uikit-react/useSendbirdStateConte
 import { ChannelProvider } from '@sendbird/uikit-react/Channel/context'
 import ChannelUI from '@sendbird/uikit-react/Channel/components/ChannelUI'
 
+import classRoomUseStore from '../store/classRoom'
+import fiiveStudioUseStore from '../store/FiiveStudio'
+
 import CustomTeacherPopupChat from './Sendbird/CustomTeacherPopupChat'
 
 type props = {
   userId: string
+  channelUrl: string
 }
 
-const MessageList = () => {
+const MessageList = (props: props) => {
   const context = useSendbirdStateContext()
   const sdk = sendbirdSelectors.getSdk(context)
 
@@ -81,8 +85,10 @@ const ChatMonitor = (props: props) => {
     CHANNEL__MESSAGE_LIST__NOTIFICATION__ON: '도착',
   })
 
+  // ivs, sendbird chat infomation 정보를 저장하는 state
+  const chatData = classRoomUseStore((state: any) => state.chatData)
+
   const appId = process.env.NEXT_PUBLIC_SENDBIRD_APP_ID
-  const currentChannelUrl = process.env.NEXT_PUBLIC_SENDBIRD_TEST_CHANNEL_ID
 
   return (
     <div className='chat-monitor'>
@@ -92,7 +98,7 @@ const ChatMonitor = (props: props) => {
         stringSet={stringSet}
         dateLocale={kr}
       >
-        <ChannelProvider channelUrl={currentChannelUrl}>
+        <ChannelProvider channelUrl={props.channelUrl}>
           <MessageList></MessageList>
         </ChannelProvider>
       </SendbirdProvider>

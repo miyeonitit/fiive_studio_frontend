@@ -105,7 +105,7 @@
     }
   }
 
-  /* learner 레이아웃 footer 영역 */
+  /* teacher 레이아웃 footer 영역 */
   .layout-footer {
     position: fixed;
     bottom: 0px;
@@ -115,7 +115,8 @@
     padding: 12px;
     background-color: $bluegray-2;
 
-    div {
+    .widget_menu_wrapper,
+    .quit_button_wrapper {
       display: flex;
       align-items: center;
       justify-content: center;
@@ -131,9 +132,6 @@
     }
 
     .widget_menu_wrapper {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
       height: 56px;
       padding: 10px 8px;
       border-radius: 1px solid $bluegray-1;
@@ -142,6 +140,9 @@
       background-color: white;
 
       div {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
         width: 75px;
         padding: 10px;
       }
@@ -154,11 +155,15 @@
     }
 
     .quit_button_wrapper {
+      position: relative;
       padding: 10px;
       color: white;
       background-color: $red-5;
     }
   }
+
+  /* live 방송 전, 라이브 나가기 버튼 위에 뜨는 popover css */
+  @import '../../../components/VideoComponents/PopOver.scss';
 }
 
 .fiive_layout.teacher_layout::-webkit-scrollbar {
@@ -166,17 +171,25 @@
 }
 
 @media screen and (min-width: 768px) and (max-width: 1023px) {
-  .fiive_layout.learner_layout {
+  .fiive_layout.teacher_layout {
     .layout-footer {
       justify-content: space-between;
+
+      .empty_wrapper {
+        display: none;
+      }
     }
   }
 }
 
 @media screen and (max-width: 767px) {
-  .fiive_layout.learner_layout {
+  .fiive_layout.teacher_layout {
     .layout-footer {
       justify-content: space-between;
+
+      .empty_wrapper {
+        display: none;
+      }
     }
   }
 }

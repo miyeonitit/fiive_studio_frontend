@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { useChannelContext } from '@sendbird/uikit-react/Channel/context'
 
 import AxiosRequest from '../../../utils/AxiosRequest'
+import fiiveStudioUseStore from '../../../store/FiiveStudio'
 
 import MessageTooltip from '../components/MessageTooltip'
 
@@ -18,6 +19,9 @@ type props = {
 const EmojiIcon = (props: props) => {
   const { currentGroupChannel } = useChannelContext()
 
+  // user auth token for API
+  const authToken = fiiveStudioUseStore((state: any) => state.authToken)
+
   // 이모티콘 누른 user list 노출 boolean state
   const [isReactedUser, setIsReactedUser] = useState(false)
 
@@ -27,7 +31,7 @@ const EmojiIcon = (props: props) => {
   const message_id = props.messageInfomation.messageId
 
   const findEmojiImageUrl = (emojiIcon: any) => {
-    const reaction = props.emojiContainer.find(
+    const reaction = props?.emojiContainer.find(
       (emoji: any) => emoji.key === emojiIcon.key
     )
 
@@ -36,14 +40,14 @@ const EmojiIcon = (props: props) => {
 
   const addUserReaction = async (emojiKey: string) => {
     // 해당 메시지에 유저가 선택한 리액션 이모지가 이미 있을 경우, 이모지 제거
-    const findAlreadyReactedEmoji = props.reactedEmojis.find(
+    const findAlreadyReactedEmoji = props?.reactedEmojis.find(
       (emoji: any) => emoji.key === emojiKey
     )
 
     // 해당 메시지에 유저가 선택한 리액션 이모지가 이미 있을 경우
     if (
       findAlreadyReactedEmoji &&
-      findAlreadyReactedEmoji.userIds.includes(props.userId)
+      findAlreadyReactedEmoji.userIds.includes(props?.userId)
     ) {
       removeUserReaction(findAlreadyReactedEmoji.key)
       return
@@ -61,7 +65,7 @@ const EmojiIcon = (props: props) => {
         url: requestUrl,
         method: 'POST',
         body: body,
-        token: '',
+        token: authToken,
       })
     }
   }
@@ -73,7 +77,7 @@ const EmojiIcon = (props: props) => {
       url: requestUrl,
       method: 'DELETE',
       body: '',
-      token: '',
+      token: authToken,
     })
   }
 

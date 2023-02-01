@@ -11,60 +11,57 @@
     left: 3%;
 
     img {
-      transform: rotate(-50deg);
+      width: 20px;
+      height: 20px;
+      transform: rotate(-30deg);
     }
   }
 
   .example-enter {
     display: block;
     opacity: 1;
+
+    transition: transform ease 8s, opacity ease 8s;
     transform: translateY(-0px);
   }
 
   .example-enter.example-enter-active {
     display: block;
-    opacity: 0;
-    transform: translateY(-400px);
-    transition: transform ease-out 2s, opacity ease-out 2s;
+    opacity: 1;
+    transform: translateY(-300px);
+    transition: transform ease 4s, opacity ease 4s;
   }
 
   .example-leave {
     display: block;
-    opacity: 1;
+
+    img {
+      width: 25px;
+      height: 25px;
+      transform: rotate(0deg);
+    }
   }
 
-  .example-leave.example-leave-active {
+  .example-leave-active {
     display: block;
-    opacity: 1;
+    opacity: 0;
+    animation: fadeout 0.5s;
+    transform: translateY(300px);
+    transition: transform ease 4s, opacity ease 4s;
+
+    @keyframes fadeout {
+      from {
+        opacity: 0.5;
+      }
+      to {
+        opacity: 0;
+      }
+    }
+
+    img {
+      width: 25px;
+      height: 25px;
+      transform: rotate(0deg);
+    }
   }
-
-  // .example-enter {
-  //   display: block;
-  //   opacity: 1;
-
-  //   transform: scale(0.1);
-  //   transition: transform ease 8s, opacity ease 8s;
-  //   transform: translateY(-0px);
-  // }
-
-  // .example-enter.example-enter-active {
-  //   display: block;
-  //   opacity: 1;
-
-  //   transform: translateY(-300px) rotate(50deg);
-  //   // transform: scale3d(0.3, 0.3, 0.3);
-  //   transition: transform ease 4s, opacity ease 4s;
-  // }
-
-  // .example-leave {
-  //   display: block;
-  //   opacity: 1;
-  // }
-
-  // .example-leave-active {
-  //   display: block;
-  //   opacity: 1;
-  //   transform: translateY(300px);
-  //   transition: transform ease 4s, opacity ease 4s;
-  // }
 }

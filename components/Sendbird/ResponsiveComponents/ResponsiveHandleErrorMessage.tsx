@@ -24,7 +24,8 @@ const ResponsiveHandleErrorMessage = (props: props) => {
   // modal을 닫을 때, 애니메이션 효과와 setTimeout을 하기 위한 boolean state
   const [isCloseModal, setIsCloseModal] = useState(false)
 
-  const errorMsgModalRef = useRef<HTMLDivElement>(null)
+  const errorMsgModalRef =
+    React.useRef() as React.MutableRefObject<HTMLDivElement>
 
   const deleteMessage = () => {
     const deleteMessage = sendbirdSelectors.getDeleteMessage(globalStore)
@@ -98,7 +99,7 @@ const ResponsiveHandleErrorMessage = (props: props) => {
           <div className='add_reaction_title_text'>메시지를 다시 보낼까요?</div>
           <div className='close_modal_image_box' onClick={() => closeModal()}>
             <Image
-              src='/Sendbird/responsive_close_button.svg'
+              src='/pages/Sendbird/responsive_close_button.svg'
               width={20}
               height={20}
               alt='closeButton'
@@ -110,7 +111,7 @@ const ResponsiveHandleErrorMessage = (props: props) => {
           <div className='modal_line_menu' onClick={() => resendMessage()}>
             <div className='retry_button_image_box'>
               <Image
-                src='/Sendbird/retry_button.svg'
+                src='/pages/Sendbird/retry_button.svg'
                 width={18}
                 height={18}
                 alt='retryButton'
@@ -121,7 +122,7 @@ const ResponsiveHandleErrorMessage = (props: props) => {
           <div className='modal_line_menu' onClick={() => deleteMessage()}>
             <div className='delete_button_image_box'>
               <Image
-                src='/Sendbird/delete_button.svg'
+                src='/pages/Sendbird/delete_button.svg'
                 width={18}
                 height={18}
                 alt='deleteButton'

@@ -12,7 +12,7 @@ interface SendbirdState {
   isUserList: boolean
   setIsUserList: (isUserList: boolean) => void
 
-  // custom 한 emojis의 리스트 state
+  // customed emoji list state
   emojiContainer: object | null
   addEmojiContainer: (emojiContainer: object) => void
 }

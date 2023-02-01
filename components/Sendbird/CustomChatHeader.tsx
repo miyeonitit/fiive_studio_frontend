@@ -5,9 +5,15 @@ import React, {
   Dispatch,
   SetStateAction,
 } from 'react'
+import { MouseEvent } from 'react'
 import Image from 'next/image'
+import { ToastContainer, toast, cssTransition } from 'react-toastify'
+import { CSSProperties } from 'styled-components'
 
 import { useChannelContext } from '@sendbird/uikit-react/Channel/context'
+
+import 'animate.css'
+import '../../node_modules/react-toastify/dist/ReactToastify.css'
 
 import AxiosRequest from '../../utils/AxiosRequest'
 import sendBirdUseStore from '../../store/Sendbird'
@@ -17,12 +23,17 @@ import UserListProfileCard from './components/UserListProfileCard'
 import ResponsiveChatHeaderMenu from './ResponsiveComponents/ResponsiveChatHeaderMenu'
 import ResponsiveUserFilterMenu from './ResponsiveComponents/ResponsiveUserFilterMenu'
 
+type userOrderObj = {
+  role: string | null
+}
+
 type props = {
   userId: string
   userRole: string
   channelUrl: string
   isChatOpen: boolean
   setIsChatOpen: Dispatch<SetStateAction<boolean>>
+  chatHeightStyle: CSSProperties
 }
 
 const CustomChatHeader = (props: props) => {
@@ -41,6 +52,9 @@ const CustomChatHeader = (props: props) => {
   const setIsOpenResponsiveLiveMember = fiiveStudioUseStore(
     (state: any) => state.setIsOpenResponsiveLiveMember
   )
+
+  // user auth token for API
+  const authToken = fiiveStudioUseStore((state: any) => state.authToken)
 
   // 유저 리스트 전역 state
   const contextSetIsUserList = sendBirdUseStore(
@@ -68,10 +82,46 @@ const CustomChatHeader = (props: props) => {
   // 라이브 참여자: live, 채팅 정지된 참여자: muted, 차단된 참여자: blocked
   const [userFilter, setUserFilter] = useState('라이브 참여자')
 
-  const miniMenuRef = useRef<HTMLButtonElement>(null)
-  const userFilterRef = useRef<HTMLDivElement>(null)
+  const miniMenuRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
+  const userFilterRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
 
   const studioUrl = process.env.NEXT_PUBLIC_STUDIO_URL
+
+  const fadeUp = cssTransition({
+    enter: 'animate__animated animate__customFadeInUp',
+    exit: 'animate__animated animate__fadeOut',
+  })
+
+  // status가 true: toast 성공 <> false : toast 에러
+  const controlToastPopup = (status: boolean, contentText: string) => {
+    if (status) {
+      toast.success(
+        <div className='toast_success_box'>
+          <Image
+            src='/pages/Sendbird/toast_success_icon.svg'
+            width={16}
+            height={16}
+            alt='toastSuccessIcon'
+          />
+          <span className='toast_success_text'>{contentText}</span>
+        </div>,
+        { transition: fadeUp }
+      )
+    } else {
+      toast.error(
+        <div className='toast_error_box'>
+          <Image
+            src='/pages/Sendbird/toast_warning_icon.svg'
+            width={16}
+            height={16}
+            alt='toastWarningIcon'
+          />
+          <span className='toast_error_text'>{contentText}</span>
+        </div>,
+        { transition: fadeUp }
+      )
+    }
+  }
 
   const saveComponentIndex = (index: number) => {
     setSaveIndex(index)
@@ -93,20 +143,20 @@ const CustomChatHeader = (props: props) => {
 
     const responseData = await AxiosRequest({
       url: requestUrl,
-      method: 'POST',
+      method: 'PUT',
       body: body,
-      token: '',
+      token: authToken,
     })
 
-    if (responseData !== 'AxiosError') {
+    if (responseData.name !== 'AxiosError') {
       setIsFreezeChat(!isFreezeChat)
       setIsMoreMiniMenu(false)
     }
   }
 
   const handleUserFilterStatus = async (status: string) => {
-    let requestUrl = ''
-    let responseData = ''
+    let requestUrl: string = ''
+    let responseData: any = null || { muted_list: Array, next: '' }
 
     switch (status) {
       case 'live':
@@ -122,10 +172,10 @@ const CustomChatHeader = (props: props) => {
           url: requestUrl,
           method: 'GET',
           body: '',
-          token: '',
+          token: authToken,
         })
 
-        if (responseData !== 'AxiosError') {
+        if (responseData.name !== 'AxiosError') {
           setUserList(responseData?.muted_list)
           setUserFilter('채팅 정지된 참여자')
           setIsUserFilterMiniMenu(false)
@@ -139,10 +189,10 @@ const CustomChatHeader = (props: props) => {
           url: requestUrl,
           method: 'GET',
           body: '',
-          token: '',
+          token: authToken,
         })
 
-        if (responseData !== 'AxiosError') {
+        if (responseData.name !== 'AxiosError') {
           setUserList(responseData?.users)
           setUserFilter('차단된 참여자')
           setIsUserFilterMiniMenu(false)
@@ -152,20 +202,23 @@ const CustomChatHeader = (props: props) => {
   }
 
   const openChatMonitor = () => {
-    const chatUrl = studioUrl + 'chat-monitor'
+    const chatUrl = studioUrl + '/chat-monitor'
     window.navigator.clipboard.writeText(chatUrl)
     setIsMoreMiniMenu(false)
+    controlToastPopup(true, '채팅방 URL을 복사했어요.')
   }
 
   // 더보기 미니 메뉴 outside click
-  const clickModalOutside = (e) => {
+  const clickModalOutside = (e: MouseEvent<HTMLElement>) => {
+    const event = e.target as HTMLDivElement
+
     // 반응형 header menu modal (ResponsiveChatHeaderMenu)에서는 작동하지 않게 if문 처리
     if (offsetX >= 1023) {
-      if (isMoreMiniMenu && !miniMenuRef.current.contains(e.target)) {
+      if (isMoreMiniMenu && !miniMenuRef.current.contains(event)) {
         setIsMoreMiniMenu(false)
       }
 
-      if (isUserFilterMiniMenu && !userFilterRef.current.contains(e.target)) {
+      if (isUserFilterMiniMenu && !userFilterRef.current.contains(event)) {
         setIsUserFilterMiniMenu(false)
       }
     }
@@ -210,7 +263,7 @@ const CustomChatHeader = (props: props) => {
           <div className='chat_the_menu_box'>
             <div className='more_button_box'>
               <Image
-                src='/Sendbird/more_button.svg'
+                src='/pages/Sendbird/more_button.svg'
                 onClick={() => setIsMoreMiniMenu(!isMoreMiniMenu)}
                 width={20}
                 height={20}
@@ -220,7 +273,7 @@ const CustomChatHeader = (props: props) => {
 
             <div className='close_button_box'>
               <Image
-                src='/Sendbird/responsive_close_button.svg'
+                src='/pages/Sendbird/responsive_close_button.svg'
                 onClick={() => {
                   props.setIsChatOpen(!props.isChatOpen)
                   setIsChatOpen(false)
@@ -241,7 +294,7 @@ const CustomChatHeader = (props: props) => {
                     }}
                   >
                     <Image
-                      src='/Sendbird/members_icon.svg'
+                      src='/pages/Sendbird/members_icon.svg'
                       width={16}
                       height={16}
                       alt='membersIcon'
@@ -258,7 +311,7 @@ const CustomChatHeader = (props: props) => {
                         }}
                       >
                         <Image
-                          src='/Sendbird/lock_icon.svg'
+                          src='/pages/Sendbird/lock_icon.svg'
                           width={16}
                           height={16}
                           alt='lockIcon'
@@ -275,7 +328,7 @@ const CustomChatHeader = (props: props) => {
                         onClick={() => openChatMonitor()}
                       >
                         <Image
-                          src='/Sendbird/share_chatting_icon.svg'
+                          src='/pages/Sendbird/share_chatting_icon.svg'
                           width={16}
                           height={16}
                           alt='shareIcon'
@@ -298,7 +351,7 @@ const CustomChatHeader = (props: props) => {
           </div>
         </div>
       ) : (
-        <div className='chat_user_list_wrapper'>
+        <div className='chat_user_list_wrapper' style={props.chatHeightStyle}>
           <div className='user_list_header_box'>
             {isUserFilterMiniMenu &&
               (offsetX > 1023 ? (
@@ -354,14 +407,14 @@ const CustomChatHeader = (props: props) => {
               <div className='list_filter_img_box'>
                 {isUserFilterMiniMenu ? (
                   <Image
-                    src='/Sendbird/list_down_icon.svg'
+                    src='/pages/Sendbird/list_down_icon.svg'
                     width={16}
                     height={16}
                     alt='listDownIcon'
                   />
                 ) : (
                   <Image
-                    src='/Sendbird/list_up_icon.svg'
+                    src='/pages/Sendbird/list_up_icon.svg'
                     width={16}
                     height={16}
                     alt='listUpIcon'
@@ -371,7 +424,7 @@ const CustomChatHeader = (props: props) => {
             </div>
             <div className='cancel_button'>
               <Image
-                src='/Sendbird/clear_button.svg'
+                src='/pages/Sendbird/clear_button.svg'
                 onClick={() => {
                   setIsUserList(false)
                 }}
@@ -384,24 +437,53 @@ const CustomChatHeader = (props: props) => {
 
           <div className='user_list_wrapper'>
             {userList &&
-              userList.map((user: any, idx: number) => (
-                <UserListProfileCard
-                  user={user}
-                  key={idx}
-                  index={idx}
-                  userId={props.userId}
-                  userRole={props.userRole}
-                  isUserList={isUserList}
-                  userFilter={userFilter}
-                  isUserFilterMiniMenu={isUserFilterMiniMenu}
-                  saveIndex={saveIndex}
-                  setSaveIndex={setSaveIndex}
-                  saveComponentIndex={saveComponentIndex}
-                />
-              ))}
+              userList
+                .sort((user1: userOrderObj, user2: userOrderObj) => {
+                  if (user1.role === 'operator' && user2.role === null) {
+                    // userRole이 operator일 경우, 앞에 정렬
+                    return -1
+                  } else if (user1.role === null && user2.role === 'operator') {
+                    // userRole이 operator일 경우, 뒤에 정렬
+                    return 1
+                  } else {
+                    // 동등할 경우
+                    return 0
+                  }
+                })
+                .map((user: any, idx: number) => (
+                  <UserListProfileCard
+                    user={user}
+                    key={idx}
+                    index={idx}
+                    userLength={userList.length}
+                    userId={props.userId}
+                    userRole={props.userRole}
+                    channelUrl={props.channelUrl}
+                    isUserList={isUserList}
+                    userFilter={userFilter}
+                    isUserFilterMiniMenu={isUserFilterMiniMenu}
+                    saveIndex={saveIndex}
+                    setSaveIndex={setSaveIndex}
+                    saveComponentIndex={saveComponentIndex}
+                  />
+                ))}
           </div>
         </div>
       )}
+
+      <ToastContainer
+        position={offsetX > 1023 ? 'bottom-right' : 'bottom-center'}
+        autoClose={2000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme='colored'
+        transition={fadeUp}
+      />
     </div>
   )
 }

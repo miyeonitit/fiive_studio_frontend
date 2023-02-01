@@ -5,6 +5,8 @@ import { CSSProperties } from 'styled-components'
 
 import fiiveStudioUseStore from '../store/FiiveStudio'
 
+import Popover from '../components/VideoComponents/PopOver'
+
 const FiiveLayout = (props: any) => {
   const { children } = props
 
@@ -20,10 +22,28 @@ const FiiveLayout = (props: any) => {
   const isChatOpen = fiiveStudioUseStore((state: any) => state.isChatOpen)
   const setIsChatOpen = fiiveStudioUseStore((state: any) => state.setIsChatOpen)
 
+  // waiting: 라이브 전 재생 대기중 <> play: 재생중 <> end: 라이브 종료 <> error : 재생 에러
+  const ivsPlayStatus = fiiveStudioUseStore((state: any) => state.ivsPlayStatus)
+
   // ivs Player status 상태 표현 state
   const setIvsPlayStatus = fiiveStudioUseStore(
     (state: any) => state.setIvsPlayStatus
   )
+
+  // live endTime이 끝나기 전에 teacher에게 노출되는 말풍선 boolean state
+  const [isLiveEndPopOver, setIsLiveEndPopOver] = useState(false)
+
+  const liveEndBefore10Minutes = {
+    title_text: '예정된 수업 시간이 다 돼가요 ⏳',
+    first_sub_text: '라이브 종료 시간이 얼마 남지 않았어요.',
+    second_sub_text: '수업이 끝나면 라이브 종료를 꼭 눌러주세요!',
+  }
+
+  const liveEndBefore1Minutes = {
+    title_text: '수업 시간이 더 필요하신가요? ✨',
+    first_sub_text: '예정된 수업 시간보다 1시간 더 할 수 있어요.',
+    second_sub_text: '수업이 끝나면 라이브 종료를 꼭 눌러주세요!',
+  }
 
   const responsiveZindexStyle: CSSProperties =
     offsetX < 1023 && isOpenResponsiveModal
@@ -129,6 +149,9 @@ const FiiveLayout = (props: any) => {
       <div className='layout-body'>{children}</div>
 
       <footer className='layout-footer' style={responsiveZindexStyle}>
+        {/* pc 버전에서의 스타일링을 위한 empty div */}
+        <div className='empty_wrapper' />
+
         {/* 위젯 메뉴 영역 */}
         <div className='widget_menu_wrapper'>
           <div
@@ -136,33 +159,51 @@ const FiiveLayout = (props: any) => {
             onClick={() => setIsChatOpen(!isChatOpen)}
           >
             <Image
+              className='chat_icon'
               src={
-                isChatOpen
-                  ? '../layouts/fiive/chat_icon_active.svg'
+                ivsPlayStatus !== 'end'
+                  ? isChatOpen
+                    ? '../layouts/fiive/chat_icon_active.svg'
+                    : '../layouts/fiive/chat_icon.svg'
                   : '../layouts/fiive/chat_icon.svg'
               }
               width={22}
               height={22}
               alt='chatIcon'
             />
-            <span className={`chat_button_text ${isChatOpen && 'active'}`}>
+            <span
+              className={`chat_button_text ${
+                ivsPlayStatus !== 'end' && isChatOpen && 'active'
+              }`}
+            >
               실시간 채팅
             </span>
           </div>
         </div>
 
         {/* 라이브 나가기 버튼 영역 */}
-        <div
-          className='quit_button_wrapper'
-          onClick={() => setIvsPlayStatus('end')}
-        >
+        <div className='quit_button_wrapper'>
+          {/* live endTime이 끝나기 전에 teacher에게 노출되는 툴팁 */}
+          {isLiveEndPopOver && (
+            <Popover
+              liveStatusObject={liveEndBefore10Minutes}
+              setIsLiveEndPopOver={setIsLiveEndPopOver}
+            />
+          )}
+
           <Image
             src='../layouts/fiive/quit_live_icon.svg'
+            onClick={() => setIvsPlayStatus('end')}
             width={22}
             height={22}
             alt='quitLiveIcon'
           />
-          <span className='quit_button_text'>라이브 종료</span>
+          <span
+            className='quit_button_text'
+            onClick={() => setIvsPlayStatus('end')}
+          >
+            라이브 종료
+          </span>
         </div>
       </footer>
     </div>

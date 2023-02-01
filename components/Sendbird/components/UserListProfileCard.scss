@@ -51,6 +51,8 @@
 
           .user_blocked_status_box,
           .user_muted_status_box {
+            display: flex;
+            align-items: center;
             position: relative;
             margin-left: 8px;
           }
@@ -113,6 +115,10 @@
           background-color: $bluegray-2;
         }
       }
+    }
+
+    .more_mini_menu_wrapper.top {
+      top: -90px;
     }
   }
 

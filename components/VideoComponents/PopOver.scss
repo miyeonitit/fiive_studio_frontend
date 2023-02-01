@@ -1,0 +1,42 @@
+.PopOver {
+  position: absolute;
+  top: -95px;
+  right: 0px;
+  width: 242px;
+  color: white;
+
+  .popover_wrapper {
+    padding: 14px 12px;
+    border-radius: 3px;
+    background-color: $bluegray-9;
+    cursor: default;
+
+    .popover_title_box {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 2px;
+      @include body-2-700;
+
+      .popover_close_button {
+        cursor: pointer;
+      }
+    }
+
+    .popover_description_box {
+      @include caption-1-400;
+    }
+  }
+
+  .popover_wrapper:after {
+    content: '';
+    position: absolute;
+    border-style: solid;
+    border-width: 6px 6px 0;
+    border-color: $bluegray-9 transparent;
+    display: block;
+    width: 0;
+    z-index: 1;
+    bottom: -6px;
+    left: 215px;
+  }
+}
