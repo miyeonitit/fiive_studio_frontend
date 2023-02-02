@@ -11,7 +11,6 @@ import { ToastContainer, toast, cssTransition } from 'react-toastify'
 import { useChannelContext } from '@sendbird/uikit-react/Channel/context'
 import useSendbirdStateContext from '@sendbird/uikit-react/useSendbirdStateContext'
 import sendbirdSelectors from '@sendbird/uikit-react/sendbirdSelectors'
-import DateSeparator from '@sendbird/uikit-react/ui/DateSeparator'
 import ImageRenderer from '@sendbird/uikit-react/ui/ImageRenderer'
 
 import 'animate.css'

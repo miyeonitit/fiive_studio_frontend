@@ -31,10 +31,10 @@ const CustomTeacherPopupChat = (props: props) => {
         <div className='message_box'>
           <div
             className={`user_name_box ${
-              sender.role === 'operator' ? 'teacher' : 'learner'
+              sender.metaData.role !== 'learner' ? 'teacher' : 'learner'
             }`}
           >
-            {sender.userId} :{' '}
+            {sender.nickname} :{' '}
             <span className='user_text_box'>{messageInfomation.message}</span>
           </div>
         </div>

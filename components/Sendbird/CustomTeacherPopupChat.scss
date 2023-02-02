@@ -1,14 +1,14 @@
 .CustomTeacherPopupChat {
-  width: 285px;
+  width: 480px;
 
   .popup_chat_wrapper {
     background-color: transparent;
 
     .message_box {
       display: flex;
-      @include body-2-700;
-      font-size: 16px;
-      text-shadow: -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000;
+      @include head-2;
+      font-size: 18px;
+      text-shadow: -2px 0 #181c1f, 0 2px #181c1f, 2px 0 #181c1f, 0 -2px #181c1f;
 
       .teacher {
         color: $fiivepurple-3;

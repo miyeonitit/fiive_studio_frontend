@@ -186,8 +186,6 @@ const UserListProfileCard = (props: props) => {
     }
   }
 
-  console.log(props.user, 'user')
-
   // 더보기 미니 메뉴 outside click
   useEffect(() => {
     document.addEventListener('mousedown', clickModalOutside)
@@ -338,7 +336,10 @@ const UserListProfileCard = (props: props) => {
               )}
             </div>
             <div className='user_role'>
-              {props.user.role === 'operator' ? '선생님' : '수강생'}
+              {props.user.metaData.role === 'admin' ||
+              props.user.metaData.role === 'teacher'
+                ? '선생님'
+                : '수강생'}
             </div>
           </div>
         </div>
@@ -363,12 +364,12 @@ const UserListProfileCard = (props: props) => {
               props.index >= 1 &&
               (props.userLength - 1 === props.index ||
                 props.userLength - 2 === props.index) &&
-              'top'
+              (props.userRole === 'learner' ? 'learner_top' : 'operator_top')
             }`}
             ref={miniMenuRef}
           >
             <div className='more_mini_menu'>
-              {props.userRole === 'teacher' &&
+              {props.userRole !== 'learner' &&
                 (isMutedUser ? (
                   <div
                     className='list_in_menu'

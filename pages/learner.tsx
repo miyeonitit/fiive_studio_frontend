@@ -34,6 +34,7 @@ type props = {
   emoji_data?: { emojis: Array<object>; id: number; name: string; url: string }
   classroom: { ivs: ivsType; sendbird: sendbirdChatType }
   auth_token: string
+  sendbirdAccessToken: string
 }
 
 const Chat = dynamic(() => import('../components/Chat'), {
@@ -66,7 +67,6 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
   )
 
   // user auth token for API
-  const authToken = fiiveStudioUseStore((state: any) => state.authToken)
   const setAuthToken = fiiveStudioUseStore((state: any) => state.setAuthToken)
 
   // save sendbird emoji list container
@@ -149,6 +149,8 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
     // get offsetX
     reset()
   }, [])
+
+  console.log(props, 'learner props')
 
   useEffect(() => {
     if (props.auth_token && props.auth_token.length !== 0) {
@@ -261,13 +263,14 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
         <div className='chatroom'>
           {ivsPlayStatus !== 'end' ? (
             <Chat
-              userId={userInfomation.userId}
-              userRole={userInfomation.userRole}
+              userId={userInfomation?.userId}
+              userRole={userInfomation?.userRole}
               currentUrl={props.classroom?.sendbird?.channel_url}
               isChatOpen={isChatOpen}
               setIsChatOpen={setIsChatOpen}
               emojiContainer={emojiContainer}
               chatHeightStyle={chatHeightStyle}
+              sendbirdAccessToken={props?.sendbirdAccessToken}
             />
           ) : (
             <FakeChat status='liveEnd' chatHeightStyle={chatHeightStyle} />

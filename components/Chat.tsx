@@ -13,10 +13,9 @@ import useStore from '../store/Sendbird'
 import fiiveStudioUseStore from '../store/FiiveStudio'
 import classRoomUseStore from '../store/classRoom'
 
+import CustomChatHeader from './Sendbird/CustomChatHeader'
 import CustomChatRoom from './Sendbird/CustomChatRoom'
 import CustomMessageInput from './Sendbird/CustomMessageInput'
-import CustomDateSeparator from './Sendbird/CustomDateSeparator'
-import CustomChatHeader from './Sendbird/CustomChatHeader'
 
 type props = {
   userId: string
@@ -26,6 +25,7 @@ type props = {
   setIsChatOpen: React.Dispatch<React.SetStateAction<boolean>>
   emojiContainer: object
   chatHeightStyle: CSSProperties
+  sendbirdAccessToken: string
 }
 
 const Chat = (props: props) => {
@@ -43,7 +43,7 @@ const Chat = (props: props) => {
   const authToken = fiiveStudioUseStore((state: any) => state.authToken)
 
   // user access token for Senbird Access
-  const [accessToken, setAccessToken] = useState(false)
+  const [accessToken, setAccessToken] = useState(props?.sendbirdAccessToken)
 
   const [stringSet] = useState({
     TYPING_INDICATOR__AND: '님, ',
@@ -59,6 +59,7 @@ const Chat = (props: props) => {
   // Set default session token expiration period to 1 minute.
   const DEFAULT_SESSION_TOKEN_PERIOD = 1 * 60 * 1000
 
+  // create endbird's user access token
   const issueSessionToken = async () => {
     const period = DEFAULT_SESSION_TOKEN_PERIOD
 
@@ -80,49 +81,56 @@ const Chat = (props: props) => {
     return result.token
   }
 
+  console.log(props, 'chat props')
+
   useEffect(() => {
     contextAddEmojiContainer(props.emojiContainer)
   }, [])
 
+  // not have sendbird's user access token, create sendbird's user access token
   useEffect(() => {
-    if (!accessToken) {
+    if (!props.sendbirdAccessToken) {
       const intiateSession = async () => {
         const token = await issueSessionToken()
         setAccessToken(token)
       }
+
       intiateSession()
     }
-  }, [accessToken])
+  }, [props.sendbirdAccessToken])
 
   return (
     <>
       <SendbirdProvider
         appId={appId}
-        userId={props.userId}
+        userId={props?.userId}
         accessToken={accessToken}
         stringSet={stringSet}
         dateLocale={kr}
       >
-        <ChannelProvider channelUrl={props.currentUrl} isReactionEnabled={true}>
+        <ChannelProvider
+          channelUrl={props?.currentUrl}
+          isReactionEnabled={true}
+        >
           <ChannelUI
             hasSeparator={true}
             isReactionEnabled={true}
             renderChannelHeader={() => (
               <CustomChatHeader
-                userId={props.userId}
-                userRole={props.userRole}
-                channelUrl={props.currentUrl}
-                isChatOpen={props.isChatOpen}
-                setIsChatOpen={props.setIsChatOpen}
-                chatHeightStyle={props.chatHeightStyle}
+                userId={props?.userId}
+                userRole={props?.userRole}
+                channelUrl={props?.currentUrl}
+                isChatOpen={props?.isChatOpen}
+                setIsChatOpen={props?.setIsChatOpen}
+                chatHeightStyle={props?.chatHeightStyle}
               />
             )}
             renderMessage={(message: {}) => (
               <CustomChatRoom
                 message={message}
-                userId={props.userId}
-                channelUrl={props.currentUrl}
-                emojiContainer={props.emojiContainer}
+                userId={props?.userId}
+                channelUrl={props?.currentUrl}
+                emojiContainer={props?.emojiContainer}
               />
             )}
             renderMessageInput={() =>
@@ -130,8 +138,8 @@ const Chat = (props: props) => {
                 <></>
               ) : (
                 <CustomMessageInput
-                  userId={props.userId}
-                  userRole={props.userRole}
+                  userId={props?.userId}
+                  userRole={props?.userRole}
                 />
               )
             }
