@@ -4,6 +4,8 @@
 @import './student';
 @import './teacher';
 @import './fiive/index';
+@import './errorCase/errorcase';
+@import './errorCase/notfoundcase';
 
 // body root scrollbar 숨김 처리
 .root::-webkit-scrollbar {

@@ -9,7 +9,16 @@ const not_found = () => {
         <title>404 error</title>
       </Head>
       <div className='title_box'>
-        <div className='image_box'></div>
+        <div className='image_box'>
+          <Image
+            className='notFoundIcon'
+            src='../../icons/IMG_error_404.png'
+            //   onClick={() => handleSendMessage()}
+            width={200}
+            height={200}
+            alt='notFoundIcon'
+          />
+        </div>
         <div className='main_title'>페이지를 찾을 수 없어요!</div>
         <div className='sub_title'>
           페이지가 사라졌거나 주소가 변경됐을 수 있어요.
