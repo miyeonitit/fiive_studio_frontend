@@ -1,12 +1,8 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  Dispatch,
-  SetStateAction,
-} from 'react'
+import React, { useState, useEffect, Dispatch, SetStateAction } from 'react'
 import { MouseEvent } from 'react'
 import Image from 'next/image'
+import { useRouter } from 'next/router'
+import { getCookie, setCookie } from 'cookies-next'
 import { ToastContainer, toast, cssTransition } from 'react-toastify'
 import { CSSProperties } from 'styled-components'
 
@@ -24,7 +20,10 @@ import ResponsiveChatHeaderMenu from './ResponsiveComponents/ResponsiveChatHeade
 import ResponsiveUserFilterMenu from './ResponsiveComponents/ResponsiveUserFilterMenu'
 
 type userOrderObj = {
-  role: string | null
+  metaData: {
+    name: string
+    role: string
+  }
 }
 
 type props = {
@@ -37,6 +36,8 @@ type props = {
 }
 
 const CustomChatHeader = (props: props) => {
+  const router = useRouter()
+
   // 반응형 미디어쿼리 스타일 지정을 위한 브라우저 넓이 측정 전역 state
   const offsetX = fiiveStudioUseStore((state: any) => state.offsetX)
 
@@ -202,8 +203,23 @@ const CustomChatHeader = (props: props) => {
   }
 
   const openChatMonitor = () => {
-    const chatUrl = studioUrl + '/chat-monitor'
+    // 만약 cookie에 auth-token 값이 없거나 일치하지 않다면, authToken을 setCookie
+    if (getCookie('auth-token') !== authToken) {
+      setCookie('auth-token', authToken)
+    }
+
+    // 채팅방 팝업 새창 url을 클립보드에 복사
+    const chatUrl =
+      studioUrl +
+      '/chat-monitor?classId=' +
+      router.query.classId +
+      '&sessionIdx=' +
+      router.query.sessionIdx +
+      '&token=' +
+      authToken
+
     window.navigator.clipboard.writeText(chatUrl)
+
     setIsMoreMiniMenu(false)
     controlToastPopup(true, '채팅방 URL을 복사했어요.')
   }
@@ -302,7 +318,7 @@ const CustomChatHeader = (props: props) => {
                     <span>라이브 참여자 보기</span>
                   </div>
 
-                  {props.userRole === 'teacher' && (
+                  {props.userRole !== 'learner' && (
                     <>
                       <div
                         className='list_in_menu'
@@ -439,11 +455,19 @@ const CustomChatHeader = (props: props) => {
             {userList &&
               userList
                 .sort((user1: userOrderObj, user2: userOrderObj) => {
-                  if (user1.role === 'operator' && user2.role === null) {
-                    // userRole이 operator일 경우, 앞에 정렬
+                  if (
+                    (user1.metaData.role === 'admin' ||
+                      user1.metaData.role === 'teacher') &&
+                    user2.metaData.role === null
+                  ) {
+                    // userRole이 admin이나 teacher일 경우, 앞에 정렬
                     return -1
-                  } else if (user1.role === null && user2.role === 'operator') {
-                    // userRole이 operator일 경우, 뒤에 정렬
+                  } else if (
+                    user1.metaData.role === null &&
+                    (user2.metaData.role === 'admin' ||
+                      user2.metaData.role === 'teacher')
+                  ) {
+                    // userRole이 admin이나 teacher일 경우, 뒤에 정렬
                     return 1
                   } else {
                     // 동등할 경우

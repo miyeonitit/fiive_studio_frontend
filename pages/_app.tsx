@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import type { AppContext } from 'next/app'
-import { useRouter } from 'next/router'
 import Head from 'next/head'
 import Script from 'next/script'
 import cookies from 'next-cookies'
@@ -17,7 +16,6 @@ import '../styles/app.scss'
 import '../styles/globals.css'
 
 import AxiosRequest from '../utils/AxiosRequest'
-import classRoomUseStore from '../store/classRoom'
 import fiiveStudioUseStore from '../store/FiiveStudio'
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
@@ -27,16 +25,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   // 반응형 미디어쿼리 스타일 지정을 위한 브라우저 넓이 측정 전역 state
   const setOffsetX = fiiveStudioUseStore((state: any) => state.setOffsetX)
 
-  // axios request header token state
-  const headerToken = fiiveStudioUseStore((state: any) => state.headerToken)
-  const setHeaderToken = fiiveStudioUseStore(
-    (state: any) => state.setHeaderToken
-  )
-
-  // ivs, sendbird chat infomation 정보를 저장하는 state
-  const setIvsData = classRoomUseStore((state: any) => state.setIvsData)
-  const setChatData = classRoomUseStore((state: any) => state.setChatData)
-  const chatData = classRoomUseStore((state: any) => state.chatData)
+  const setClassId = fiiveStudioUseStore((state: any) => state.setClassId)
 
   const reset = () => {
     if (typeof window !== 'undefined') {
@@ -54,6 +43,9 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
   useEffect(() => {
     reset()
+
+    // classId 전역적으로 저장
+    setClassId(pageProps.class_id)
 
     // setIvsData(pageProps?.classroom?.ivs?.channel)
     // setChatData(pageProps?.classroom?.sendbird)
@@ -119,16 +111,41 @@ MyApp.getInitialProps = async ({ Component, ctx }: AppContext) => {
   })
 
   // 5. get user's classroom infomation API
-  const requestUrl = `/classroom/${class_id}/session/${session_idx}`
+  const classroomRequestUrl = `/classroom/${class_id}/session/${session_idx}`
 
   const classroom = await AxiosRequest({
-    url: requestUrl,
+    url: classroomRequestUrl,
     method: 'GET',
     body: '',
     token: authoriztion['auth-token'],
   })
 
-  pageProps = { ...pageProps, classroom, auth_token }
+  // 6. create user's sendbird access token
+  // Set default session token expiration period to 1 minute.
+  const DEFAULT_SESSION_TOKEN_PERIOD = 1 * 60 * 1000
+
+  const accessTokenRequestUrl = `/user/token`
+
+  const body = {
+    expires_at: Date.now() + DEFAULT_SESSION_TOKEN_PERIOD,
+  }
+
+  const responseData = await AxiosRequest({
+    url: accessTokenRequestUrl,
+    method: 'POST',
+    body: body,
+    token: authoriztion['auth-token'],
+  })
+
+  const sendbirdAccessToken = await responseData.token
+
+  pageProps = {
+    ...pageProps,
+    classroom,
+    auth_token,
+    class_id,
+    sendbirdAccessToken,
+  }
 
   return { pageProps }
 }

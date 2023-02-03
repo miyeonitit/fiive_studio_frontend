@@ -30,6 +30,9 @@ interface FiiveStudioState {
   // user infomation object state
   userInfomation: object
   setUserInfomation: (userInfomation: object) => void
+
+  classId: string
+  setClassId: (classId: string) => void
 }
 
 const useStore = create(
@@ -75,6 +78,12 @@ const useStore = create(
       setUserInfomation: (userInfomation) =>
         set(() => ({
           userInfomation,
+        })),
+
+      classId: '',
+      setClassId: (classId) =>
+        set(() => ({
+          classId,
         })),
     })
   )

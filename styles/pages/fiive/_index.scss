@@ -161,6 +161,60 @@
   top: 1em;
   left: 50%;
   transform: translateX(-50%);
+
+  /* toast.success 일 때 */
+  .toast_success_box {
+    display: flex;
+    align-items: center;
+    height: 50px;
+    padding: 0px;
+    border-radius: 2px;
+    @include body-2-500;
+    background-color: #5fbf7c;
+
+    .toast_success_text {
+      position: relative;
+      top: 1px;
+      margin-left: 6px;
+      color: $bluegray-1;
+    }
+  }
+
+  /* toast.error 일 때 */
+  .toast_error_box {
+    display: flex;
+    align-items: center;
+    height: 50px;
+    padding: 0px;
+    border-radius: 2px;
+    @include body-2-500;
+    background-color: $red-5;
+
+    .toast_error_text {
+      position: relative;
+      top: 1px;
+      margin-left: 6px;
+      color: $bluegray-1;
+    }
+  }
+
+  .Toastify__toast-theme--colored.Toastify__toast--success {
+    height: 50px;
+    background: #5fbf7c;
+  }
+
+  .Toastify__toast-theme--colored.Toastify__toast--error {
+    height: 50px;
+    background: $red-5;
+  }
+
+  .Toastify__close-button.Toastify__close-button--colored {
+    display: none;
+  }
+
+  .Toastify__toast-icon.Toastify--animate-icon.Toastify__zoom-enter {
+    display: none;
+  }
 }
 .Toastify__toast-container--top-right {
   top: 1em;

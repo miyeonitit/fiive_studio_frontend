@@ -18,6 +18,9 @@ const MetaReactionEmojiList = (props: props) => {
   // user auth token for API
   const authToken = fiiveStudioUseStore((state: any) => state.authToken)
 
+  // classroom class id
+  const classId = fiiveStudioUseStore((state: any) => state.classId)
+
   const thumbsUpRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
   const heartRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
   const fireRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
@@ -26,10 +29,8 @@ const MetaReactionEmojiList = (props: props) => {
   const grinningRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
   const cryingRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
 
-  const testIvsValue = process.env.NEXT_PUBLIC_TEST_IVS_CHANNEL_VALUE
-
   const postReaction = async (reaction: string) => {
-    const requestUrl = `/classroom/${testIvsValue}/ivs/meta`
+    const requestUrl = `/classroom/${classId}/ivs/meta`
 
     const body = {
       arn: ivsData?.arn,

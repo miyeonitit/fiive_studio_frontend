@@ -10,8 +10,6 @@ const Reactions = (props: any) => {
   const addReaction = useStore((state: any) => state.addREaction)
   const removeReaction = useStore((state: any) => state.removeReaction)
 
-  const [isSwitchReaction, setIsSwitchReaction] = useState(false)
-
   const reaction = (type: string) => {
     let img
 
@@ -75,7 +73,7 @@ const Reactions = (props: any) => {
         type: item.type,
         style: {
           top: '120px',
-          left: `${bottom}px`,
+          // left: `${bottom}px`,
           // bottom: `-${bottom}px`,
         },
       })

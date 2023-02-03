@@ -20,6 +20,7 @@ import CustomTeacherPopupChat from './Sendbird/CustomTeacherPopupChat'
 type props = {
   userId: string
   channelUrl: string
+  sendbirdAccessToken: string
 }
 
 const MessageList = (props: props) => {
@@ -66,7 +67,7 @@ const MessageList = (props: props) => {
         isReactionEnabled={false}
         renderChannelHeader={() => <></>}
         renderMessage={(message: {}) => (
-          <CustomTeacherPopupChat message={message} userId='learner' />
+          <CustomTeacherPopupChat message={message} userId={props?.userId} />
         )}
         renderMessageInput={() => <></>}
         renderCustomSeparator={() => <div></div>}
@@ -76,6 +77,7 @@ const MessageList = (props: props) => {
 }
 
 const ChatMonitor = (props: props) => {
+  console.log(props, 'chat props')
   const [stringSet] = useState({
     TYPING_INDICATOR__AND: '님, ',
     TYPING_INDICATOR__IS_TYPING: '님이 입력 중이에요.',
@@ -85,20 +87,18 @@ const ChatMonitor = (props: props) => {
     CHANNEL__MESSAGE_LIST__NOTIFICATION__ON: '도착',
   })
 
-  // ivs, sendbird chat infomation 정보를 저장하는 state
-  const chatData = classRoomUseStore((state: any) => state.chatData)
-
   const appId = process.env.NEXT_PUBLIC_SENDBIRD_APP_ID
 
   return (
     <div className='chat-monitor'>
       <SendbirdProvider
         appId={appId}
-        userId={props.userId}
+        userId={props?.userId}
+        accessToken={props?.sendbirdAccessToken}
         stringSet={stringSet}
         dateLocale={kr}
       >
-        <ChannelProvider channelUrl={props.channelUrl}>
+        <ChannelProvider channelUrl={props?.channelUrl}>
           <MessageList></MessageList>
         </ChannelProvider>
       </SendbirdProvider>
