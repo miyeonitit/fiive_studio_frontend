@@ -1,15 +1,13 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  Dispatch,
-  SetStateAction,
-} from 'react'
+import React, { useState, useEffect, Dispatch, SetStateAction } from 'react'
 import Image from 'next/image'
+import { useRouter } from 'next/router'
+import { getCookie, setCookie } from 'cookies-next'
 import { ToastContainer, toast, cssTransition } from 'react-toastify'
 
 import 'animate.css'
 import '../../../node_modules/react-toastify/dist/ReactToastify.css'
+
+import fiiveStudioUseStore from '../../../store/FiiveStudio'
 
 type props = {
   isMoreMiniMenu: boolean
@@ -21,10 +19,16 @@ type props = {
 }
 
 const ResponsiveChatHeaderMenu = (props: props) => {
+  const router = useRouter()
+
   // modal을 닫을 때, 애니메이션 효과와 setTimeout을 하기 위한 boolean state
   const [isCloseModal, setIsCloseModal] = useState(false)
 
-  const headerModalRef = useRef<HTMLDivElement>(null)
+  // user auth token for API
+  const authToken = fiiveStudioUseStore((state: any) => state.authToken)
+
+  const headerModalRef =
+    React.useRef() as React.MutableRefObject<HTMLDivElement>
 
   const studioUrl = process.env.NEXT_PUBLIC_TEST_STUDIO_URL
 
@@ -65,8 +69,22 @@ const ResponsiveChatHeaderMenu = (props: props) => {
   }
 
   const openChatMonitor = () => {
-    const chatUrl = studioUrl + '/chat-monitor'
+    // 만약 cookie에 auth-token 값이 없거나 일치하지 않다면, authToken을 setCookie
+    if (getCookie('auth-token') !== authToken) {
+      setCookie('auth-token', authToken)
+    }
+
+    // 채팅방 팝업 새창 url을 클립보드에 복사
+    const chatUrl =
+      studioUrl +
+      '/chat-monitor?classId=' +
+      router.query.classId +
+      '&sessionIdx=' +
+      router.query.sessionIdx
+    '&token=' + authToken
+
     window.navigator.clipboard.writeText(chatUrl)
+
     props.setIsMoreMiniMenu(false)
     controlToastPopup(true, '채팅방 URL을 복사했어요.')
   }
@@ -175,9 +193,7 @@ const ResponsiveChatHeaderMenu = (props: props) => {
                     alt='deleteButton'
                   />
                 </div>
-                <div className='share_chat_button_text_box'>
-                  채팅창 내보내기
-                </div>
+                <div className='share_chat_button_text_box'>채팅 내보내기</div>
               </div>
             </>
           )}

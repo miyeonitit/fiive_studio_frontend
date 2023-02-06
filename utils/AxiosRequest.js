@@ -8,7 +8,7 @@ const AxiosRequest = async ({ url, method, body, token }) => {
   const ApiStudioProxy = process.env.NEXT_PUBLIC_API_BASE_URL
   const ApiStudio = process.env.NEXT_PUBLIC_STUDIO_URL
 
-  const headers = { Authorization: token }
+  const headers = { Authorization: `Bearer ${token}` }
 
   const axiosbody = { data: body }
 
@@ -58,7 +58,7 @@ const AxiosRequest = async ({ url, method, body, token }) => {
     errorData = error
   }
 
-  return successData ? successData.data : errorData.name
+  return successData ? successData.data : errorData
 }
 
 export default AxiosRequest

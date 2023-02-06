@@ -1,12 +1,10 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  Dispatch,
-  SetStateAction,
-} from 'react'
+import React, { useState, useEffect, Dispatch, SetStateAction } from 'react'
+import { MouseEvent } from 'react'
 import Image from 'next/image'
+import { useRouter } from 'next/router'
+import { getCookie, setCookie } from 'cookies-next'
 import { ToastContainer, toast, cssTransition } from 'react-toastify'
+import { CSSProperties } from 'styled-components'
 
 import { useChannelContext } from '@sendbird/uikit-react/Channel/context'
 
@@ -21,15 +19,25 @@ import UserListProfileCard from './components/UserListProfileCard'
 import ResponsiveChatHeaderMenu from './ResponsiveComponents/ResponsiveChatHeaderMenu'
 import ResponsiveUserFilterMenu from './ResponsiveComponents/ResponsiveUserFilterMenu'
 
+type userOrderObj = {
+  metaData: {
+    name: string
+    role: string
+  }
+}
+
 type props = {
   userId: string
   userRole: string
   channelUrl: string
   isChatOpen: boolean
   setIsChatOpen: Dispatch<SetStateAction<boolean>>
+  chatHeightStyle: CSSProperties
 }
 
 const CustomChatHeader = (props: props) => {
+  const router = useRouter()
+
   // 반응형 미디어쿼리 스타일 지정을 위한 브라우저 넓이 측정 전역 state
   const offsetX = fiiveStudioUseStore((state: any) => state.offsetX)
 
@@ -75,8 +83,8 @@ const CustomChatHeader = (props: props) => {
   // 라이브 참여자: live, 채팅 정지된 참여자: muted, 차단된 참여자: blocked
   const [userFilter, setUserFilter] = useState('라이브 참여자')
 
-  const miniMenuRef = useRef<HTMLButtonElement>(null)
-  const userFilterRef = useRef<HTMLDivElement>(null)
+  const miniMenuRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
+  const userFilterRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
 
   const studioUrl = process.env.NEXT_PUBLIC_STUDIO_URL
 
@@ -141,15 +149,15 @@ const CustomChatHeader = (props: props) => {
       token: authToken,
     })
 
-    if (responseData !== 'AxiosError') {
+    if (responseData.name !== 'AxiosError') {
       setIsFreezeChat(!isFreezeChat)
       setIsMoreMiniMenu(false)
     }
   }
 
   const handleUserFilterStatus = async (status: string) => {
-    let requestUrl = ''
-    let responseData = ''
+    let requestUrl: string = ''
+    let responseData: any = null || { muted_list: Array, next: '' }
 
     switch (status) {
       case 'live':
@@ -168,13 +176,7 @@ const CustomChatHeader = (props: props) => {
           token: authToken,
         })
 
-        console.log(props.channelUrl, 'props.channelUrl')
-
-        console.log(requestUrl, 'requestUrl')
-        console.log(authToken, 'authToken')
-        console.log(responseData, 'responseData')
-
-        if (responseData !== 'AxiosError') {
+        if (responseData.name !== 'AxiosError') {
           setUserList(responseData?.muted_list)
           setUserFilter('채팅 정지된 참여자')
           setIsUserFilterMiniMenu(false)
@@ -191,7 +193,7 @@ const CustomChatHeader = (props: props) => {
           token: authToken,
         })
 
-        if (responseData !== 'AxiosError') {
+        if (responseData.name !== 'AxiosError') {
           setUserList(responseData?.users)
           setUserFilter('차단된 참여자')
           setIsUserFilterMiniMenu(false)
@@ -201,21 +203,38 @@ const CustomChatHeader = (props: props) => {
   }
 
   const openChatMonitor = () => {
-    const chatUrl = studioUrl + '/chat-monitor'
+    // 만약 cookie에 auth-token 값이 없거나 일치하지 않다면, authToken을 setCookie
+    if (getCookie('auth-token') !== authToken) {
+      setCookie('auth-token', authToken)
+    }
+
+    // 채팅방 팝업 새창 url을 클립보드에 복사
+    const chatUrl =
+      studioUrl +
+      '/chat-monitor?classId=' +
+      router.query.classId +
+      '&sessionIdx=' +
+      router.query.sessionIdx +
+      '&token=' +
+      authToken
+
     window.navigator.clipboard.writeText(chatUrl)
+
     setIsMoreMiniMenu(false)
     controlToastPopup(true, '채팅방 URL을 복사했어요.')
   }
 
   // 더보기 미니 메뉴 outside click
-  const clickModalOutside = (e) => {
+  const clickModalOutside = (e: MouseEvent<HTMLElement>) => {
+    const event = e.target as HTMLDivElement
+
     // 반응형 header menu modal (ResponsiveChatHeaderMenu)에서는 작동하지 않게 if문 처리
     if (offsetX >= 1023) {
-      if (isMoreMiniMenu && !miniMenuRef.current.contains(e.target)) {
+      if (isMoreMiniMenu && !miniMenuRef.current.contains(event)) {
         setIsMoreMiniMenu(false)
       }
 
-      if (isUserFilterMiniMenu && !userFilterRef.current.contains(e.target)) {
+      if (isUserFilterMiniMenu && !userFilterRef.current.contains(event)) {
         setIsUserFilterMiniMenu(false)
       }
     }
@@ -251,8 +270,6 @@ const CustomChatHeader = (props: props) => {
     contextSetIsUserList(isUserList)
     setIsOpenResponsiveLiveMember(isUserList)
   }, [isUserList])
-
-  console.log(currentGroupChannel, 'currentGroupChannel')
 
   return (
     <div className='CustomChatHeader'>
@@ -301,7 +318,7 @@ const CustomChatHeader = (props: props) => {
                     <span>라이브 참여자 보기</span>
                   </div>
 
-                  {props.userRole === 'teacher' && (
+                  {props.userRole !== 'learner' && (
                     <>
                       <div
                         className='list_in_menu'
@@ -350,7 +367,7 @@ const CustomChatHeader = (props: props) => {
           </div>
         </div>
       ) : (
-        <div className='chat_user_list_wrapper'>
+        <div className='chat_user_list_wrapper' style={props.chatHeightStyle}>
           <div className='user_list_header_box'>
             {isUserFilterMiniMenu &&
               (offsetX > 1023 ? (
@@ -436,22 +453,44 @@ const CustomChatHeader = (props: props) => {
 
           <div className='user_list_wrapper'>
             {userList &&
-              userList.map((user: any, idx: number) => (
-                <UserListProfileCard
-                  user={user}
-                  key={idx}
-                  index={idx}
-                  userId={props.userId}
-                  userRole={props.userRole}
-                  channelUrl={props.channelUrl}
-                  isUserList={isUserList}
-                  userFilter={userFilter}
-                  isUserFilterMiniMenu={isUserFilterMiniMenu}
-                  saveIndex={saveIndex}
-                  setSaveIndex={setSaveIndex}
-                  saveComponentIndex={saveComponentIndex}
-                />
-              ))}
+              userList
+                .sort((user1: userOrderObj, user2: userOrderObj) => {
+                  if (
+                    (user1.metaData.role === 'admin' ||
+                      user1.metaData.role === 'teacher') &&
+                    user2.metaData.role === null
+                  ) {
+                    // userRole이 admin이나 teacher일 경우, 앞에 정렬
+                    return -1
+                  } else if (
+                    user1.metaData.role === null &&
+                    (user2.metaData.role === 'admin' ||
+                      user2.metaData.role === 'teacher')
+                  ) {
+                    // userRole이 admin이나 teacher일 경우, 뒤에 정렬
+                    return 1
+                  } else {
+                    // 동등할 경우
+                    return 0
+                  }
+                })
+                .map((user: any, idx: number) => (
+                  <UserListProfileCard
+                    user={user}
+                    key={idx}
+                    index={idx}
+                    userLength={userList.length}
+                    userId={props.userId}
+                    userRole={props.userRole}
+                    channelUrl={props.channelUrl}
+                    isUserList={isUserList}
+                    userFilter={userFilter}
+                    isUserFilterMiniMenu={isUserFilterMiniMenu}
+                    saveIndex={saveIndex}
+                    setSaveIndex={setSaveIndex}
+                    saveComponentIndex={saveComponentIndex}
+                  />
+                ))}
           </div>
         </div>
       )}

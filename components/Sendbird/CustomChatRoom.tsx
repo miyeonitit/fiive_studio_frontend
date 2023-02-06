@@ -11,7 +11,6 @@ import { ToastContainer, toast, cssTransition } from 'react-toastify'
 import { useChannelContext } from '@sendbird/uikit-react/Channel/context'
 import useSendbirdStateContext from '@sendbird/uikit-react/useSendbirdStateContext'
 import sendbirdSelectors from '@sendbird/uikit-react/sendbirdSelectors'
-import DateSeparator from '@sendbird/uikit-react/ui/DateSeparator'
 import ImageRenderer from '@sendbird/uikit-react/ui/ImageRenderer'
 
 import 'animate.css'
@@ -91,11 +90,16 @@ const CustomChatRoom = (props: props) => {
   const [isResponsiveErrorMsgModal, setIsResponsiveErrorMsgModal] =
     useState(false)
 
-  const miniMenuRef = useRef<HTMLButtonElement>(null)
-  const responsiveMoreMenuRef = useRef<HTMLButtonElement>(null)
-  const editInputRef = useRef<HTMLTextAreaElement>(null)
-  const reactionTopRef = useRef<HTMLDivElement>(null)
-  const reactionBottomRef = useRef<HTMLDivElement>(null)
+  const miniMenuRef =
+    React.useRef() as React.MutableRefObject<HTMLButtonElement>
+  const responsiveMoreMenuRef =
+    React.useRef() as React.MutableRefObject<HTMLButtonElement>
+  const editInputRef =
+    React.useRef() as React.MutableRefObject<HTMLTextAreaElement>
+  const reactionTopRef =
+    React.useRef() as React.MutableRefObject<HTMLDivElement>
+  const reactionBottomRef =
+    React.useRef() as React.MutableRefObject<HTMLDivElement>
 
   const fadeUp = cssTransition({
     enter: 'animate__animated animate__customFadeInUp',
@@ -134,8 +138,8 @@ const CustomChatRoom = (props: props) => {
     const deleteMessge = sendbirdSelectors.getDeleteMessage(globalStore)
 
     deleteMessge(currentGroupChannel, messageInfomation)
-      .then((message) => {})
-      .catch((error) => {
+      .then((message: any) => {})
+      .catch((error: any) => {
         console.log(error, 'error')
         controlToastPopup(false, '다시 시도해 주세요.')
       })
@@ -146,8 +150,8 @@ const CustomChatRoom = (props: props) => {
       sendbirdSelectors.getResendUserMessage(globalStore)
 
     resendUserMessage(currentGroupChannel, messageInfomation)
-      .then((message) => {})
-      .catch((error) => {
+      .then((message: any) => {})
+      .catch((error: any) => {
         console.log(error, 'error')
         controlToastPopup(false, '다시 시도해 주세요.')
       })
@@ -198,7 +202,7 @@ const CustomChatRoom = (props: props) => {
       token: authToken,
     })
 
-    if (responseData !== 'AxiosError') {
+    if (responseData.name !== 'AxiosError') {
       controlToastPopup(true, `${senderNickName} 님을 차단했어요.`)
       setIsBlockUser(true)
       setIsMoreMiniMenu(false)
@@ -217,7 +221,7 @@ const CustomChatRoom = (props: props) => {
       token: authToken,
     })
 
-    if (responseData !== 'AxiosError') {
+    if (responseData.name !== 'AxiosError') {
       controlToastPopup(true, `${senderNickName} 님을 차단 해제했어요.`)
       setIsBlockUser(false)
       setIsMoreMiniMenu(false)
@@ -241,7 +245,7 @@ const CustomChatRoom = (props: props) => {
       token: authToken,
     })
 
-    if (responseData !== 'AxiosError') {
+    if (responseData.name !== 'AxiosError') {
       controlToastPopup(true, `${senderNickName} 님을 채팅 일시정지 했어요.`)
 
       const findMutedUser = currentGroupChannel.members.find(
@@ -265,7 +269,7 @@ const CustomChatRoom = (props: props) => {
       token: authToken,
     })
 
-    if (responseData !== 'AxiosError') {
+    if (responseData.name !== 'AxiosError') {
       controlToastPopup(
         true,
         `${senderNickName} 님의 채팅 일시정지를 해제했어요.`
@@ -319,6 +323,11 @@ const CustomChatRoom = (props: props) => {
   const clickMiniMenu = () => {
     // 더보기 미니 메뉴 on/off state
     setIsMoreMiniMenu(!isMoreMiniMenu)
+
+    // 초기 채팅방의 메시지가 2개 이하일 경우, 더보기 미니메뉴의 .top (위로 뜨는 현상)을 막는 로직
+    if (allMessages.length <= 2) {
+      return
+    }
 
     // 메시지가 맨밑에 있을 경우와 맨밑에서 두 번째 메시지일 경우, 미니 메뉴가 더보기 버튼 위에 뜨도록 해주는 스타일링 state
     if (
@@ -528,6 +537,9 @@ const CustomChatRoom = (props: props) => {
                   setIsReactionBox={setIsReactionTopBox}
                   messageInfomation={messageInfomation}
                   channelUrl={props.channelUrl}
+                  isChatFirstMessage={
+                    allMessages[0].messageId === messageInfomation.messageId
+                  }
                 />
               ) : (
                 <ResponsiveEmojiContainerBox

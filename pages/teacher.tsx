@@ -35,6 +35,7 @@ type props = {
   emoji_data?: { emojis: Array<object>; id: number; name: string; url: string }
   classroom: { ivs: ivsType; sendbird: sendbirdChatType }
   auth_token: string
+  sendbirdAccessToken: string
 }
 
 const Chat = dynamic(() => import('../components/Chat'), {
@@ -81,11 +82,11 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
   // 반응형일 때, chat의 상대적 height state
   const [chatOffsetHeight, setChatOffsetHeight] = useState(0)
 
-  const playerHeightRef = useRef<HTMLElement>(null)
+  const playerHeightRef = React.useRef() as React.MutableRefObject<HTMLElement>
 
   // 반응형일 때, 전체 페이지 height(100vh) - ( Nav height(57px) + fix bottom height(82px) + content margin up & down(24px) = 163px )- Video height
   const chatHeightStyle: CSSProperties =
-    offsetX < 1023 && !isOpenResponsiveLiveMember
+    offsetX < 1023
       ? {
           height: `calc(100vh  - 163px - ${chatOffsetHeight}px)`,
         }
@@ -101,7 +102,7 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
       token: props.auth_token,
     })
 
-    if (responseData !== 'AxiosError') {
+    if (responseData.name !== 'AxiosError') {
       setUserInfomation(responseData)
     } else {
       console.log('수강 권한 없음')
@@ -180,7 +181,11 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
           <Reactions />
 
           {/* ivs video player 영역 컴포넌트 */}
-          {/* <Video playbackUrl={props?.classroom?.ivs?.channel?.playbackUrl} /> */}
+          <Video
+            playbackUrl={props?.classroom?.ivs?.channel?.playbackUrl}
+            authToken={props?.auth_token}
+            classId={userInfomation?.classId}
+          />
 
           {/* live 시작 전, 재생 에러, live 종료일 때 띄우는 준비 화면 컴포넌트 */}
           {/* {(ivsPlayStatus === 'waiting' ||
@@ -238,12 +243,14 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
         <div className='chatroom'>
           {ivsPlayStatus !== 'end' ? (
             <Chat
-              userId={userInfomation.userId}
-              userRole={userInfomation.userRole}
+              userId={userInfomation?.userId}
+              userRole={userInfomation?.userRole}
               currentUrl={props.classroom?.sendbird?.channel_url}
               isChatOpen={isChatOpen}
               setIsChatOpen={setIsChatOpen}
               emojiContainer={emojiContainer}
+              chatHeightStyle={chatHeightStyle}
+              sendbirdAccessToken={props?.sendbirdAccessToken}
             />
           ) : (
             <FakeChat status='liveEnd' chatHeightStyle={chatHeightStyle} />

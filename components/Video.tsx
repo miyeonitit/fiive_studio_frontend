@@ -84,8 +84,12 @@ const Video = (props: props) => {
     // get user's token for ivs play
     const { token } = await getChannelData()
 
+    console.log(token, '1 token')
+
     // get playbackUrl in channelData
     const playbackUrl = props.playbackUrl + `?token=${token}`
+
+    console.log(playbackUrl, '2 playbackUrl')
 
     const player = IVSPlayer.create()
 

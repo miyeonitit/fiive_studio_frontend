@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import kr from 'date-fns/locale/ko'
+import { CSSProperties } from 'styled-components'
 
 import * as SendBird from 'sendbird'
 import SendbirdProvider from '@sendbird/uikit-react/SendbirdProvider'
@@ -7,13 +8,14 @@ import { ChannelProvider } from '@sendbird/uikit-react/Channel/context'
 import ChannelUI from '@sendbird/uikit-react/Channel/components/ChannelUI'
 
 import { config } from '../utils/HeaderConfig'
+import AxiosRequest from '../utils/AxiosRequest'
 import useStore from '../store/Sendbird'
+import fiiveStudioUseStore from '../store/FiiveStudio'
 import classRoomUseStore from '../store/classRoom'
 
+import CustomChatHeader from './Sendbird/CustomChatHeader'
 import CustomChatRoom from './Sendbird/CustomChatRoom'
 import CustomMessageInput from './Sendbird/CustomMessageInput'
-import CustomDateSeparator from './Sendbird/CustomDateSeparator'
-import CustomChatHeader from './Sendbird/CustomChatHeader'
 
 type props = {
   userId: string
@@ -22,6 +24,8 @@ type props = {
   isChatOpen: boolean
   setIsChatOpen: React.Dispatch<React.SetStateAction<boolean>>
   emojiContainer: object
+  chatHeightStyle: CSSProperties
+  sendbirdAccessToken: string
 }
 
 const Chat = (props: props) => {
@@ -35,6 +39,12 @@ const Chat = (props: props) => {
     (state: any) => state.addEmojiContainer
   )
 
+  // user auth token for API
+  const authToken = fiiveStudioUseStore((state: any) => state.authToken)
+
+  // user access token for Senbird Access
+  const [accessToken, setAccessToken] = useState(props?.sendbirdAccessToken)
+
   const [stringSet] = useState({
     TYPING_INDICATOR__AND: '님, ',
     TYPING_INDICATOR__IS_TYPING: '님이 입력 중이에요.',
@@ -46,38 +56,81 @@ const Chat = (props: props) => {
 
   const appId = process.env.NEXT_PUBLIC_SENDBIRD_APP_ID
 
+  // Set default session token expiration period to 1 minute.
+  const DEFAULT_SESSION_TOKEN_PERIOD = 1 * 60 * 1000
+
+  // create endbird's user access token
+  const issueSessionToken = async () => {
+    const period = DEFAULT_SESSION_TOKEN_PERIOD
+
+    const requestUrl = `/user/token`
+
+    const body = {
+      expires_at: Date.now() + period,
+    }
+
+    const responseData = await AxiosRequest({
+      url: requestUrl,
+      method: 'POST',
+      body: body,
+      token: authToken,
+    })
+
+    const result = await responseData
+
+    return result.token
+  }
+
+  console.log(props, 'chat props')
+
   useEffect(() => {
     contextAddEmojiContainer(props.emojiContainer)
   }, [])
+
+  // not have sendbird's user access token, create sendbird's user access token
+  useEffect(() => {
+    if (!props.sendbirdAccessToken) {
+      const intiateSession = async () => {
+        const token = await issueSessionToken()
+        setAccessToken(token)
+      }
+
+      intiateSession()
+    }
+  }, [props.sendbirdAccessToken])
 
   return (
     <>
       <SendbirdProvider
         appId={appId}
-        userId={props.userId}
-        // accessToken='3b6ca60ca19e11b8234b29ab07d200868045dd75'
+        userId={props?.userId}
+        accessToken={accessToken}
         stringSet={stringSet}
         dateLocale={kr}
       >
-        <ChannelProvider channelUrl={props.currentUrl} isReactionEnabled={true}>
+        <ChannelProvider
+          channelUrl={props?.currentUrl}
+          isReactionEnabled={true}
+        >
           <ChannelUI
             hasSeparator={true}
             isReactionEnabled={true}
             renderChannelHeader={() => (
               <CustomChatHeader
-                userId={props.userId}
-                userRole={props.userRole}
-                channelUrl={props.currentUrl}
-                isChatOpen={props.isChatOpen}
-                setIsChatOpen={props.setIsChatOpen}
+                userId={props?.userId}
+                userRole={props?.userRole}
+                channelUrl={props?.currentUrl}
+                isChatOpen={props?.isChatOpen}
+                setIsChatOpen={props?.setIsChatOpen}
+                chatHeightStyle={props?.chatHeightStyle}
               />
             )}
             renderMessage={(message: {}) => (
               <CustomChatRoom
                 message={message}
-                userId={props.userId}
-                channelUrl={props.currentUrl}
-                emojiContainer={props.emojiContainer}
+                userId={props?.userId}
+                channelUrl={props?.currentUrl}
+                emojiContainer={props?.emojiContainer}
               />
             )}
             renderMessageInput={() =>
@@ -85,8 +138,8 @@ const Chat = (props: props) => {
                 <></>
               ) : (
                 <CustomMessageInput
-                  userId={props.userId}
-                  userRole={props.userRole}
+                  userId={props?.userId}
+                  userRole={props?.userRole}
                 />
               )
             }

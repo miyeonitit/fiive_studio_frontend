@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import { MouseEvent } from 'react'
 import Image from 'next/image'
 import { ToastContainer, toast, cssTransition } from 'react-toastify'
 
@@ -15,6 +16,7 @@ import MessageTooltip from './MessageTooltip'
 type props = {
   user: any
   index: number
+  userLength: number
   userId: string
   userRole: string
   channelUrl: string
@@ -44,7 +46,7 @@ const UserListProfileCard = (props: props) => {
   const [isMutedUserTooltip, setIsMutedUserTooltip] = useState(false)
   const [isBlockedUserTooltip, setIsBlockedUserTooltip] = useState(false)
 
-  const miniMenuRef = useRef<HTMLButtonElement>(null)
+  const miniMenuRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
 
   const fadeUp = cssTransition({
     enter: 'animate__animated animate__customFadeInUp',
@@ -101,7 +103,7 @@ const UserListProfileCard = (props: props) => {
       token: authToken,
     })
 
-    if (responseData !== 'AxiosError') {
+    if (responseData.name !== 'AxiosError') {
       controlToastPopup(true, `${senderNickName} 님을 차단했어요.`)
       setIsBlockUser(true)
       setIsMoreMiniMenu(false)
@@ -120,7 +122,7 @@ const UserListProfileCard = (props: props) => {
       token: authToken,
     })
 
-    if (responseData !== 'AxiosError') {
+    if (responseData.name !== 'AxiosError') {
       controlToastPopup(true, `${senderNickName} 님을 차단 해제했어요.`)
       setIsBlockUser(false)
       setIsMoreMiniMenu(false)
@@ -144,7 +146,7 @@ const UserListProfileCard = (props: props) => {
       token: authToken,
     })
 
-    if (responseData !== 'AxiosError') {
+    if (responseData.name !== 'AxiosError') {
       controlToastPopup(true, `${senderNickName} 님을 채팅 일시정지 했어요.`)
       setIsMutedUser(true)
       setIsMoreMiniMenu(false)
@@ -163,7 +165,7 @@ const UserListProfileCard = (props: props) => {
       token: authToken,
     })
 
-    if (responseData !== 'AxiosError') {
+    if (responseData.name !== 'AxiosError') {
       controlToastPopup(
         true,
         `${senderNickName} 님의 채팅 일시정지를 해제했어요.`
@@ -176,8 +178,10 @@ const UserListProfileCard = (props: props) => {
   }
 
   // 더보기 미니 메뉴 outside click
-  const clickModalOutside = (e) => {
-    if (isMoreMiniMenu && !miniMenuRef.current.contains(e.target)) {
+  const clickModalOutside = (e: MouseEvent<HTMLElement>) => {
+    const event = e.target as HTMLDivElement
+
+    if (isMoreMiniMenu && !miniMenuRef.current.contains(event)) {
       setIsMoreMiniMenu(false)
     }
   }
@@ -332,7 +336,10 @@ const UserListProfileCard = (props: props) => {
               )}
             </div>
             <div className='user_role'>
-              {props.user.role === 'operator' ? '선생님' : '수강생'}
+              {props.user.metaData.role === 'admin' ||
+              props.user.metaData.role === 'teacher'
+                ? '선생님'
+                : '수강생'}
             </div>
           </div>
         </div>
@@ -352,9 +359,17 @@ const UserListProfileCard = (props: props) => {
 
         {/* 더보기 버튼 클릭시 뜨는 미니 메뉴 */}
         {isMoreMiniMenu && (
-          <div className='more_mini_menu_wrapper' ref={miniMenuRef}>
+          <div
+            className={`more_mini_menu_wrapper ${
+              props.index >= 1 &&
+              (props.userLength - 1 === props.index ||
+                props.userLength - 2 === props.index) &&
+              (props.userRole === 'learner' ? 'learner_top' : 'operator_top')
+            }`}
+            ref={miniMenuRef}
+          >
             <div className='more_mini_menu'>
-              {props.userRole === 'teacher' &&
+              {props.userRole !== 'learner' &&
                 (isMutedUser ? (
                   <div
                     className='list_in_menu'

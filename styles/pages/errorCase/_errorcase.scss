@@ -1,0 +1,356 @@
+.not_access {
+  width: 100%;
+  padding: 12px;
+  background-color: $bluegray-2;
+  .dummy_body {
+    display: flex;
+    // align-items: center;
+    height: 100%;
+    .dummy_live_box {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      .live_obs_dummy {
+        display: block;
+        width: 100%;
+        height: 500px;
+        background-image: linear-gradient(
+            rgba(0, 0, 0, 0.45),
+            rgba(0, 0, 0, 0.45)
+          ),
+          url('/dummy/fiive_brand_dummy.jpg');
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-color: black;
+        background-position-x: center;
+        background-position-y: center;
+        .live_obx_dummy_title {
+          display: flex;
+          align-items: center;
+          width: 100%;
+          height: 100%;
+          justify-content: center;
+          @include display-4;
+          color: white;
+        }
+      }
+    }
+    .live_information_dummy {
+      position: relative;
+      height: 244px;
+      padding: 24px;
+      background-color: rgba(255, 255, 255, 0.55);
+      .live_information_dummy_title {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: calc(100% - 48px);
+        @include display-4;
+        color: $bluegray-6;
+      }
+      .first_skeleton_ractangle {
+        width: 400px;
+        height: 24px;
+        background-color: $bluegray-3;
+        border-radius: 2px;
+      }
+      .second_skeleton_ractangle {
+        width: 280px;
+        height: 18px;
+        margin-top: 8px;
+        background-color: $bluegray-3;
+        border-radius: 2px;
+      }
+      .skeleton_dummy_box {
+        width: 100%;
+        margin-top: 24px;
+        background-color: $bluegray-1;
+        padding: 16px;
+        border-radius: 2px;
+        .skeleton_dummy_first {
+          display: flex;
+          align-items: center;
+          .skeleton_first {
+            width: 16px;
+            height: 16px;
+            background-color: $bluegray-3;
+            border-radius: 2px;
+          }
+          .skeleton_second {
+            margin-left: 6px;
+            width: 280px;
+            height: 22px;
+            background-color: $bluegray-3;
+            border-radius: 2px;
+          }
+        }
+        .skeleton_dummy_second {
+          margin-top: 6px;
+          width: 280px;
+          height: 18px;
+          background-color: $bluegray-3;
+          border-radius: 2px;
+        }
+        .skeleton_dummy_third {
+          margin-top: 12px;
+          width: 140px;
+          height: 32px;
+          background-color: $bluegray-3;
+          border-radius: 2px;
+        }
+      }
+    }
+
+    .dummy_chat_box {
+      position: relative;
+      width: 100%;
+      max-width: 340px;
+      height: 100%;
+      margin-left: 8px;
+      .dummy_chat_box_title {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: calc(100% - 32px);
+        width: calc(100% - 32px);
+        @include display-4;
+        color: $bluegray-6;
+      }
+      .chat_box {
+        display: flex;
+        flex-direction: column;
+        // align-items: center;
+
+        height: calc(100% - 82px);
+        padding: 16px;
+        background-color: rgba(255, 255, 255, 0.55);
+        border-radius: 8px;
+        .chat_header_box {
+          display: flex;
+          .chat_title_box {
+            @include body-1-700;
+          }
+
+          .chat_the_menu_box {
+            display: flex;
+            position: relative;
+            margin-left: auto;
+            .more_button_box {
+              display: flex;
+              align-items: center;
+              margin-right: 24px;
+            }
+
+            .close_button_box {
+              display: flex;
+              align-items: center;
+            }
+
+            img {
+              cursor: pointer;
+            }
+          }
+        }
+
+        .chat_skeleton_box {
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+          margin-top: 24px;
+          .first_chat_skeleton,
+          .second_chat_skeleton,
+          .third_chat_skeleton,
+          .four_chat_skeleton,
+          .fifth_chat_skeleton,
+          .sixth_chat_skeleton,
+          .seven_chat_skeleton {
+            display: flex;
+            // align-items: center;
+            .circle_skeleton {
+              width: 24px;
+              height: 24px;
+              margin-right: 8px;
+              background-color: $bluegray-3;
+              border-radius: 50%;
+            }
+            .ractangle_skeleton_box {
+              display: flex;
+              flex-direction: column;
+              gap: 6px;
+
+              .skeleton_80 {
+                width: 80px;
+                height: 18px;
+                background-color: $bluegray-3;
+                border-radius: 2px;
+              }
+
+              .skeleton_100 {
+                width: 100px;
+                height: 18px;
+                background-color: $bluegray-3;
+                border-radius: 2px;
+              }
+
+              .skeleton_120 {
+                width: 120px;
+                height: 18px;
+                background-color: $bluegray-3;
+                border-radius: 2px;
+              }
+
+              .skeleton_150 {
+                width: 150px;
+                height: 18px;
+                background-color: $bluegray-3;
+                border-radius: 2px;
+              }
+
+              .skeleton_180 {
+                width: 180px;
+                height: 18px;
+                background-color: $bluegray-3;
+                border-radius: 2px;
+              }
+
+              .skeleton_200 {
+                width: 200px;
+                height: 18px;
+                background-color: $bluegray-3;
+                border-radius: 2px;
+              }
+
+              .skeleton_220 {
+                width: 220px;
+                height: 18px;
+                background-color: $bluegray-3;
+                border-radius: 2px;
+              }
+            }
+          }
+        }
+
+        .chat_bottom_box {
+          display: flex;
+          margin-top: auto;
+          padding: 6px 6px 6px 12px;
+          background-color: $bluegray-1;
+          border: 1px solid $bluegray-1;
+          //   이미지
+          span {
+            margin-left: auto !important;
+          }
+        }
+      }
+    }
+  }
+  .error_modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    width: 480px;
+    padding: 40px 32px;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.5) 0 0 0 9999px;
+    border-radius: 16px;
+    z-index: 3000;
+    img {
+      align-self: center;
+      width: 200px;
+      height: 200px;
+    }
+    .description_box {
+      margin-top: 24px;
+      margin-bottom: 64px;
+      text-align: center;
+      .main_title {
+        @include display-3;
+        color: $bluegray-10;
+      }
+      .sub_title {
+        margin-top: 8px;
+        @include body-1-400;
+        color: $bluegray-8;
+      }
+    }
+    .button_box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      button {
+        width: 100%;
+        padding: 16px;
+        @include btn-Xlar-600;
+        border-radius: 2px;
+      }
+      .home_button {
+        background-color: $bluegray-1;
+        color: $bluegray-8;
+      }
+      .apply_button {
+        background-color: $fiivepurple-5;
+        color: white;
+      }
+    }
+  }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+  .not_access {
+    padding: 0;
+    .dummy_body {
+      display: flex;
+      flex-direction: column;
+      padding: 0px !important;
+      .live_information_dummy {
+        display: none;
+      }
+      .dummy_chat_box {
+        max-width: calc(100% - 24px);
+        margin-left: 0;
+        margin: 12px;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .not_access {
+    padding: 0;
+    .dummy_body {
+      display: flex;
+      flex-direction: column;
+      padding: 0px !important;
+      .live_information_dummy {
+        display: none;
+      }
+      .dummy_chat_box {
+        max-width: calc(100% - 24px);
+        margin-left: 0;
+        margin: 12px;
+      }
+    }
+    .error_modal {
+      position: fixed;
+      top: auto;
+      left: 0;
+      bottom: 0;
+      transform: none;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      padding: 40px 32px;
+      background-color: white;
+      box-shadow: rgba(0, 0, 0, 0.5) 0 0 0 9999px;
+      border-radius: 16px 16px 0 0;
+      z-index: 3000;
+    }
+  }
+}

@@ -31,7 +31,7 @@ const FiiveLayout = (props: any) => {
   // waiting: 라이브 전 재생 대기중 <> play: 재생중 <> end: 라이브 종료 <> error : 재생 에러
   const ivsPlayStatus = fiiveStudioUseStore((state: any) => state.ivsPlayStatus)
 
-  const emojiListRef = useRef<HTMLDivElement>(null)
+  const emojiListRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
 
   const responsiveZindexStyle: CSSProperties =
     offsetX < 1023 && isOpenResponsiveModal

@@ -10,8 +10,6 @@ const Reactions = (props: any) => {
   const addReaction = useStore((state: any) => state.addREaction)
   const removeReaction = useStore((state: any) => state.removeReaction)
 
-  const [isSwitchReaction, setIsSwitchReaction] = useState(false)
-
   const reaction = (type: string) => {
     let img
 
@@ -68,12 +66,13 @@ const Reactions = (props: any) => {
     const swarm = []
 
     for (let number = 1; number <= 1; number++) {
-      const bottom = Math.floor(Math.random() * 400)
+      const bottom = Math.floor(Math.random() * 20)
+      console.log(bottom, 'bottom')
       swarm.push({
         key: `${item.id}-${number}`,
         type: item.type,
         style: {
-          // top: '150px',
+          top: '120px',
           // left: `${bottom}px`,
           // bottom: `-${bottom}px`,
         },
@@ -99,8 +98,11 @@ const Reactions = (props: any) => {
       // 2. 애니메이션 작동 2000초 후에 종료 애니메이션의 className을 강제로 넣어준다.
       setTimeout(() => {
         lastReactionOrder.classList.add('example-leave')
-        lastReactionOrder.classList.add('example-leave-active')
       }, 2000)
+
+      setTimeout(() => {
+        lastReactionOrder.classList.add('example-leave-active')
+      }, 2500)
     }
   }, [reactions])
 
@@ -108,8 +110,8 @@ const Reactions = (props: any) => {
     <div className='reactions-component'>
       <CSSTransitionGroup
         transitionName='example'
-        transitionEnterTimeout={2000}
-        transitionLeaveTimeout={2000}
+        transitionEnterTimeout={2500}
+        transitionLeaveTimeout={2500}
       >
         {items}
       </CSSTransitionGroup>
