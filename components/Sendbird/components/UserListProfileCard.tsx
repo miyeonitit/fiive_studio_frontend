@@ -248,6 +248,12 @@ const UserListProfileCard = (props: props) => {
     }
   }, [props.isUserFilterMiniMenu])
 
+  console.log(
+    props.user.nickname,
+    props.user.connectionStatus,
+    'user online status'
+  )
+
   return (
     <div className='UserListProfileCard'>
       <div

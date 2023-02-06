@@ -12,7 +12,7 @@ type props = {
 }
 
 const MetaReactionEmojiList = (props: props) => {
-  // ivs, sendbird chat infomation 정보를 저장하는 state
+  // ivs infomation 정보를 저장하는 state
   const ivsData = classRoomUseStore((state: any) => state.ivsData)
 
   // user auth token for API
@@ -20,6 +20,9 @@ const MetaReactionEmojiList = (props: props) => {
 
   // classroom class id
   const classId = fiiveStudioUseStore((state: any) => state.classId)
+
+  // emoji reaction - 5초 흐르기 전까지 click 비활성화 해두기 위한 boolean state
+  const [isNotActivedReaction, setIsNotActivedReaction] = useState(false)
 
   const thumbsUpRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
   const heartRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
@@ -30,26 +33,43 @@ const MetaReactionEmojiList = (props: props) => {
   const cryingRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
 
   const postReaction = async (reaction: string) => {
-    const requestUrl = `/classroom/${classId}/ivs/meta`
+    // emoji reaction click active status
+    if (!isNotActivedReaction) {
+      const requestUrl = `/classroom/${classId}/ivs/meta`
 
-    const body = {
-      arn: ivsData?.arn,
-      metadata: JSON.stringify({
-        type: 'REACTION',
-        message: {
-          id: uuidv4(),
-          type: reaction,
-        },
-      }),
+      const body = {
+        arn: ivsData?.arn,
+        metadata: JSON.stringify({
+          type: 'REACTION',
+          message: {
+            id: uuidv4(),
+            type: reaction,
+          },
+        }),
+      }
+
+      const responseData = await AxiosRequest({
+        url: requestUrl,
+        method: 'POST',
+        body: body,
+        token: authToken,
+      })
+
+      // emoji reaction 을 한 번 전송했을 때, 5초동안 emoji reaciton 비활성화
+      if (responseData === 'OK') {
+        setIsNotActivedReaction(true)
+      }
     }
-
-    const responseData = await AxiosRequest({
-      url: requestUrl,
-      method: 'POST',
-      body: body,
-      token: authToken,
-    })
   }
+
+  // emoji reaction 을 한 번 전송했을 때, 5초동안 emoji reaciton 비활성화
+  useEffect(() => {
+    if (isNotActivedReaction) {
+      setTimeout(() => {
+        setIsNotActivedReaction(false)
+      }, 5000)
+    }
+  }, [isNotActivedReaction])
 
   useEffect(() => {
     Lottie.loadAnimation({

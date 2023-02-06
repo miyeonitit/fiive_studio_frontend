@@ -6,6 +6,7 @@ import { CSSProperties } from 'styled-components'
 
 import AxiosRequest from '../utils/AxiosRequest'
 import sendbirdUseStore from '../store/Sendbird'
+import classRoomUseStore from '../store/classRoom'
 import fiiveStudioUseStore from '../store/FiiveStudio'
 
 import { NextPageWithLayout } from '../types/NextPageWithLayout'
@@ -34,6 +35,7 @@ type sendbirdChatType = {
 type props = {
   emoji_data?: { emojis: Array<object>; id: number; name: string; url: string }
   classroom: { ivs: ivsType; sendbird: sendbirdChatType }
+  class_id: string
   auth_token: string
   sendbirdAccessToken: string
 }
@@ -70,6 +72,14 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
   // user auth token for API
   const setAuthToken = fiiveStudioUseStore((state: any) => state.setAuthToken)
 
+  // 라이브 중일 때의 정보를 저장하기 위한 stream infomation state
+  const setStreamInfoamtion = fiiveStudioUseStore(
+    (state: any) => state.setStreamInfoamtion
+  )
+
+  // ivs infomation 정보를 저장하는 state
+  const setIvsData = classRoomUseStore((state: any) => state.setIvsData)
+
   // save sendbird emoji list container
   const emojiContainer = sendbirdUseStore((state: any) => state.emojiContainer)
   const addEmojiContainer = sendbirdUseStore(
@@ -91,26 +101,25 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
           height: `calc(100vh  - 163px - ${chatOffsetHeight}px)`,
         }
       : {}
-
-  const getUserInfomation = async () => {
+  const getUserInfomation = async (token: string) => {
     const requestUrl = `/auth`
 
     const responseData = await AxiosRequest({
       url: requestUrl,
       method: 'GET',
       body: '',
-      token: props.auth_token,
+      token: token,
     })
 
     if (responseData.name !== 'AxiosError') {
       setUserInfomation(responseData)
     } else {
       console.log('수강 권한 없음')
-      // [backlog] 유저 식별에 실패하면 수강권한 없다는 페이지로 이동되어야 함!
+      // [backlog] 유저 식별에 실패하면 수강권 한 없다는 페이지로 이동되어야 함!
     }
   }
 
-  const getChatEmojiContainer = async () => {
+  const getChatEmojiContainer = async (token: string) => {
     const emojiCategoryId = process.env.NEXT_PUBLIC_SENDBIRD_EMOJI_CATEGORY_ID
 
     const requestUrl = `/sendbird/emoji_categories/${emojiCategoryId}`
@@ -119,10 +128,27 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
       url: requestUrl,
       method: 'GET',
       body: '',
-      token: props.auth_token,
+      token: token,
     })
 
     addEmojiContainer(responseData.emojis)
+  }
+
+  const getLiveStreamInfomation = async () => {
+    const requestUrl = `/classroom/${props.class_id}/ivs/stream`
+
+    const body = {
+      channelArn: props?.classroom?.ivs?.channel?.arn,
+    }
+
+    const responseData = await AxiosRequest({
+      url: requestUrl,
+      method: 'POST',
+      body: body,
+      token: props.auth_token,
+    })
+
+    setStreamInfoamtion(responseData.stream)
   }
 
   // 브라우저 resize 할 때마다 <Video /> 의 height 감지
@@ -142,16 +168,30 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
   useEffect(() => {
     // get offsetX
     reset()
-
-    // 1. get user auth_token
-    setAuthToken(props.auth_token)
-
-    // 2. get user infomation with user auth_token
-    getUserInfomation()
-
-    // 3. get chat's emoji list container
-    getChatEmojiContainer()
   }, [])
+
+  useEffect(() => {
+    if (props.auth_token && props.auth_token.length !== 0) {
+      // 1. get user auth_token
+      setAuthToken(props.auth_token)
+
+      // 2. get user infomation with user auth_token
+      getUserInfomation(props.auth_token)
+
+      // 3. get chat's emoji list container
+      getChatEmojiContainer(props.auth_token)
+
+      // 4. save ivs Data
+      setIvsData(props?.classroom?.ivs?.channel)
+    }
+  }, [props.auth_token])
+
+  useEffect(() => {
+    if (ivsPlayStatus === 'play') {
+      // get live channel stream infomation
+      getLiveStreamInfomation()
+    }
+  }, [ivsPlayStatus])
 
   return (
     <div className='fiive teacher page'>

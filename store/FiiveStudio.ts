@@ -23,6 +23,10 @@ interface FiiveStudioState {
   ivsPlayStatus: string
   setIvsPlayStatus: (ivsPlayStatus: string) => void
 
+  // 라이브 중일 때의 정보를 저장하기 위한 stream infomation state
+  streamInfoamtion: object
+  setStreamInfoamtion: (streamInfoamtion: string) => void
+
   // user auth token for API
   authToken: string
   setAuthToken: (authToken: string) => void
@@ -31,6 +35,7 @@ interface FiiveStudioState {
   userInfomation: object
   setUserInfomation: (userInfomation: object) => void
 
+  // save class id
   classId: string
   setClassId: (classId: string) => void
 }
@@ -78,6 +83,12 @@ const useStore = create(
       setUserInfomation: (userInfomation) =>
         set(() => ({
           userInfomation,
+        })),
+
+      streamInfoamtion: {},
+      setStreamInfoamtion: (streamInfoamtion) =>
+        set(() => ({
+          streamInfoamtion,
         })),
 
       classId: '',

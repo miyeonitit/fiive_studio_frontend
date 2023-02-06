@@ -10,6 +10,9 @@ const Reactions = (props: any) => {
   const addReaction = useStore((state: any) => state.addREaction)
   const removeReaction = useStore((state: any) => state.removeReaction)
 
+  // emoji reaction img의 위치를 랜덤으로 조정하기 위한 random value
+  let randomValue = Math.floor(Math.random() * 50)
+
   const reaction = (type: string) => {
     let img
 
@@ -66,15 +69,12 @@ const Reactions = (props: any) => {
     const swarm = []
 
     for (let number = 1; number <= 1; number++) {
-      const bottom = Math.floor(Math.random() * 20)
-      console.log(bottom, 'bottom')
       swarm.push({
         key: `${item.id}-${number}`,
         type: item.type,
         style: {
           top: '120px',
-          // left: `${bottom}px`,
-          // bottom: `-${bottom}px`,
+          left: `${randomValue}px`,
         },
       })
     }

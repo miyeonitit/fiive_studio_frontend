@@ -31,6 +31,11 @@ const FiiveLayout = (props: any) => {
   // waiting: 라이브 전 재생 대기중 <> play: 재생중 <> end: 라이브 종료 <> error : 재생 에러
   const ivsPlayStatus = fiiveStudioUseStore((state: any) => state.ivsPlayStatus)
 
+  // 라이브 중일 때의 정보를 저장하기 위한 stream infomation state
+  const streamInfoamtion = fiiveStudioUseStore(
+    (state: any) => state.streamInfoamtion
+  )
+
   const emojiListRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
 
   const responsiveZindexStyle: CSSProperties =
@@ -97,6 +102,8 @@ const FiiveLayout = (props: any) => {
       hideChannelButtonOnBoot: true,
     })
   }, [])
+
+  console.log(streamInfoamtion, 'layout streamInfoamtion')
 
   return (
     <div className='fiive_layout learner_layout'>
