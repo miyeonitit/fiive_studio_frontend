@@ -155,6 +155,8 @@ const CustomChatHeader = (props: props) => {
     }
   }
 
+  console.log(currentGroupChannel.members, 'header member')
+
   const handleUserFilterStatus = async (status: string) => {
     let requestUrl: string = ''
     let responseData: any = null || { muted_list: Array, next: '' }

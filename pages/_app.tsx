@@ -46,9 +46,6 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
     // classId 전역적으로 저장
     setClassId(pageProps.class_id)
-
-    // setIvsData(pageProps?.classroom?.ivs?.channel)
-    // setChatData(pageProps?.classroom?.sendbird)
   }, [])
 
   return (

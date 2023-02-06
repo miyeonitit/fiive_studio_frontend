@@ -7,6 +7,7 @@ import { CSSProperties } from 'styled-components'
 
 import AxiosRequest from '../utils/AxiosRequest'
 import sendbirdUseStore from '../store/Sendbird'
+import classRoomUseStore from '../store/classRoom'
 import fiiveStudioUseStore from '../store/FiiveStudio'
 import useStore from '../store/video'
 
@@ -33,6 +34,7 @@ type sendbirdChatType = {
 type props = {
   emoji_data?: { emojis: Array<object>; id: number; name: string; url: string }
   classroom: { ivs: ivsType; sendbird: sendbirdChatType }
+  class_id: string
   auth_token: string
   sendbirdAccessToken: string
 }
@@ -68,6 +70,14 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
 
   // user auth token for API
   const setAuthToken = fiiveStudioUseStore((state: any) => state.setAuthToken)
+
+  // 라이브 중일 때의 정보를 저장하기 위한 stream infomation state
+  const setStreamInfoamtion = fiiveStudioUseStore(
+    (state: any) => state.setStreamInfoamtion
+  )
+
+  // ivs infomation 정보를 저장하는 state
+  const setIvsData = classRoomUseStore((state: any) => state.setIvsData)
 
   // save sendbird emoji list container
   const emojiContainer = sendbirdUseStore((state: any) => state.emojiContainer)
@@ -131,6 +141,23 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
     addEmojiContainer(responseData.emojis)
   }
 
+  const getLiveStreamInfomation = async () => {
+    const requestUrl = `/classroom/${props.class_id}/ivs/stream`
+
+    const body = {
+      channelArn: props?.classroom?.ivs?.channel?.arn,
+    }
+
+    const responseData = await AxiosRequest({
+      url: requestUrl,
+      method: 'POST',
+      body: body,
+      token: props.auth_token,
+    })
+
+    setStreamInfoamtion(responseData.stream)
+  }
+
   // 브라우저 resize 할 때마다 <Video /> 의 height 감지
   const reset = () => {
     setChatOffsetHeight(playerHeightRef.current?.offsetHeight)
@@ -150,8 +177,6 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
     reset()
   }, [])
 
-  console.log(props, 'learner props')
-
   useEffect(() => {
     if (props.auth_token && props.auth_token.length !== 0) {
       // 1. get user auth_token
@@ -162,8 +187,20 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
 
       // 3. get chat's emoji list container
       getChatEmojiContainer(props.auth_token)
+
+      // 4. save ivs Data
+      setIvsData(props?.classroom?.ivs?.channel)
     }
   }, [props.auth_token])
+
+  useEffect(() => {
+    if (ivsPlayStatus === 'play') {
+      // get live channel stream infomation
+      getLiveStreamInfomation()
+
+      // [백로그] 5초마다 계속 요청 보내야 함
+    }
+  }, [ivsPlayStatus])
 
   return (
     <div className='fiive learner page'>
