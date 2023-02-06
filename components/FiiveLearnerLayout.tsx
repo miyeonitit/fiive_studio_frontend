@@ -36,6 +36,11 @@ const FiiveLayout = (props: any) => {
     (state: any) => state.streamInfoamtion
   )
 
+  // 라이브 참가자 수를 표현하기 위한 센드버드 number of actived user state
+  const numberOfLiveUser = fiiveStudioUseStore(
+    (state: any) => state.numberOfLiveUser
+  )
+
   const emojiListRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
 
   const responsiveZindexStyle: CSSProperties =
@@ -103,8 +108,6 @@ const FiiveLayout = (props: any) => {
     })
   }, [])
 
-  console.log(streamInfoamtion, 'layout streamInfoamtion')
-
   return (
     <div className='fiive_layout learner_layout'>
       <header className='layout_header'>
@@ -159,7 +162,7 @@ const FiiveLayout = (props: any) => {
 
         <div className='right_header_box'>
           {/* LIVE 상태 정보 영역 */}
-          <div className='live_status'>LIVE 준비 중</div>
+          <div className='live_status'>LIVE 중이 아님</div>
 
           {/* 현재 라이브 참여자 수 영역 */}
           <div className='live_participant_number_box'>
@@ -169,7 +172,7 @@ const FiiveLayout = (props: any) => {
               height={12}
               alt='liveParticipant'
             />
-            <span className='live_participant_number'>2</span>
+            <span className='live_participant_number'>{numberOfLiveUser}</span>
           </div>
         </div>
 

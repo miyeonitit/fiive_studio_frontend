@@ -29,8 +29,6 @@ const EmojiContainerBox = (props: props) => {
     right: `${props?.rightWidth}px`,
   }
 
-  console.log(props.isChatFirstMessage, 'props.isChatFirstMessage')
-
   const addUserReaction = async (emojiKey: string) => {
     // 해당 메시지에 유저가 선택한 리액션 이모지가 이미 있을 경우, 이모지 제거
     const findAlreadyReactedEmoji = props?.reactedEmojis.find(

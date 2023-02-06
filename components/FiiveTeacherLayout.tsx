@@ -106,7 +106,7 @@ const FiiveLayout = (props: any) => {
 
         <div className='right_header_box'>
           {/* LIVE 상태 정보 영역 */}
-          <div className='live_status'>LIVE 준비 중</div>
+          <div className='live_status'>LIVE 중이 아님</div>
 
           {/* 현재 라이브 참여자 수 영역 */}
           <div className='live_participant_number_box'>

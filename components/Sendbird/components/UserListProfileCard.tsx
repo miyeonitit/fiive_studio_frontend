@@ -26,11 +26,10 @@ type props = {
   saveIndex: number
   setSaveIndex: React.Dispatch<React.SetStateAction<number>>
   saveComponentIndex: (arg0: number) => void
+  currentGroupChannel: object
 }
 
 const UserListProfileCard = (props: props) => {
-  const { currentGroupChannel } = useChannelContext()
-
   // user auth token for API
   const authToken = fiiveStudioUseStore((state: any) => state.authToken)
 
@@ -216,43 +215,39 @@ const UserListProfileCard = (props: props) => {
 
       case '채팅 정지된 참여자':
         // 전체 채팅방 유저중에 현재 user id와 같은 유저 id를 골라내기
-        const findMutedUser = currentGroupChannel.members.find(
+        const findMutedUser = props.currentGroupChannel.members.find(
           (user: any) => user.userId === props.user.user_id
         )
 
         // 전체 채팅방 유저 중 해당 id를 가진 유저의 인덱스 알아내기
         const indexOfMutedUser =
-          currentGroupChannel.members.indexOf(findMutedUser)
+          props.currentGroupChannel.members.indexOf(findMutedUser)
 
         // 해당 유저가 muted 되었는지 여부 확인
         const isUserMuted =
-          currentGroupChannel.members[indexOfMutedUser].isMuted
+          props.currentGroupChannel.members[indexOfMutedUser].isMuted
+
         setIsMutedUser(isUserMuted)
         break
 
       case '차단된 참여자':
         // 전체 채팅방 유저중에 현재 user id와 같은 유저 id를 골라내기
-        const findBlockedUser = currentGroupChannel.members.find(
+        const findBlockedUser = props.currentGroupChannel.members.find(
           (user: any) => user.userId === props.user.user_id
         )
 
         // 전체 채팅방 유저 중 해당 id를 가진 유저의 인덱스 알아내기
         const indexOfFindedUser =
-          currentGroupChannel.members.indexOf(findBlockedUser)
+          props.currentGroupChannel.members.indexOf(findBlockedUser)
 
         // 해당 유저가 blocked 되었는지 여부 확인
         const isUserBlocked =
-          currentGroupChannel.members[indexOfFindedUser].isBlockedByMe
+          props.currentGroupChannel.members[indexOfFindedUser].isBlockedByMe
+
         setIsBlockUser(isUserBlocked)
         break
     }
   }, [props.isUserFilterMiniMenu])
-
-  console.log(
-    props.user.nickname,
-    props.user.connectionStatus,
-    'user online status'
-  )
 
   return (
     <div className='UserListProfileCard'>
@@ -265,8 +260,8 @@ const UserListProfileCard = (props: props) => {
           <div className='user_profile_box'>
             <Image
               src={
-                props.user.plainProfileUrl
-                  ? props.user.plainProfileUrl
+                props.user?.plainProfileUrl
+                  ? props.user?.plainProfileUrl
                   : '/pages/Sendbird/user_list_fiive_default_img.svg'
               }
               width={32}
@@ -282,7 +277,8 @@ const UserListProfileCard = (props: props) => {
               <div className='user_online_status_box'>
                 <Image
                   src={
-                    props.user.connectionStatus === 'online'
+                    props.user?.is_online ||
+                    props.user?.connectionStatus === 'online'
                       ? '/pages/Sendbird/online_status.svg'
                       : '/pages/Sendbird/offline_status.svg'
                   }
@@ -342,10 +338,10 @@ const UserListProfileCard = (props: props) => {
               )}
             </div>
             <div className='user_role'>
-              {props.user.metaData.role === 'admin' ||
-              props.user.metaData.role === 'teacher'
-                ? '선생님'
-                : '수강생'}
+              {props.user?.metaData?.role === 'learner' ||
+              props.user?.metadata?.role === 'learner'
+                ? '수강생'
+                : '선생님'}
             </div>
           </div>
         </div>

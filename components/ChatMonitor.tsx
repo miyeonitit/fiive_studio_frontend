@@ -77,7 +77,6 @@ const MessageList = (props: props) => {
 }
 
 const ChatMonitor = (props: props) => {
-  console.log(props, 'chat props')
   const [stringSet] = useState({
     TYPING_INDICATOR__AND: '님, ',
     TYPING_INDICATOR__IS_TYPING: '님이 입력 중이에요.',

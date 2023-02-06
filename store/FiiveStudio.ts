@@ -27,6 +27,10 @@ interface FiiveStudioState {
   streamInfoamtion: object
   setStreamInfoamtion: (streamInfoamtion: string) => void
 
+  // 라이브 참가자 수를 표현하기 위한 센드버드 number of actived user state
+  numberOfLiveUser: number
+  setNumberOfLiveUser: (numberOfLiveUser: number) => void
+
   // user auth token for API
   authToken: string
   setAuthToken: (authToken: string) => void
@@ -89,6 +93,12 @@ const useStore = create(
       setStreamInfoamtion: (streamInfoamtion) =>
         set(() => ({
           streamInfoamtion,
+        })),
+
+      numberOfLiveUser: 0,
+      setNumberOfLiveUser: (numberOfLiveUser) =>
+        set(() => ({
+          numberOfLiveUser,
         })),
 
       classId: '',

@@ -54,6 +54,11 @@ const CustomChatHeader = (props: props) => {
     (state: any) => state.setIsOpenResponsiveLiveMember
   )
 
+  // 라이브 참가자 수를 표현하기 위한 센드버드 number of actived user state
+  const setNumberOfLiveUser = fiiveStudioUseStore(
+    (state: any) => state.setNumberOfLiveUser
+  )
+
   // user auth token for API
   const authToken = fiiveStudioUseStore((state: any) => state.authToken)
 
@@ -62,7 +67,7 @@ const CustomChatHeader = (props: props) => {
     (state: any) => state.setIsUserList
   )
 
-  const { currentGroupChannel } = useChannelContext()
+  let { currentGroupChannel } = useChannelContext()
 
   // 더보기 메뉴 노출 boolean state
   const [isMoreMiniMenu, setIsMoreMiniMenu] = useState(false)
@@ -154,8 +159,6 @@ const CustomChatHeader = (props: props) => {
       setIsMoreMiniMenu(false)
     }
   }
-
-  console.log(currentGroupChannel.members, 'header member')
 
   const handleUserFilterStatus = async (status: string) => {
     let requestUrl: string = ''
@@ -272,6 +275,36 @@ const CustomChatHeader = (props: props) => {
     contextSetIsUserList(isUserList)
     setIsOpenResponsiveLiveMember(isUserList)
   }, [isUserList])
+
+  useEffect(() => {
+    // '라이브 참여자' 로 필터 보기 할 때만 actived user 업데이트
+    if (userFilter === '라이브 참여자') {
+      let channelInfomationCount:
+        | string
+        | number
+        | NodeJS.Timer
+        | null
+        | undefined = null
+
+      // 현재 채팅방의 정보를 5초마다 주기적으로 갱신
+      channelInfomationCount = setInterval(function () {
+        currentGroupChannel.refresh()
+        setUserList(currentGroupChannel.members)
+
+        // actived user가 5초마다 몇 명인지 업데이트 후 전역 state로 저장
+        const activedUser = currentGroupChannel.members.filter(
+          (user) => user.connectionStatus === 'online'
+        )
+
+        setNumberOfLiveUser(activedUser.length)
+      }, 5000)
+
+      // setInterval 메서드의 cleanup 처리
+      return () => {
+        clearInterval(channelInfomationCount)
+      }
+    }
+  }, [userList])
 
   return (
     <div className='CustomChatHeader'>
@@ -491,6 +524,7 @@ const CustomChatHeader = (props: props) => {
                     saveIndex={saveIndex}
                     setSaveIndex={setSaveIndex}
                     saveComponentIndex={saveComponentIndex}
+                    currentGroupChannel={currentGroupChannel}
                   />
                 ))}
           </div>

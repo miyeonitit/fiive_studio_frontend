@@ -12,6 +12,7 @@ import { useChannelContext } from '@sendbird/uikit-react/Channel/context'
 import useSendbirdStateContext from '@sendbird/uikit-react/useSendbirdStateContext'
 import sendbirdSelectors from '@sendbird/uikit-react/sendbirdSelectors'
 import ImageRenderer from '@sendbird/uikit-react/ui/ImageRenderer'
+import { GroupChannelHandler } from '@sendbird/chat/groupChannel'
 
 import 'animate.css'
 import '../../node_modules/react-toastify/dist/ReactToastify.css'
@@ -24,6 +25,7 @@ import EmojiIcon from './components/EmojiIcon'
 import EmojiContainerBox from './components/EmojiContainerBox'
 import ResponsiveEmojiContainerBox from './ResponsiveComponents/ResponsiveEmojiContainerBox'
 import ResponsiveHandleErrorMessage from './ResponsiveComponents/ResponsiveHandleErrorMessage'
+import { ApplicationUserListQueryParams } from '@sendbird/chat'
 
 type props = {
   message: object
@@ -395,7 +397,7 @@ const CustomChatRoom = (props: props) => {
 
   // console.log(sender, 'sender')
   // console.log(messageInfomation, 'info')
-  // console.log(emojiContainer, 'emojiContainer')
+  console.log(reactedEmojis, 'reactedEmojis')
   // console.log(offsetX, 'offsetX')
   // console.log(currentGroupChannel, 'currentGroupChannel')
 
