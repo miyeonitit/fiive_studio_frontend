@@ -80,8 +80,9 @@ const ResponsiveChatHeaderMenu = (props: props) => {
       '/chat-monitor?classId=' +
       router.query.classId +
       '&sessionIdx=' +
-      router.query.sessionIdx
-    '&token=' + authToken
+      router.query.sessionIdx +
+      '&token=' +
+      authToken
 
     window.navigator.clipboard.writeText(chatUrl)
 

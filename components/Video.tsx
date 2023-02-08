@@ -38,15 +38,44 @@ const Video = (props: props) => {
     (state: any) => state.setIvsPlayStatus
   )
 
-  // console.log(props, 'video props')
+  // class infomation 정보를 저장하는 state
+  const classData = classRoomUseStore((state: any) => state.classData)
+
+  const [nowTime, setNowTime] = useState(new Date().getTime())
+
   const [init, setInit] = useState(false)
   // const [messages, setMessages] = useState<any[]>([]);
 
   const ivsPlayer = useRef<HTMLVideoElement>(null)
 
+  // 현재 시간 1초마다 갱신
   useEffect(() => {
-    if (Object.keys(userInfomation).length !== 0 && ivsPlayStatus !== 'play') {
+    setInterval(() => {
+      setNowTime(new Date().getTime())
+    }, 1000)
+  }, [nowTime])
+
+  useEffect(() => {
+    if (Object.keys(userInfomation).length !== 0) {
       initVideo()
+
+      // console.log('000')
+      // console.log(
+      //   nowTime,
+      //   classData?.start_date,
+      //   nowTime >= classData?.start_date,
+      //   '1111'
+      // )
+
+      // if (nowTime >= classData?.start_date) {
+      //   setIvsPlayStatus('play')
+
+      //   initVideo()
+      // }
+      // else if (nowTime < classData?.end_date) {
+      //   setIvsPlayStatus('end')
+      //   console.log('2222')
+      // }
     }
   }, [userInfomation])
 
@@ -142,7 +171,7 @@ const Video = (props: props) => {
             player.play()
           }, 5000)
 
-          setIvsPlayStatus('play')
+          // setIvsPlayStatus('play')
           break
       }
     })
@@ -150,7 +179,7 @@ const Video = (props: props) => {
 
     player.load(playbackUrl)
 
-    setIvsPlayStatus('play')
+    // setIvsPlayStatus('play')
 
     player.play()
 

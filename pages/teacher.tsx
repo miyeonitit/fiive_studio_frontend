@@ -77,8 +77,8 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
     (state: any) => state.setStreamInfoamtion
   )
 
-  // ivs infomation 정보를 저장하는 state
-  const setIvsData = classRoomUseStore((state: any) => state.setIvsData)
+  // class infomation 정보를 저장하는 state
+  const classData = classRoomUseStore((state: any) => state.classData)
 
   // save sendbird emoji list container
   const emojiContainer = sendbirdUseStore((state: any) => state.emojiContainer)
@@ -101,6 +101,7 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
           height: `calc(100vh  - 163px - ${chatOffsetHeight}px)`,
         }
       : {}
+
   const getUserInfomation = async (token: string) => {
     const requestUrl = `/auth`
 
@@ -180,16 +181,15 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
 
       // 3. get chat's emoji list container
       getChatEmojiContainer(props.auth_token)
-
-      // 4. save ivs Data
-      setIvsData(props?.classroom?.ivs?.channel)
     }
   }, [props.auth_token])
 
   useEffect(() => {
     if (ivsPlayStatus === 'play') {
       // get live channel stream infomation
-      getLiveStreamInfomation()
+      setInterval(() => {
+        getLiveStreamInfomation()
+      }, 5000)
     }
   }, [ivsPlayStatus])
 
@@ -239,13 +239,10 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
         {(offsetX >= 1023 || !isChatOpen) && (
           <section className='class-wrapper'>
             <div className='class_infomation_wrapper'>
-              <div className='class_title_box'>
-                평가원 행동 증명(이감 파이널2 (시즌6) 해설 강의) n회차
-              </div>
+              <div className='class_title_box'>{classData?.class_name}</div>
 
               <div className='class_description_box'>
-                평가원 기술 지문 포인트 및 실전 행동 훈련 + EBS 수능특강 속 기술
-                지문 연계 대비
+                {classData?.curriculum_contents}
               </div>
             </div>
 
@@ -267,7 +264,14 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
                 라이브 수업을 운영해보세요! 수업 도구 사용법과 업데이트 소식이
                 궁금하다면 아래에서 확인해보세요.
               </div>
-              <button className='community_guide_button'>
+              <button
+                className='community_guide_button'
+                onClick={() =>
+                  window.open(
+                    'https://www.notion.so/pureblack/86412e7f47b54f3680b76029777bfc0d'
+                  )
+                }
+              >
                 커뮤니티 가이드 알아보기
               </button>
             </div>

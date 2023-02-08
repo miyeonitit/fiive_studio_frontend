@@ -3,6 +3,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { CSSProperties } from 'styled-components'
 
+import classRoomUseStore from '../store/classRoom'
 import fiiveStudioUseStore from '../store/FiiveStudio'
 
 import Popover from '../components/VideoComponents/PopOver'
@@ -29,6 +30,19 @@ const FiiveLayout = (props: any) => {
   const setIvsPlayStatus = fiiveStudioUseStore(
     (state: any) => state.setIvsPlayStatus
   )
+
+  // 라이브 중일 때의 정보를 저장하기 위한 stream infomation state
+  const streamInfoamtion = fiiveStudioUseStore(
+    (state: any) => state.streamInfoamtion
+  )
+
+  // 라이브 참가자 수를 표현하기 위한 센드버드 number of actived user state
+  const numberOfLiveUser = fiiveStudioUseStore(
+    (state: any) => state.numberOfLiveUser
+  )
+
+  // class infomation 정보를 저장하는 state
+  const classData = classRoomUseStore((state: any) => state.classData)
 
   // live endTime이 끝나기 전에 teacher에게 노출되는 말풍선 boolean state
   const [isLiveEndPopOver, setIsLiveEndPopOver] = useState(false)
@@ -93,20 +107,30 @@ const FiiveLayout = (props: any) => {
           <div className='fiive_class_infomation_box'>
             <div className='teacher_profile_image_box'>
               <Image
-                src='../layouts/fiive/Avatar.svg'
+                src={
+                  classData?.teacher_thumbnail
+                    ? classData?.teacher_thumbnail
+                    : '../layouts/fiive/Avatar.svg'
+                }
                 width={32}
                 height={32}
                 alt='teacherProfileImage'
               />
             </div>
 
-            <div className='teacher_name_box'>미친국어T</div>
+            <div className='teacher_name_box'>{classData?.teacher_name}</div>
           </div>
         </div>
 
         <div className='right_header_box'>
           {/* LIVE 상태 정보 영역 */}
-          <div className='live_status'>LIVE 중이 아님</div>
+          <div
+            className={`live_status ${
+              streamInfoamtion?.state === 'LIVE' && 'play'
+            }`}
+          >
+            {streamInfoamtion?.state === 'LIVE' ? 'LIVE' : 'LIVE 중이 아님'}
+          </div>
 
           {/* 현재 라이브 참여자 수 영역 */}
           <div className='live_participant_number_box'>
@@ -116,7 +140,7 @@ const FiiveLayout = (props: any) => {
               height={12}
               alt='liveParticipant'
             />
-            <span className='live_participant_number'>2</span>
+            <span className='live_participant_number'>{numberOfLiveUser}</span>
           </div>
         </div>
 

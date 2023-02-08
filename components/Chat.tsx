@@ -59,7 +59,7 @@ const Chat = (props: props) => {
   // Set default session token expiration period to 1 minute.
   const DEFAULT_SESSION_TOKEN_PERIOD = 1 * 60 * 1000
 
-  // create endbird's user access token
+  // create sendbird's user access token
   const issueSessionToken = async () => {
     const period = DEFAULT_SESSION_TOKEN_PERIOD
 
@@ -80,8 +80,6 @@ const Chat = (props: props) => {
 
     return result.token
   }
-
-  console.log(props, 'chat props')
 
   useEffect(() => {
     contextAddEmojiContainer(props.emojiContainer)

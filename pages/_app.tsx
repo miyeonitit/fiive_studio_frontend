@@ -16,6 +16,7 @@ import '../styles/app.scss'
 import '../styles/globals.css'
 
 import AxiosRequest from '../utils/AxiosRequest'
+import classRoomUseStore from '../store/classRoom'
 import fiiveStudioUseStore from '../store/FiiveStudio'
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
@@ -26,6 +27,12 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const setOffsetX = fiiveStudioUseStore((state: any) => state.setOffsetX)
 
   const setClassId = fiiveStudioUseStore((state: any) => state.setClassId)
+
+  // ivs infomation 정보를 저장하는 state
+  const setIvsData = classRoomUseStore((state: any) => state.setIvsData)
+
+  // class infomation 정보를 저장하는 state
+  const setClassData = classRoomUseStore((state: any) => state.setClassData)
 
   const reset = () => {
     if (typeof window !== 'undefined') {
@@ -44,8 +51,14 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   useEffect(() => {
     reset()
 
-    // classId 전역적으로 저장
-    setClassId(pageProps.class_id)
+    // save classId
+    setClassId(pageProps?.class_id)
+
+    // save ivs Data in classroom
+    setIvsData(pageProps?.classroom?.ivs?.channel)
+
+    // save class Data in classroom
+    setClassData(pageProps?.classroom?.class)
   }, [])
 
   return (

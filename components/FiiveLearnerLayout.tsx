@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react'
 import Image from 'next/image'
 import { CSSProperties } from 'styled-components'
 
+import classRoomUseStore from '../store/classRoom'
 import fiiveStudioUseStore from '../store/FiiveStudio'
 import ChannelService from '../utils/ChannelService'
 
@@ -40,6 +41,9 @@ const FiiveLayout = (props: any) => {
   const numberOfLiveUser = fiiveStudioUseStore(
     (state: any) => state.numberOfLiveUser
   )
+
+  // class infomation 정보를 저장하는 state
+  const classData = classRoomUseStore((state: any) => state.classData)
 
   const emojiListRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
 
@@ -149,20 +153,30 @@ const FiiveLayout = (props: any) => {
           <div className='fiive_class_infomation_box'>
             <div className='teacher_profile_image_box'>
               <Image
-                src='../layouts/fiive/Avatar.svg'
+                src={
+                  classData?.teacher_thumbnail
+                    ? classData?.teacher_thumbnail
+                    : '../layouts/fiive/Avatar.svg'
+                }
                 width={32}
                 height={32}
                 alt='teacherProfileImage'
               />
             </div>
 
-            <div className='teacher_name_box'>미친국어T</div>
+            <div className='teacher_name_box'>{classData?.teacher_name}</div>
           </div>
         </div>
 
         <div className='right_header_box'>
           {/* LIVE 상태 정보 영역 */}
-          <div className='live_status'>LIVE 중이 아님</div>
+          <div
+            className={`live_status ${
+              streamInfoamtion?.state === 'LIVE' && 'play'
+            }`}
+          >
+            {streamInfoamtion?.state === 'LIVE' ? 'LIVE' : 'LIVE 중이 아님'}
+          </div>
 
           {/* 현재 라이브 참여자 수 영역 */}
           <div className='live_participant_number_box'>

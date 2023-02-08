@@ -92,6 +92,11 @@
         background-color: $bluegray-2;
       }
 
+      .live_status.play {
+        color: $red-5;
+        background-color: $red-1;
+      }
+
       .live_participant_number_box {
         display: flex;
         align-items: center;

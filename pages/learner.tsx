@@ -9,7 +9,6 @@ import AxiosRequest from '../utils/AxiosRequest'
 import sendbirdUseStore from '../store/Sendbird'
 import classRoomUseStore from '../store/classRoom'
 import fiiveStudioUseStore from '../store/FiiveStudio'
-import useStore from '../store/video'
 
 import Layout from '../components/FiiveLearnerLayout'
 import Video from '../components/Video'
@@ -76,8 +75,8 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
     (state: any) => state.setStreamInfoamtion
   )
 
-  // ivs infomation 정보를 저장하는 state
-  const setIvsData = classRoomUseStore((state: any) => state.setIvsData)
+  // class infomation 정보를 저장하는 state
+  const classData = classRoomUseStore((state: any) => state.classData)
 
   // save sendbird emoji list container
   const emojiContainer = sendbirdUseStore((state: any) => state.emojiContainer)
@@ -85,10 +84,10 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
     (state: any) => state.addEmojiContainer
   )
 
-  const questions = useStore((state: any) => state.questions)
+  // const questions = useStore((state: any) => state.questions)
 
-  const [questionModal, toggleQuestionModal] = useState(false)
-  const [reactions, toggleReactions] = useState(false)
+  // const [questionModal, toggleQuestionModal] = useState(false)
+  // const [reactions, toggleReactions] = useState(false)
 
   // 반응형일 때, chat의 상대적 height state
   const [chatOffsetHeight, setChatOffsetHeight] = useState(0)
@@ -122,7 +121,7 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
       setUserInfomation(responseData)
     } else {
       console.log('수강 권한 없음')
-      // [backlog] 유저 식별에 실패하면 수강권 한 없다는 페이지로 이동되어야 함!
+      // [backlog] 유저 식별에 실패하면 수강권한 없다는 페이지로 이동되어야 함!
     }
   }
 
@@ -155,7 +154,9 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
       token: props.auth_token,
     })
 
-    setStreamInfoamtion(responseData.stream)
+    if (responseData.name !== 'AxiosError') {
+      setStreamInfoamtion(responseData.stream)
+    }
   }
 
   // 브라우저 resize 할 때마다 <Video /> 의 height 감지
@@ -187,18 +188,16 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
 
       // 3. get chat's emoji list container
       getChatEmojiContainer(props.auth_token)
-
-      // 4. save ivs Data
-      setIvsData(props?.classroom?.ivs?.channel)
     }
   }, [props.auth_token])
 
+  // 최상단 Nav의 live 상태 표현을 위한, live 상태인지 아닌지 계속 판단해주는 로직
   useEffect(() => {
-    if (ivsPlayStatus === 'play') {
+    if (ivsPlayStatus === 'waiting' || ivsPlayStatus === 'play') {
       // get live channel stream infomation
-      getLiveStreamInfomation()
-
-      // [백로그] 5초마다 계속 요청 보내야 함
+      setInterval(() => {
+        getLiveStreamInfomation()
+      }, 5000)
     }
   }, [ivsPlayStatus])
 
@@ -236,12 +235,11 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
           <section className='class-wrapper'>
             <div className='class_infomation_wrapper'>
               <div className='class_title_box'>
-                평가원 행동 증명(이감 파이널2 (시즌6) 해설 강의) n회차
+                {classData?.class_name} {classData?.session}회차
               </div>
 
               <div className='class_description_box'>
-                평가원 기술 지문 포인트 및 실전 행동 훈련 + EBS 수능특강 속 기술
-                지문 연계 대비
+                {classData?.curriculum_contents}
               </div>
             </div>
 
@@ -255,14 +253,21 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
                   alt='announceIcon'
                 />
                 <span className='class_title'>
-                  n회차 라이브에 오신 것을 환영해요
+                  {classData?.session}회차 라이브에 오신 것을 환영해요
                 </span>
               </div>
               <div className='notification_description_box'>
                 선생님과 수강생이 함께 소통하는 공간이에요. 피이브 커뮤니티
                 가이드를 준수하는 것을 잊지 마세요.
               </div>
-              <button className='community_guide_button'>
+              <button
+                className='community_guide_button'
+                onClick={() =>
+                  window.open(
+                    'https://www.notion.so/pureblack/86412e7f47b54f3680b76029777bfc0d'
+                  )
+                }
+              >
                 커뮤니티 가이드 알아보기
               </button>
             </div>
@@ -315,13 +320,13 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
         </div>
       </aside>
 
-      {questionModal && (
+      {/* {questionModal && (
         <QuestionModal
           toggle={() => {
             toggleQuestionModal(false)
           }}
         ></QuestionModal>
-      )}
+      )} */}
     </div>
   )
 }

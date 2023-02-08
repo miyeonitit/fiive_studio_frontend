@@ -111,7 +111,6 @@ const CustomMessageInput = (props: props) => {
       sendUserMessage(currentGroupChannel, params)
         .onPending((message: any) => {})
         .onFailed((error: any, message: any) => {
-          console.log(error, message, '에러왜뜸')
           toast.error(
             <div className='toast_error_box'>
               <Image
