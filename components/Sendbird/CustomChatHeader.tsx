@@ -311,9 +311,6 @@ const CustomChatHeader = (props: props) => {
         // actived user의 수를 전역적으로 저장
         setNumberOfLiveUser(activedUser.length)
 
-        console.log(numberOfLiveUser, '기존에 저장된 numberOfLiveUser')
-        console.log(activedUser.length, '현재 활성화된 유저 activedUser.length')
-
         // 기존에 저장된 actived user 수보다 현재 actived user 수가 더 많을 때, backend에
         if (numberOfLiveUser < activedUser.length) {
           sendMaxNumberOfLiveUser(activedUser.length)

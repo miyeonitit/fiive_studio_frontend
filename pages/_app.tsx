@@ -59,6 +59,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
     // save class Data in classroom
     setClassData(pageProps?.classroom?.class)
+    console.log(pageProps, 'pageProps')
   }, [])
 
   return (

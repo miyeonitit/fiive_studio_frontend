@@ -24,8 +24,8 @@ interface FiiveStudioState {
   setIvsPlayStatus: (ivsPlayStatus: string) => void
 
   // 라이브 중일 때의 정보를 저장하기 위한 stream infomation state
-  streamInfoamtion: object
-  setStreamInfoamtion: (streamInfoamtion: string) => void
+  streamInfomation: object
+  setStreamInfomation: (streamInfomation: object) => void
 
   // 라이브 참가자 수를 표현하기 위한 센드버드 number of actived user state
   numberOfLiveUser: number
@@ -89,10 +89,10 @@ const useStore = create(
           userInfomation,
         })),
 
-      streamInfoamtion: {},
-      setStreamInfoamtion: (streamInfoamtion) =>
+      streamInfomation: {},
+      setStreamInfomation: (streamInfomation) =>
         set(() => ({
-          streamInfoamtion,
+          streamInfomation,
         })),
 
       numberOfLiveUser: 0,

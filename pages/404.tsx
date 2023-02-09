@@ -10,12 +10,9 @@ const not_found = () => {
       </Head>
       <div className='title_box'>
         <div className='image_box'>
-          <Image
+          <img
             className='notFoundIcon'
             src='/icons/IMG_error_404.png'
-            //   onClick={() => handleSendMessage()}
-            width={200}
-            height={200}
             alt='notFoundIcon'
           />
         </div>

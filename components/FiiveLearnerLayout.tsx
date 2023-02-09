@@ -33,8 +33,8 @@ const FiiveLayout = (props: any) => {
   const ivsPlayStatus = fiiveStudioUseStore((state: any) => state.ivsPlayStatus)
 
   // 라이브 중일 때의 정보를 저장하기 위한 stream infomation state
-  const streamInfoamtion = fiiveStudioUseStore(
-    (state: any) => state.streamInfoamtion
+  const streamInfomation = fiiveStudioUseStore(
+    (state: any) => state.streamInfomation
   )
 
   // 라이브 참가자 수를 표현하기 위한 센드버드 number of actived user state
@@ -172,10 +172,10 @@ const FiiveLayout = (props: any) => {
           {/* LIVE 상태 정보 영역 */}
           <div
             className={`live_status ${
-              streamInfoamtion?.state === 'LIVE' && 'play'
+              streamInfomation?.state === 'LIVE' && 'play'
             }`}
           >
-            {streamInfoamtion?.state === 'LIVE' ? 'LIVE' : 'LIVE 중이 아님'}
+            {streamInfomation?.state === 'LIVE' ? 'LIVE' : 'LIVE 중이 아님'}
           </div>
 
           {/* 현재 라이브 참여자 수 영역 */}

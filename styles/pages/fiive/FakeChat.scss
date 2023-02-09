@@ -36,6 +36,14 @@
         @include body-2-400;
         color: $bluegray-6;
       }
+
+      .fake_chat_image_box {
+        img {
+          width: 100px;
+          height: 100px;
+          margin-bottom: 8px;
+        }
+      }
     }
 
     .fake_chat_body.loading {

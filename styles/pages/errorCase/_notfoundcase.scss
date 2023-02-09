@@ -9,8 +9,14 @@
       display: flex;
       justify-content: center;
       margin-bottom: 40px;
+      text-align: center;
+
+      img {
+        width: 200px;
+        height: 200px;
+      }
     }
-    text-align: center;
+
     .main_title {
       @include display-3;
       color: $bluegray-10;
@@ -38,10 +44,12 @@
       border-radius: 2px;
       border: none;
     }
+
     button.prev_button {
       background-color: $bluegray-1;
       color: $bluegray-8;
     }
+
     button.home_button {
       background-color: $fiivepurple-5;
       color: white;
@@ -55,13 +63,15 @@
 @media screen and (max-width: 767px) {
   .not_found {
     margin-top: 80px;
+
     .title_box {
+      margin-top: 40px;
+      text-align: center;
+
       .image_box {
         display: flex;
         justify-content: center;
       }
-      margin-top: 40px;
-      text-align: center;
 
       .main_title {
         @include display-4;
@@ -74,6 +84,7 @@
         color: $bluegray-8;
       }
     }
+
     .button_box {
       max-width: 327px;
     }

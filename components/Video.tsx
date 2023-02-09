@@ -38,10 +38,20 @@ const Video = (props: props) => {
     (state: any) => state.setIvsPlayStatus
   )
 
+  // 라이브 중일 때의 정보를 저장하기 위한 stream infomation state
+  const streamInfomation = fiiveStudioUseStore(
+    (state: any) => state.streamInfomation
+  )
+
   // class infomation 정보를 저장하는 state
   const classData = classRoomUseStore((state: any) => state.classData)
 
-  const [nowTime, setNowTime] = useState(new Date().getTime())
+  const [nowDate, setNowDate] = useState(
+    new Intl.DateTimeFormat('kr', {
+      dateStyle: 'full',
+      timeStyle: 'full',
+    }).format()
+  )
 
   const [init, setInit] = useState(false)
   // const [messages, setMessages] = useState<any[]>([]);
@@ -51,33 +61,41 @@ const Video = (props: props) => {
   // 현재 시간 1초마다 갱신
   useEffect(() => {
     setInterval(() => {
-      setNowTime(new Date().getTime())
+      setNowDate(
+        new Intl.DateTimeFormat('kr', {
+          dateStyle: 'full',
+          timeStyle: 'full',
+        }).format()
+      )
     }, 1000)
-  }, [nowTime])
+  }, [nowDate])
 
+  // userInfomation의 정보가 갱신되어야 하고, streamInfomation으로 LIVE 중인지 아닌지를 판단해야 함
   useEffect(() => {
-    if (Object.keys(userInfomation).length !== 0) {
-      initVideo()
-
-      // console.log('000')
-      // console.log(
-      //   nowTime,
-      //   classData?.start_date,
-      //   nowTime >= classData?.start_date,
-      //   '1111'
-      // )
-
-      // if (nowTime >= classData?.start_date) {
-      //   setIvsPlayStatus('play')
-
-      //   initVideo()
-      // }
-      // else if (nowTime < classData?.end_date) {
-      //   setIvsPlayStatus('end')
-      //   console.log('2222')
-      // }
-    }
-  }, [userInfomation])
+    // if (Object.keys(userInfomation).length !== 0) {
+    //   const liveStartDate = new Intl.DateTimeFormat('kr', {
+    //     dateStyle: 'full',
+    //     timeStyle: 'full',
+    //   }).format(classData?.start_date)
+    //   const liveEndDate = new Intl.DateTimeFormat('kr', {
+    //     dateStyle: 'full',
+    //     timeStyle: 'full',
+    //   }).format(classData?.end_date)
+    //   // 현재 회차 라이브 방송 종료
+    //   if (nowDate > liveEndDate) {
+    //     setIvsPlayStatus('end')
+    //     console.log('1 end')
+    //   } else if (nowDate < liveStartDate) {
+    //     // 현재 회차 라이브 방송 시작 전
+    //     setIvsPlayStatus('waiting')
+    //     console.log('2 waiting')
+    //   } else {
+    //     // 현재 회차 라이브 방송 중
+    //     initVideo()
+    //     console.log('3 play')
+    //   }
+    // }
+  }, [userInfomation, streamInfomation])
 
   const getChannelData = async () => {
     const requestUrl = `/classroom/${userInfomation.classId}/ivs/key`
@@ -169,17 +187,18 @@ const Video = (props: props) => {
           window.setTimeout(() => {
             player.load(playbackUrl)
             player.play()
+            setIvsPlayStatus('play')
           }, 5000)
 
-          // setIvsPlayStatus('play')
           break
       }
     })
+
     player.attachHTMLVideoElement(ivsPlayer.current)
 
     player.load(playbackUrl)
 
-    // setIvsPlayStatus('play')
+    setIvsPlayStatus('play')
 
     player.play()
 

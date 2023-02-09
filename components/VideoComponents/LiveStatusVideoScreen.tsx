@@ -3,6 +3,7 @@ import Image from 'next/image'
 
 type props = {
   ivsPlayStatus: string
+  thumbnailImgSrc: string
 }
 
 const LiveStatusVideoScreen = (props: props) => {
@@ -114,7 +115,14 @@ const LiveStatusVideoScreen = (props: props) => {
     <div className='LiveStatusVideoScreen'>
       <div className='video_screen_wrapper'>
         <div className='video_screen_image_box'>
-          <img src='../placeholders/michin.jpeg' alt='classThumbnailImage' />
+          <img
+            src={
+              props?.thumbnailImgSrc
+                ? props?.thumbnailImgSrc
+                : '/dummy/fiive_brand_dummy.jpg'
+            }
+            alt='classThumbnailImage'
+          />
         </div>
 
         {props.ivsPlayStatus === 'error' && (

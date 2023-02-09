@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, ReactElement } from 'react'
 import Head from 'next/head'
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
+import Router from 'next/router'
 import { CSSProperties } from 'styled-components'
 
 import AxiosRequest from '../utils/AxiosRequest'
@@ -26,6 +27,17 @@ type ivsType = {
   channel: { arn: string; authorized: boolean; playbackUrl: string }
 }
 
+type classType = {
+  class_name: string
+  curriculum_contents: string
+  start_date: number
+  end_date: number
+  class_thumbnail: string
+  teacher_thumbnail: null
+  teacher_name: string
+  session: number
+}
+
 type sendbirdChatType = {
   name: string
   channel_url: string
@@ -34,7 +46,7 @@ type sendbirdChatType = {
 
 type props = {
   emoji_data?: { emojis: Array<object>; id: number; name: string; url: string }
-  classroom: { ivs: ivsType; sendbird: sendbirdChatType }
+  classroom: { ivs: ivsType; sendbird: sendbirdChatType; class: classType }
   class_id: string
   auth_token: string
   sendbirdAccessToken: string
@@ -60,6 +72,9 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
 
   // waiting: 라이브 전 재생 대기중 <> play: 재생중 <> end: 라이브 종료 <> error : 재생 에러
   const ivsPlayStatus = fiiveStudioUseStore((state: any) => state.ivsPlayStatus)
+  const setIvsPlayStatus = fiiveStudioUseStore(
+    (state: any) => state.setIvsPlayStatus
+  )
 
   // user infomation state
   const userInfomation = fiiveStudioUseStore(
@@ -73,8 +88,8 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
   const setAuthToken = fiiveStudioUseStore((state: any) => state.setAuthToken)
 
   // 라이브 중일 때의 정보를 저장하기 위한 stream infomation state
-  const setStreamInfoamtion = fiiveStudioUseStore(
-    (state: any) => state.setStreamInfoamtion
+  const setStreamInfomation = fiiveStudioUseStore(
+    (state: any) => state.setStreamInfomation
   )
 
   // class infomation 정보를 저장하는 state
@@ -116,7 +131,11 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
       setUserInfomation(responseData)
     } else {
       console.log('수강 권한 없음')
-      // [backlog] 유저 식별에 실패하면 수강권 한 없다는 페이지로 이동되어야 함!
+
+      Router.push({
+        pathname: '/not-access',
+        query: { classId: props.class_id },
+      })
     }
   }
 
@@ -149,7 +168,11 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
       token: props.auth_token,
     })
 
-    setStreamInfoamtion(responseData.stream)
+    if (responseData.name !== 'AxiosError') {
+      setStreamInfomation(responseData.stream)
+    } else {
+      setStreamInfomation({})
+    }
   }
 
   // 브라우저 resize 할 때마다 <Video /> 의 height 감지
@@ -228,11 +251,12 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
           />
 
           {/* live 시작 전, 재생 에러, live 종료일 때 띄우는 준비 화면 컴포넌트 */}
-          {/* {(ivsPlayStatus === 'waiting' ||
-            ivsPlayStatus === 'error' ||
-            ivsPlayStatus === 'end') && (
-            <LiveStatusVideoScreen ivsPlayStatus={ivsPlayStatus} />
-          )} */}
+          {ivsPlayStatus !== 'play' && (
+            <LiveStatusVideoScreen
+              ivsPlayStatus={ivsPlayStatus}
+              thumbnailImgSrc={props?.classroom?.class?.class_thumbnail}
+            />
+          )}
         </section>
 
         {/* class infomation 영역 */}
