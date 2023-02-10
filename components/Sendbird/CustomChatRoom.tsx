@@ -139,14 +139,6 @@ const CustomChatRoom = (props: props) => {
     }
   }
 
-  const compareMessageDate = (date: number) => {
-    const dateTime = new Date(date)
-
-    const day = `0${dateTime.getDate()}`.slice(-2)
-
-    return day
-  }
-
   const clickEditedMessage = () => {
     setIsEditedMessage(true)
     setIsMoreMiniMenu(false)

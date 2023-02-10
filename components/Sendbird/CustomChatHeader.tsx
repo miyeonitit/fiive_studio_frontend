@@ -233,7 +233,7 @@ const CustomChatHeader = (props: props) => {
   }
 
   const sendMaxNumberOfLiveUser = async (learnerNumber: number) => {
-    const requestUrl = `/classroom/${router.query.classId}/sesson/${router.query.sessionIdx}`
+    const requestUrl = `/classroom/${router.query.classId}/session/${router.query.sessionIdx}`
 
     const body = {
       maxNumberOfLearners: learnerNumber,

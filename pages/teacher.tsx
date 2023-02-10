@@ -208,12 +208,10 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
   }, [props.auth_token])
 
   useEffect(() => {
-    if (ivsPlayStatus === 'play') {
-      // get live channel stream infomation
-      setInterval(() => {
-        getLiveStreamInfomation()
-      }, 5000)
-    }
+    // get live channel stream infomation
+    setInterval(() => {
+      getLiveStreamInfomation()
+    }, 5000)
   }, [ivsPlayStatus])
 
   return (

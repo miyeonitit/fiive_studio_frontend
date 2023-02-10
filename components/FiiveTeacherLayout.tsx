@@ -41,6 +41,9 @@ const FiiveLayout = (props: any) => {
     (state: any) => state.numberOfLiveUser
   )
 
+  // update now local time
+  const nowTime = fiiveStudioUseStore((state: any) => state.nowTime)
+
   // class infomation 정보를 저장하는 state
   const classData = classRoomUseStore((state: any) => state.classData)
 
@@ -65,6 +68,27 @@ const FiiveLayout = (props: any) => {
           zIndex: '-1',
         }
       : { zIndex: 'unset' }
+
+  // 라이브 종료 시간으로부터 현재 시간이 몇 분 남았는지 계산하는 메서드
+  const getBeforeMinutesEndTime = (endTime: number) => {
+    let gap = endTime - nowTime.getTime()
+    let minutes = Math.ceil(gap / 1000 / 60)
+
+    return minutes
+  }
+
+  // 현재 시간 업데이트 될 때마다, 10분 남았을 때부터 툴팁이 띄워지도록 하는 로직
+  // 라이브 종료 시간이 지나면 음수로 표현되는데, 음수일 때는 실행되지 않도록 방지
+  useEffect(() => {
+    if (
+      Object.keys(classData).length !== 0 &&
+      getBeforeMinutesEndTime(classData?.end_date) >= 0
+    ) {
+      if (getBeforeMinutesEndTime(classData?.end_date) <= 10) {
+        setIsLiveEndPopOver(true)
+      }
+    }
+  }, [nowTime])
 
   return (
     <div className='fiive_layout teacher_layout'>
@@ -210,7 +234,11 @@ const FiiveLayout = (props: any) => {
           {/* live endTime이 끝나기 전에 teacher에게 노출되는 툴팁 */}
           {isLiveEndPopOver && (
             <Popover
-              liveStatusObject={liveEndBefore10Minutes}
+              liveStatusObject={
+                getBeforeMinutesEndTime(classData?.end_date) <= 1
+                  ? liveEndBefore1Minutes
+                  : liveEndBefore10Minutes
+              }
               setIsLiveEndPopOver={setIsLiveEndPopOver}
             />
           )}

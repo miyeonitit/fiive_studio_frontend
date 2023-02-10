@@ -43,59 +43,41 @@ const Video = (props: props) => {
     (state: any) => state.streamInfomation
   )
 
+  // update now local time
+  const nowTime = fiiveStudioUseStore((state: any) => state.nowTime)
+
   // class infomation 정보를 저장하는 state
   const classData = classRoomUseStore((state: any) => state.classData)
-
-  const [nowDate, setNowDate] = useState(
-    new Intl.DateTimeFormat('kr', {
-      dateStyle: 'full',
-      timeStyle: 'full',
-    }).format()
-  )
 
   const [init, setInit] = useState(false)
   // const [messages, setMessages] = useState<any[]>([]);
 
   const ivsPlayer = useRef<HTMLVideoElement>(null)
 
-  // 현재 시간 1초마다 갱신
-  useEffect(() => {
-    setInterval(() => {
-      setNowDate(
-        new Intl.DateTimeFormat('kr', {
-          dateStyle: 'full',
-          timeStyle: 'full',
-        }).format()
-      )
-    }, 1000)
-  }, [nowDate])
-
   // userInfomation의 정보가 갱신되어야 하고, streamInfomation으로 LIVE 중인지 아닌지를 판단해야 함
   useEffect(() => {
-    // if (Object.keys(userInfomation).length !== 0) {
-    //   const liveStartDate = new Intl.DateTimeFormat('kr', {
-    //     dateStyle: 'full',
-    //     timeStyle: 'full',
-    //   }).format(classData?.start_date)
-    //   const liveEndDate = new Intl.DateTimeFormat('kr', {
-    //     dateStyle: 'full',
-    //     timeStyle: 'full',
-    //   }).format(classData?.end_date)
-    //   // 현재 회차 라이브 방송 종료
-    //   if (nowDate > liveEndDate) {
-    //     setIvsPlayStatus('end')
-    //     console.log('1 end')
-    //   } else if (nowDate < liveStartDate) {
-    //     // 현재 회차 라이브 방송 시작 전
-    //     setIvsPlayStatus('waiting')
-    //     console.log('2 waiting')
-    //   } else {
-    //     // 현재 회차 라이브 방송 중
-    //     initVideo()
-    //     console.log('3 play')
-    //   }
-    // }
-  }, [userInfomation, streamInfomation])
+    if (Object.keys(userInfomation).length !== 0) {
+      const liveStartDate = new Date(classData?.start_date)
+
+      const liveEndDate = new Date(classData?.end_date)
+
+      // 현재 회차 라이브 방송 종료
+      if (nowTime > liveEndDate) {
+        setIvsPlayStatus('end')
+        console.log('1 end')
+      } else if (nowTime < liveStartDate) {
+        // 현재 회차 라이브 방송 시작 전
+        setIvsPlayStatus('waiting')
+        console.log('2 waiting')
+      } else {
+        // 방송이 켜져 있어야지만, 현재 회차 라이브 방송 플레이어 재생 시작
+        if (streamInfomation?.state === 'LIVE') {
+          initVideo()
+          console.log('3 play')
+        }
+      }
+    }
+  }, [nowTime, userInfomation, streamInfomation])
 
   const getChannelData = async () => {
     const requestUrl = `/classroom/${userInfomation.classId}/ivs/key`
@@ -117,53 +99,54 @@ const Video = (props: props) => {
   }
 
   const initVideo = async () => {
-    // Bail if already initialized
-    if (init) return
+    if (streamInfomation?.state === 'LIVE') {
+      // Bail if already initialized
+      if (init) return
 
-    // Bail if IVS sdk is not loaded
-    const { IVSPlayer } = window
+      // Bail if IVS sdk is not loaded
+      const { IVSPlayer } = window
 
-    if (typeof IVSPlayer === 'undefined') return
+      if (typeof IVSPlayer === 'undefined') return
 
-    // Bail if player is not supported
-    if (!IVSPlayer.isPlayerSupported) return
+      // Bail if player is not supported
+      if (!IVSPlayer.isPlayerSupported) return
 
-    // get user's token for ivs play
-    const { token } = await getChannelData()
+      // get user's token for ivs play
+      const { token } = await getChannelData()
 
-    // get playbackUrl in channelData
-    const playbackUrl = props.playbackUrl + `?token=${token}`
+      // get playbackUrl in channelData
+      const playbackUrl = props.playbackUrl + `?token=${token}`
 
-    const player = IVSPlayer.create()
+      const player = IVSPlayer.create()
 
-    // Handle embedded metadata events
-    player.addEventListener(
-      IVSPlayer.PlayerEventType.TEXT_METADATA_CUE,
-      (cue: any) => {
-        // const type = cue.text
-        const { text: json } = cue
-        const { type, message } = JSON.parse(json)
+      // Handle embedded metadata events
+      player.addEventListener(
+        IVSPlayer.PlayerEventType.TEXT_METADATA_CUE,
+        (cue: any) => {
+          // const type = cue.text
+          const { text: json } = cue
+          const { type, message } = JSON.parse(json)
 
-        switch (type) {
-          case 'ANNOUNCEMENT':
-            // addAnnouncement(message)
-            break
-          case 'QUESTION':
-            // addQuestion(message)
-            break
-          case 'RESOLVE_QUESTION':
-            // resolveQuestion(message)
-            break
-          case 'REACTION':
-            console.log('reaction post success')
-            addReaction(message)
-            break
-          case 'TIMER':
-            // setTimer(message)
-            break
-        }
+          switch (type) {
+            case 'ANNOUNCEMENT':
+              // addAnnouncement(message)
+              break
+            case 'QUESTION':
+              // addQuestion(message)
+              break
+            case 'RESOLVE_QUESTION':
+              // resolveQuestion(message)
+              break
+            case 'REACTION':
+              console.log('reaction post success')
+              addReaction(message)
+              break
+            case 'TIMER':
+              // setTimer(message)
+              break
+          }
 
-        /*
+          /*
         setMessages((msgs) => [
           ...msgs,
           {
@@ -172,37 +155,38 @@ const Video = (props: props) => {
           },
         ]);
         */
-      }
-    )
+        }
+      )
 
-    player.addEventListener(IVSPlayer.PlayerEventType.ERROR, (error: any) => {
-      const { type = null } = error
+      player.addEventListener(IVSPlayer.PlayerEventType.ERROR, (error: any) => {
+        const { type = null } = error
 
-      switch (type) {
-        case 'ErrorNoSource':
-        case 'ErrorNetworkIO':
-        case 'ErrorNotAvailable':
-          setIvsPlayStatus('error')
+        switch (type) {
+          case 'ErrorNoSource':
+          case 'ErrorNetworkIO':
+          case 'ErrorNotAvailable':
+            setIvsPlayStatus('error')
 
-          window.setTimeout(() => {
-            player.load(playbackUrl)
-            player.play()
-            setIvsPlayStatus('play')
-          }, 5000)
+            window.setTimeout(() => {
+              player.load(playbackUrl)
+              player.play()
+              setIvsPlayStatus('play')
+            }, 5000)
 
-          break
-      }
-    })
+            break
+        }
+      })
 
-    player.attachHTMLVideoElement(ivsPlayer.current)
+      player.attachHTMLVideoElement(ivsPlayer.current)
 
-    player.load(playbackUrl)
+      player.load(playbackUrl)
 
-    setIvsPlayStatus('play')
+      setIvsPlayStatus('play')
 
-    player.play()
+      player.play()
 
-    setInit(true)
+      setInit(true)
+    }
   }
 
   return (

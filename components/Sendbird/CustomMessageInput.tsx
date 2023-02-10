@@ -26,8 +26,8 @@ const CustomMessageInput = (props: props) => {
 
   const [messageText, setMessageText] = useState('')
 
-  const [isUserTyping, setIsUserTyping] = useState(false)
-  const [typingUsersName, setTypingUsersName] = useState([])
+  // const [isUserTyping, setIsUserTyping] = useState(false)
+  // const [typingUsersName, setTypingUsersName] = useState([])
 
   const messageInputWrapperRef =
     React.useRef() as React.MutableRefObject<HTMLDivElement>
