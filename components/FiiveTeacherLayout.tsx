@@ -3,6 +3,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import { CSSProperties } from 'styled-components'
 
+import classRoomUseStore from '../store/classRoom'
 import fiiveStudioUseStore from '../store/FiiveStudio'
 
 import Popover from '../components/VideoComponents/PopOver'
@@ -30,6 +31,22 @@ const FiiveLayout = (props: any) => {
     (state: any) => state.setIvsPlayStatus
   )
 
+  // 라이브 중일 때의 정보를 저장하기 위한 stream infomation state
+  const streamInfomation = fiiveStudioUseStore(
+    (state: any) => state.streamInfomation
+  )
+
+  // 라이브 참가자 수를 표현하기 위한 센드버드 number of actived user state
+  const numberOfLiveUser = fiiveStudioUseStore(
+    (state: any) => state.numberOfLiveUser
+  )
+
+  // update now local time
+  const nowTime = fiiveStudioUseStore((state: any) => state.nowTime)
+
+  // class infomation 정보를 저장하는 state
+  const classData = classRoomUseStore((state: any) => state.classData)
+
   // live endTime이 끝나기 전에 teacher에게 노출되는 말풍선 boolean state
   const [isLiveEndPopOver, setIsLiveEndPopOver] = useState(false)
 
@@ -51,6 +68,27 @@ const FiiveLayout = (props: any) => {
           zIndex: '-1',
         }
       : { zIndex: 'unset' }
+
+  // 라이브 종료 시간으로부터 현재 시간이 몇 분 남았는지 계산하는 메서드
+  const getBeforeMinutesEndTime = (endTime: number) => {
+    let gap = endTime - nowTime.getTime()
+    let minutes = Math.ceil(gap / 1000 / 60)
+
+    return minutes
+  }
+
+  // 현재 시간 업데이트 될 때마다, 10분 남았을 때부터 툴팁이 띄워지도록 하는 로직
+  // 라이브 종료 시간이 지나면 음수로 표현되는데, 음수일 때는 실행되지 않도록 방지
+  useEffect(() => {
+    if (
+      Object.keys(classData).length !== 0 &&
+      getBeforeMinutesEndTime(classData?.end_date) >= 0
+    ) {
+      if (getBeforeMinutesEndTime(classData?.end_date) <= 10) {
+        setIsLiveEndPopOver(true)
+      }
+    }
+  }, [nowTime])
 
   return (
     <div className='fiive_layout teacher_layout'>
@@ -93,20 +131,30 @@ const FiiveLayout = (props: any) => {
           <div className='fiive_class_infomation_box'>
             <div className='teacher_profile_image_box'>
               <Image
-                src='../layouts/fiive/Avatar.svg'
+                src={
+                  classData?.teacher_thumbnail
+                    ? classData?.teacher_thumbnail
+                    : '../layouts/fiive/Avatar.svg'
+                }
                 width={32}
                 height={32}
                 alt='teacherProfileImage'
               />
             </div>
 
-            <div className='teacher_name_box'>미친국어T</div>
+            <div className='teacher_name_box'>{classData?.teacher_name}</div>
           </div>
         </div>
 
         <div className='right_header_box'>
           {/* LIVE 상태 정보 영역 */}
-          <div className='live_status'>LIVE 준비 중</div>
+          <div
+            className={`live_status ${
+              streamInfomation?.state === 'LIVE' && 'play'
+            }`}
+          >
+            {streamInfomation?.state === 'LIVE' ? 'LIVE' : 'LIVE 중이 아님'}
+          </div>
 
           {/* 현재 라이브 참여자 수 영역 */}
           <div className='live_participant_number_box'>
@@ -116,7 +164,7 @@ const FiiveLayout = (props: any) => {
               height={12}
               alt='liveParticipant'
             />
-            <span className='live_participant_number'>2</span>
+            <span className='live_participant_number'>{numberOfLiveUser}</span>
           </div>
         </div>
 
@@ -186,7 +234,11 @@ const FiiveLayout = (props: any) => {
           {/* live endTime이 끝나기 전에 teacher에게 노출되는 툴팁 */}
           {isLiveEndPopOver && (
             <Popover
-              liveStatusObject={liveEndBefore10Minutes}
+              liveStatusObject={
+                getBeforeMinutesEndTime(classData?.end_date) <= 1
+                  ? liveEndBefore1Minutes
+                  : liveEndBefore10Minutes
+              }
               setIsLiveEndPopOver={setIsLiveEndPopOver}
             />
           )}

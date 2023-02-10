@@ -1,12 +1,14 @@
 import React, { ReactElement } from 'react'
 import Image from 'next/image'
 import Head from 'next/head'
+import { useRouter } from 'next/router'
 
 import Layout from '../components/FiiveLearnerLayout'
 
-import dummyImg from '../public/dummy/fiive_brand_dummy.jpg'
-
 const not_access = () => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const router = useRouter()
+
   return (
     <div className='not_access'>
       <Head>
@@ -48,7 +50,7 @@ const not_access = () => {
               <div className='chat_the_menu_box'>
                 <div className='more_button_box'>
                   <Image
-                    src='/Sendbird/more_button.svg'
+                    src='/pages/Sendbird/more_button.svg'
                     width={20}
                     height={20}
                     alt='moreButton'
@@ -57,7 +59,7 @@ const not_access = () => {
 
                 <div className='close_button_box'>
                   <Image
-                    src='/Sendbird/responsive_close_button.svg'
+                    src='/pages/Sendbird/responsive_close_button.svg'
                     width={20}
                     height={20}
                     alt='closeButton'
@@ -121,12 +123,11 @@ const not_access = () => {
             {/* 채팅창, 보내기버튼 있는 부분 */}
             <div className='chat_bottom_box'>
               <Image
-                className='sendMessageIcon'
-                src={'/Sendbird/non_active_send_message_icon.svg'}
-                //   onClick={() => handleSendMessage()}
+                className='fake_chat_send_button'
+                src='/pages/Sendbird/non_active_send_message_icon.svg'
                 width={24}
                 height={24}
-                alt='sendMessageIcon'
+                alt='fake_chat_send_button'
               />
             </div>
           </div>
@@ -143,8 +144,25 @@ const not_access = () => {
           </div>
         </div>
         <div className='button_box'>
-          <button className='home_button'>홈으로</button>
-          <button className='apply_button'>수강 신청하기</button>
+          <button
+            className='home_button'
+            onClick={() => {
+              window.open('https://fiive.me/', '_self')
+            }}
+          >
+            홈으로
+          </button>
+          <button
+            className='apply_button'
+            onClick={() => {
+              window.open(
+                `https://fiive.me/contents/${router.query.classId}`,
+                '_self'
+              )
+            }}
+          >
+            수강 신청하기
+          </button>
         </div>
       </div>
     </div>

@@ -26,8 +26,8 @@ const CustomMessageInput = (props: props) => {
 
   const [messageText, setMessageText] = useState('')
 
-  const [isUserTyping, setIsUserTyping] = useState(false)
-  const [typingUsersName, setTypingUsersName] = useState([])
+  // const [isUserTyping, setIsUserTyping] = useState(false)
+  // const [typingUsersName, setTypingUsersName] = useState([])
 
   const messageInputWrapperRef =
     React.useRef() as React.MutableRefObject<HTMLDivElement>
@@ -111,7 +111,6 @@ const CustomMessageInput = (props: props) => {
       sendUserMessage(currentGroupChannel, params)
         .onPending((message: any) => {})
         .onFailed((error: any, message: any) => {
-          console.log(error, message, '에러왜뜸')
           toast.error(
             <div className='toast_error_box'>
               <Image

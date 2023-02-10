@@ -16,6 +16,7 @@ import '../styles/app.scss'
 import '../styles/globals.css'
 
 import AxiosRequest from '../utils/AxiosRequest'
+import classRoomUseStore from '../store/classRoom'
 import fiiveStudioUseStore from '../store/FiiveStudio'
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
@@ -25,7 +26,18 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   // 반응형 미디어쿼리 스타일 지정을 위한 브라우저 넓이 측정 전역 state
   const setOffsetX = fiiveStudioUseStore((state: any) => state.setOffsetX)
 
+  // save class id
   const setClassId = fiiveStudioUseStore((state: any) => state.setClassId)
+
+  // update now local time
+  const nowTime = fiiveStudioUseStore((state: any) => state.nowTime)
+  const setNowTime = fiiveStudioUseStore((state: any) => state.setNowTime)
+
+  // ivs infomation 정보를 저장하는 state
+  const setIvsData = classRoomUseStore((state: any) => state.setIvsData)
+
+  // class infomation 정보를 저장하는 state
+  const setClassData = classRoomUseStore((state: any) => state.setClassData)
 
   const reset = () => {
     if (typeof window !== 'undefined') {
@@ -44,9 +56,26 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   useEffect(() => {
     reset()
 
-    // classId 전역적으로 저장
-    setClassId(pageProps.class_id)
+    // save classId
+    setClassId(pageProps?.class_id)
+
+    // save ivs Data in classroom
+    setIvsData(pageProps?.classroom?.ivs?.channel)
+
+    // save class Data in classroom
+    setClassData(pageProps?.classroom?.class)
   }, [])
+
+  // 현재 시간 기준으로 0초가 될 때, 5초의 주기마다 갱신
+  useEffect(() => {
+    setInterval(() => {
+      const timeSeconds = new Date().getSeconds()
+
+      if (timeSeconds < 5) {
+        setNowTime(new Date())
+      }
+    }, 5000)
+  }, [nowTime])
 
   return (
     <>

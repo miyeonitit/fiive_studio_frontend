@@ -235,6 +235,7 @@
 
         .chat_bottom_box {
           display: flex;
+          flex-direction: row-reverse;
           margin-top: auto;
           padding: 6px 6px 6px 12px;
           background-color: $bluegray-1;
@@ -247,6 +248,7 @@
       }
     }
   }
+
   .error_modal {
     position: fixed;
     top: 50%;

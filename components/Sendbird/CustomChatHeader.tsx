@@ -54,6 +54,14 @@ const CustomChatHeader = (props: props) => {
     (state: any) => state.setIsOpenResponsiveLiveMember
   )
 
+  // 라이브 참가자 수를 표현하기 위한 센드버드 number of actived user state
+  const numberOfLiveUser = fiiveStudioUseStore(
+    (state: any) => state.numberOfLiveUser
+  )
+  const setNumberOfLiveUser = fiiveStudioUseStore(
+    (state: any) => state.setNumberOfLiveUser
+  )
+
   // user auth token for API
   const authToken = fiiveStudioUseStore((state: any) => state.authToken)
 
@@ -62,7 +70,7 @@ const CustomChatHeader = (props: props) => {
     (state: any) => state.setIsUserList
   )
 
-  const { currentGroupChannel } = useChannelContext()
+  let { currentGroupChannel } = useChannelContext()
 
   // 더보기 메뉴 노출 boolean state
   const [isMoreMiniMenu, setIsMoreMiniMenu] = useState(false)
@@ -155,8 +163,6 @@ const CustomChatHeader = (props: props) => {
     }
   }
 
-  console.log(currentGroupChannel.members, 'header member')
-
   const handleUserFilterStatus = async (status: string) => {
     let requestUrl: string = ''
     let responseData: any = null || { muted_list: Array, next: '' }
@@ -226,6 +232,22 @@ const CustomChatHeader = (props: props) => {
     controlToastPopup(true, '채팅방 URL을 복사했어요.')
   }
 
+  const sendMaxNumberOfLiveUser = async (learnerNumber: number) => {
+    const requestUrl = `/classroom/${router.query.classId}/session/${router.query.sessionIdx}`
+
+    const body = {
+      maxNumberOfLearners: learnerNumber,
+    }
+
+    // ivs player를 재생할 수 있는 user의 전용 token을 받아오는 request
+    const responseData = await AxiosRequest({
+      url: requestUrl,
+      method: 'PATCH',
+      body: body,
+      token: authToken,
+    })
+  }
+
   // 더보기 미니 메뉴 outside click
   const clickModalOutside = (e: MouseEvent<HTMLElement>) => {
     const event = e.target as HTMLDivElement
@@ -272,6 +294,35 @@ const CustomChatHeader = (props: props) => {
     contextSetIsUserList(isUserList)
     setIsOpenResponsiveLiveMember(isUserList)
   }, [isUserList])
+
+  useEffect(() => {
+    // '라이브 참여자' 로 필터 보기 할 때만 actived user 업데이트
+    if (userFilter === '라이브 참여자') {
+      // 현재 채팅방의 정보를 5초마다 주기적으로 갱신
+      let channelInfomationCount = setInterval(function () {
+        currentGroupChannel.refresh()
+        setUserList(currentGroupChannel.members)
+
+        // actived user가 5초마다 몇 명인지 업데이트 후 전역 state로 저장
+        const activedUser = currentGroupChannel.members.filter(
+          (user) => user.connectionStatus === 'online'
+        )
+
+        // actived user의 수를 전역적으로 저장
+        setNumberOfLiveUser(activedUser.length)
+
+        // 기존에 저장된 actived user 수보다 현재 actived user 수가 더 많을 때, backend에
+        if (numberOfLiveUser < activedUser.length) {
+          sendMaxNumberOfLiveUser(activedUser.length)
+        }
+      }, 5000)
+
+      // setInterval 메서드의 cleanup 처리
+      return () => {
+        clearInterval(channelInfomationCount)
+      }
+    }
+  }, [userList])
 
   return (
     <div className='CustomChatHeader'>
@@ -491,6 +542,7 @@ const CustomChatHeader = (props: props) => {
                     saveIndex={saveIndex}
                     setSaveIndex={setSaveIndex}
                     saveComponentIndex={saveComponentIndex}
+                    currentGroupChannel={currentGroupChannel}
                   />
                 ))}
           </div>

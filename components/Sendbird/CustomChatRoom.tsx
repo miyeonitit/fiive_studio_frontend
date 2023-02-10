@@ -12,6 +12,7 @@ import { useChannelContext } from '@sendbird/uikit-react/Channel/context'
 import useSendbirdStateContext from '@sendbird/uikit-react/useSendbirdStateContext'
 import sendbirdSelectors from '@sendbird/uikit-react/sendbirdSelectors'
 import ImageRenderer from '@sendbird/uikit-react/ui/ImageRenderer'
+import { GroupChannelHandler } from '@sendbird/chat/groupChannel'
 
 import 'animate.css'
 import '../../node_modules/react-toastify/dist/ReactToastify.css'
@@ -24,6 +25,24 @@ import EmojiIcon from './components/EmojiIcon'
 import EmojiContainerBox from './components/EmojiContainerBox'
 import ResponsiveEmojiContainerBox from './ResponsiveComponents/ResponsiveEmojiContainerBox'
 import ResponsiveHandleErrorMessage from './ResponsiveComponents/ResponsiveHandleErrorMessage'
+import { ApplicationUserListQueryParams } from '@sendbird/chat'
+
+type messageSenderObj = {
+  connectionStatus: string
+  friendDiscoveryKey: null
+  friendName: null
+  isActive: true
+  isBlockedByMe: false
+  lastSeenAt: null
+  metaData: { name: string; role: string }
+  nickname: string
+  plainProfileUrl: string
+  preferredLanguages: null
+  requireAuth: false
+  role: string
+  userId: string
+  _iid: string
+}
 
 type props = {
   message: object
@@ -51,7 +70,7 @@ const CustomChatRoom = (props: props) => {
   const messageInfomation = props.message?.message
 
   // const sender = messageInfomation?.sender
-  const [sender, setSender] = useState<any[]>([])
+  const [sender, setSender] = useState<messageSenderObj>({})
 
   const [indexOfMessage, setIndexOfMessage] = useState(-1)
 
@@ -90,10 +109,9 @@ const CustomChatRoom = (props: props) => {
   const [isResponsiveErrorMsgModal, setIsResponsiveErrorMsgModal] =
     useState(false)
 
-  const miniMenuRef =
-    React.useRef() as React.MutableRefObject<HTMLButtonElement>
+  const miniMenuRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
   const responsiveMoreMenuRef =
-    React.useRef() as React.MutableRefObject<HTMLButtonElement>
+    React.useRef() as React.MutableRefObject<HTMLDivElement>
   const editInputRef =
     React.useRef() as React.MutableRefObject<HTMLTextAreaElement>
   const reactionTopRef =
@@ -119,14 +137,6 @@ const CustomChatRoom = (props: props) => {
         hours - 12 <= 10 ? (hours - 12).toString() : hours
       }:${minutes}`
     }
-  }
-
-  const compareMessageDate = (date: number) => {
-    const dateTime = new Date(date)
-
-    const day = `0${dateTime.getDate()}`.slice(-2)
-
-    return day
   }
 
   const clickEditedMessage = () => {
@@ -395,7 +405,7 @@ const CustomChatRoom = (props: props) => {
 
   // console.log(sender, 'sender')
   // console.log(messageInfomation, 'info')
-  // console.log(emojiContainer, 'emojiContainer')
+  // console.log(reactedEmojis, 'reactedEmojis')
   // console.log(offsetX, 'offsetX')
   // console.log(currentGroupChannel, 'currentGroupChannel')
 
@@ -600,7 +610,7 @@ const CustomChatRoom = (props: props) => {
                   ref={miniMenuRef}
                 >
                   <div className='more_mini_menu'>
-                    {userRole !== 'learner' &&
+                    {userRole === 'operator' &&
                       (isMutedUser ? (
                         <div
                           className='list_in_menu'
@@ -665,7 +675,7 @@ const CustomChatRoom = (props: props) => {
                       </div>
                     )}
 
-                    {userRole !== 'learner' && (
+                    {userRole === 'operator' && (
                       <div
                         className='list_in_menu'
                         onClick={() => deleteMessage()}

@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react'
 import Image from 'next/image'
 import { CSSProperties } from 'styled-components'
 
+import classRoomUseStore from '../store/classRoom'
 import fiiveStudioUseStore from '../store/FiiveStudio'
 import ChannelService from '../utils/ChannelService'
 
@@ -32,9 +33,17 @@ const FiiveLayout = (props: any) => {
   const ivsPlayStatus = fiiveStudioUseStore((state: any) => state.ivsPlayStatus)
 
   // 라이브 중일 때의 정보를 저장하기 위한 stream infomation state
-  const streamInfoamtion = fiiveStudioUseStore(
-    (state: any) => state.streamInfoamtion
+  const streamInfomation = fiiveStudioUseStore(
+    (state: any) => state.streamInfomation
   )
+
+  // 라이브 참가자 수를 표현하기 위한 센드버드 number of actived user state
+  const numberOfLiveUser = fiiveStudioUseStore(
+    (state: any) => state.numberOfLiveUser
+  )
+
+  // class infomation 정보를 저장하는 state
+  const classData = classRoomUseStore((state: any) => state.classData)
 
   const emojiListRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
 
@@ -103,8 +112,6 @@ const FiiveLayout = (props: any) => {
     })
   }, [])
 
-  console.log(streamInfoamtion, 'layout streamInfoamtion')
-
   return (
     <div className='fiive_layout learner_layout'>
       <header className='layout_header'>
@@ -146,20 +153,30 @@ const FiiveLayout = (props: any) => {
           <div className='fiive_class_infomation_box'>
             <div className='teacher_profile_image_box'>
               <Image
-                src='../layouts/fiive/Avatar.svg'
+                src={
+                  classData?.teacher_thumbnail
+                    ? classData?.teacher_thumbnail
+                    : '../layouts/fiive/Avatar.svg'
+                }
                 width={32}
                 height={32}
                 alt='teacherProfileImage'
               />
             </div>
 
-            <div className='teacher_name_box'>미친국어T</div>
+            <div className='teacher_name_box'>{classData?.teacher_name}</div>
           </div>
         </div>
 
         <div className='right_header_box'>
           {/* LIVE 상태 정보 영역 */}
-          <div className='live_status'>LIVE 준비 중</div>
+          <div
+            className={`live_status ${
+              streamInfomation?.state === 'LIVE' && 'play'
+            }`}
+          >
+            {streamInfomation?.state === 'LIVE' ? 'LIVE' : 'LIVE 중이 아님'}
+          </div>
 
           {/* 현재 라이브 참여자 수 영역 */}
           <div className='live_participant_number_box'>
@@ -169,7 +186,7 @@ const FiiveLayout = (props: any) => {
               height={12}
               alt='liveParticipant'
             />
-            <span className='live_participant_number'>2</span>
+            <span className='live_participant_number'>{numberOfLiveUser}</span>
           </div>
         </div>
 

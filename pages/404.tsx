@@ -1,6 +1,6 @@
 import React from 'react'
-import Image from 'next/image'
 import Head from 'next/head'
+import Router from 'next/router'
 
 const not_found = () => {
   return (
@@ -10,12 +10,9 @@ const not_found = () => {
       </Head>
       <div className='title_box'>
         <div className='image_box'>
-          <Image
+          <img
             className='notFoundIcon'
-            src='../../icons/IMG_error_404.png'
-            //   onClick={() => handleSendMessage()}
-            width={200}
-            height={200}
+            src='/icons/IMG_error_404.png'
             alt='notFoundIcon'
           />
         </div>
@@ -27,8 +24,22 @@ const not_found = () => {
         </div>
       </div>
       <div className='button_box'>
-        <button className='prev_button'>이전으로</button>
-        <button className='home_button'>홈으로</button>
+        <button
+          className='prev_button'
+          onClick={() => {
+            Router.back()
+          }}
+        >
+          이전으로
+        </button>
+        <button
+          className='home_button'
+          onClick={() => {
+            window.open('https://fiive.me/', '_self')
+          }}
+        >
+          홈으로
+        </button>
       </div>
     </div>
   )

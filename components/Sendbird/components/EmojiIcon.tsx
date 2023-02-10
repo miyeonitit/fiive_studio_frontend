@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { useChannelContext } from '@sendbird/uikit-react/Channel/context'
 
@@ -81,6 +81,14 @@ const EmojiIcon = (props: props) => {
     })
   }
 
+  const filterUserIdToNickname = (user_id: string) => {
+    const findUserNickname = currentGroupChannel.members.find(
+      (user: any) => user?.userId === user_id
+    )
+
+    return findUserNickname.nickname
+  }
+
   const tooltipAsCursor = async (e, setter) => {
     if (e.target.parentNode.classList[1] === 'cursor') {
       await setter(true)
@@ -113,11 +121,11 @@ const EmojiIcon = (props: props) => {
     <div className='EmojiIcon'>
       {isReactedUser && (
         <div className='reacted_user_list_tooltip'>
-          {props.emoji.userIds.map((user: string, idx: number) =>
-            props.emoji.userIds[props.emoji.userIds.length - 1] === user ? (
-              <span key={idx}>{user}</span>
+          {props.emoji.userIds.map((user_id: string, idx: number) =>
+            props.emoji.userIds[props.emoji.userIds.length - 1] === user_id ? (
+              <span key={idx}>{filterUserIdToNickname(user_id)}</span>
             ) : (
-              <span key={idx}>{user}, </span>
+              <span key={idx}>{filterUserIdToNickname(user_id)}, </span>
             )
           )}
         </div>
@@ -128,7 +136,6 @@ const EmojiIcon = (props: props) => {
           props.emoji.userIds.includes(props.userId) && 'active'
         }`}
         onClick={() => addUserReaction(props.emoji.key)}
-        // onMouseOver={(e) => handleTop(e)}
         onMouseOver={() => setIsReactedUser(true)}
         onMouseOut={() => setIsReactedUser(false)}
       >

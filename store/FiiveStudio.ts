@@ -24,8 +24,12 @@ interface FiiveStudioState {
   setIvsPlayStatus: (ivsPlayStatus: string) => void
 
   // 라이브 중일 때의 정보를 저장하기 위한 stream infomation state
-  streamInfoamtion: object
-  setStreamInfoamtion: (streamInfoamtion: string) => void
+  streamInfomation: object
+  setStreamInfomation: (streamInfomation: object) => void
+
+  // 라이브 참가자 수를 표현하기 위한 센드버드 number of actived user state
+  numberOfLiveUser: number
+  setNumberOfLiveUser: (numberOfLiveUser: number) => void
 
   // user auth token for API
   authToken: string
@@ -38,6 +42,10 @@ interface FiiveStudioState {
   // save class id
   classId: string
   setClassId: (classId: string) => void
+
+  // 현재 시간 data
+  nowTime: object
+  setNowTime: (nowTime: object) => void
 }
 
 const useStore = create(
@@ -85,16 +93,28 @@ const useStore = create(
           userInfomation,
         })),
 
-      streamInfoamtion: {},
-      setStreamInfoamtion: (streamInfoamtion) =>
+      streamInfomation: {},
+      setStreamInfomation: (streamInfomation) =>
         set(() => ({
-          streamInfoamtion,
+          streamInfomation,
+        })),
+
+      numberOfLiveUser: 0,
+      setNumberOfLiveUser: (numberOfLiveUser) =>
+        set(() => ({
+          numberOfLiveUser,
         })),
 
       classId: '',
       setClassId: (classId) =>
         set(() => ({
           classId,
+        })),
+
+      nowTime: new Date(),
+      setNowTime: (nowTime) =>
+        set(() => ({
+          nowTime,
         })),
     })
   )

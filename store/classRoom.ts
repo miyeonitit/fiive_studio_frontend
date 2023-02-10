@@ -8,7 +8,11 @@ interface classRoomState {
 
   // sendbird chat infomaion state
   chatData: object
-  setChatData: (ivsData: object) => void
+  setChatData: (chatData: object) => void
+
+  // class infomation state
+  classData: object
+  setClassData: (classData: object) => void
 }
 
 const useStore = create(
@@ -24,6 +28,12 @@ const useStore = create(
       setChatData: (chatData: object) =>
         set(() => ({
           chatData,
+        })),
+
+      classData: {},
+      setClassData: (classData: object) =>
+        set(() => ({
+          classData,
         })),
     })
   )

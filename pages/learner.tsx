@@ -3,13 +3,13 @@ import { NextPageWithLayout } from '../types/NextPageWithLayout'
 import Head from 'next/head'
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
+import Router from 'next/router'
 import { CSSProperties } from 'styled-components'
 
 import AxiosRequest from '../utils/AxiosRequest'
 import sendbirdUseStore from '../store/Sendbird'
 import classRoomUseStore from '../store/classRoom'
 import fiiveStudioUseStore from '../store/FiiveStudio'
-import useStore from '../store/video'
 
 import Layout from '../components/FiiveLearnerLayout'
 import Video from '../components/Video'
@@ -25,6 +25,17 @@ type ivsType = {
   channel: { arn: string; authorized: boolean; playbackUrl: string }
 }
 
+type classType = {
+  class_name: string
+  curriculum_contents: string
+  start_date: number
+  end_date: number
+  class_thumbnail: string
+  teacher_thumbnail: null
+  teacher_name: string
+  session: number
+}
+
 type sendbirdChatType = {
   name: string
   channel_url: string
@@ -33,7 +44,7 @@ type sendbirdChatType = {
 
 type props = {
   emoji_data?: { emojis: Array<object>; id: number; name: string; url: string }
-  classroom: { ivs: ivsType; sendbird: sendbirdChatType }
+  classroom: { ivs: ivsType; sendbird: sendbirdChatType; class: classType }
   class_id: string
   auth_token: string
   sendbirdAccessToken: string
@@ -59,6 +70,9 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
 
   // waiting: 라이브 전 재생 대기중 <> play: 재생중 <> end: 라이브 종료 <> error : 재생 에러
   const ivsPlayStatus = fiiveStudioUseStore((state: any) => state.ivsPlayStatus)
+  const setIvsPlayStatus = fiiveStudioUseStore(
+    (state: any) => state.setIvsPlayStatus
+  )
 
   // user infomation state
   const userInfomation = fiiveStudioUseStore(
@@ -72,12 +86,12 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
   const setAuthToken = fiiveStudioUseStore((state: any) => state.setAuthToken)
 
   // 라이브 중일 때의 정보를 저장하기 위한 stream infomation state
-  const setStreamInfoamtion = fiiveStudioUseStore(
-    (state: any) => state.setStreamInfoamtion
+  const setStreamInfomation = fiiveStudioUseStore(
+    (state: any) => state.setStreamInfomation
   )
 
-  // ivs infomation 정보를 저장하는 state
-  const setIvsData = classRoomUseStore((state: any) => state.setIvsData)
+  // class infomation 정보를 저장하는 state
+  const classData = classRoomUseStore((state: any) => state.classData)
 
   // save sendbird emoji list container
   const emojiContainer = sendbirdUseStore((state: any) => state.emojiContainer)
@@ -85,10 +99,10 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
     (state: any) => state.addEmojiContainer
   )
 
-  const questions = useStore((state: any) => state.questions)
+  // const questions = useStore((state: any) => state.questions)
 
-  const [questionModal, toggleQuestionModal] = useState(false)
-  const [reactions, toggleReactions] = useState(false)
+  // const [questionModal, toggleQuestionModal] = useState(false)
+  // const [reactions, toggleReactions] = useState(false)
 
   // 반응형일 때, chat의 상대적 height state
   const [chatOffsetHeight, setChatOffsetHeight] = useState(0)
@@ -122,7 +136,11 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
       setUserInfomation(responseData)
     } else {
       console.log('수강 권한 없음')
-      // [backlog] 유저 식별에 실패하면 수강권 한 없다는 페이지로 이동되어야 함!
+
+      Router.push({
+        pathname: '/not-access',
+        query: { classId: props.class_id },
+      })
     }
   }
 
@@ -155,7 +173,28 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
       token: props.auth_token,
     })
 
-    setStreamInfoamtion(responseData.stream)
+    if (responseData.name !== 'AxiosError') {
+      // LIVE 방송 중일 때
+      setStreamInfomation(responseData.stream)
+    } else {
+      // LIVE 방송 중이지 않을 때 (ivsPlayStatus가 waiting 이거나 end)
+      let nowDate = new Intl.DateTimeFormat('kr', {
+        dateStyle: 'full',
+        timeStyle: 'full',
+      }).format()
+
+      const liveEndDate = new Intl.DateTimeFormat('kr', {
+        dateStyle: 'full',
+        timeStyle: 'full',
+      }).format(classData?.end_date)
+
+      setStreamInfomation({})
+
+      // 현재 회차 라이브 방송이 종료되었다면
+      if (nowDate > liveEndDate) {
+        setIvsPlayStatus('end')
+      }
+    }
   }
 
   // 브라우저 resize 할 때마다 <Video /> 의 height 감지
@@ -187,19 +226,15 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
 
       // 3. get chat's emoji list container
       getChatEmojiContainer(props.auth_token)
-
-      // 4. save ivs Data
-      setIvsData(props?.classroom?.ivs?.channel)
     }
   }, [props.auth_token])
 
+  // 최상단 Nav의 live 상태 표현을 위한, live 상태인지 아닌지 계속 판단해주는 로직
   useEffect(() => {
-    if (ivsPlayStatus === 'play') {
-      // get live channel stream infomation
+    // get live channel stream infomation
+    setInterval(() => {
       getLiveStreamInfomation()
-
-      // [백로그] 5초마다 계속 요청 보내야 함
-    }
+    }, 5000)
   }, [ivsPlayStatus])
 
   return (
@@ -225,10 +260,12 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
           />
 
           {/* live 시작 전, 재생 에러, live 종료일 때 띄우는 준비 화면 컴포넌트 */}
-          {/* <LiveStatusVideoScreen ivsPlayStatus={ivsPlayStatus} /> */}
-          {/* {ivsPlayStatus !== 'play' && (
-            <LiveStatusVideoScreen ivsPlayStatus={ivsPlayStatus} />
-          )} */}
+          {ivsPlayStatus !== 'play' && (
+            <LiveStatusVideoScreen
+              ivsPlayStatus={ivsPlayStatus}
+              thumbnailImgSrc={props?.classroom?.class?.class_thumbnail}
+            />
+          )}
         </section>
 
         {/* class infomation 영역 */}
@@ -236,12 +273,11 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
           <section className='class-wrapper'>
             <div className='class_infomation_wrapper'>
               <div className='class_title_box'>
-                평가원 행동 증명(이감 파이널2 (시즌6) 해설 강의) n회차
+                {classData?.class_name} {classData?.session}회차
               </div>
 
               <div className='class_description_box'>
-                평가원 기술 지문 포인트 및 실전 행동 훈련 + EBS 수능특강 속 기술
-                지문 연계 대비
+                {classData?.curriculum_contents}
               </div>
             </div>
 
@@ -255,14 +291,21 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
                   alt='announceIcon'
                 />
                 <span className='class_title'>
-                  n회차 라이브에 오신 것을 환영해요
+                  {classData?.session}회차 라이브에 오신 것을 환영해요
                 </span>
               </div>
               <div className='notification_description_box'>
                 선생님과 수강생이 함께 소통하는 공간이에요. 피이브 커뮤니티
                 가이드를 준수하는 것을 잊지 마세요.
               </div>
-              <button className='community_guide_button'>
+              <button
+                className='community_guide_button'
+                onClick={() =>
+                  window.open(
+                    'https://www.notion.so/pureblack/86412e7f47b54f3680b76029777bfc0d'
+                  )
+                }
+              >
                 커뮤니티 가이드 알아보기
               </button>
             </div>
@@ -315,13 +358,13 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
         </div>
       </aside>
 
-      {questionModal && (
+      {/* {questionModal && (
         <QuestionModal
           toggle={() => {
             toggleQuestionModal(false)
           }}
         ></QuestionModal>
-      )}
+      )} */}
     </div>
   )
 }

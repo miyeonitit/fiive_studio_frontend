@@ -132,7 +132,7 @@ const ChatMonitorPage: NextPageWithLayout = (props: props) => {
       // 토큰값이 저장되지 않았다면, 다시 params query로 정해진 token을 setState로 저장
       setAuthToken(router.query.token)
     }
-  }, [])
+  }, [router.query.token])
 
   // 2. sendbird chat을 로드하기 위해 필요한 data fetching
   useEffect(() => {
