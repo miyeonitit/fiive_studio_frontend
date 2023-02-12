@@ -71,7 +71,11 @@ const Video = (props: props) => {
         console.log('2 waiting')
       } else {
         // 방송이 켜져 있어야지만, 현재 회차 라이브 방송 플레이어 재생 시작
-        if (streamInfomation?.state === 'LIVE') {
+        if (
+          nowTime >= liveStartDate &&
+          nowTime <= liveEndDate &&
+          streamInfomation?.state === 'LIVE'
+        ) {
           initVideo()
           console.log('3 play')
         }
