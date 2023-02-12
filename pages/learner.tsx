@@ -60,6 +60,7 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
   const offsetX = fiiveStudioUseStore((state: any) => state.offsetX)
 
   console.log(props, 'learner props')
+  console.log(props.class_id, 'props.class_id')
 
   // 반응형 사이즈에서 header의 라이브 참여자 목록을 볼 때, UI height 버그를 처리하기 위해 확인하는 boolean state
   const isOpenResponsiveLiveMember = fiiveStudioUseStore(
@@ -141,7 +142,7 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
 
       Router.push({
         pathname: '/not-access',
-        query: { classId: props.class_id },
+        query: { classId: props?.class_id },
       })
     }
   }
@@ -162,7 +163,7 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
   }
 
   const getLiveStreamInfomation = async () => {
-    const requestUrl = `/classroom/${props.class_id}/ivs/stream`
+    const requestUrl = `/classroom/${props?.class_id}/ivs/stream`
 
     const body = {
       channelArn: props?.classroom?.ivs?.channel?.arn,
@@ -172,7 +173,7 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
       url: requestUrl,
       method: 'POST',
       body: body,
-      token: props.auth_token,
+      token: props?.auth_token,
     })
 
     if (responseData.name !== 'AxiosError') {
@@ -219,17 +220,17 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
   }, [])
 
   useEffect(() => {
-    if (props.auth_token && props.auth_token.length !== 0) {
+    if (props?.auth_token && props?.auth_token.length !== 0) {
       // 1. get user auth_token
-      setAuthToken(props.auth_token)
+      setAuthToken(props?.auth_token)
 
       // 2. get user infomation with user auth_token
-      getUserInfomation(props.auth_token)
+      getUserInfomation(props?.auth_token)
 
       // 3. get chat's emoji list container
-      getChatEmojiContainer(props.auth_token)
+      getChatEmojiContainer(props?.auth_token)
     }
-  }, [props.auth_token])
+  }, [props?.auth_token])
 
   // 최상단 Nav의 live 상태 표현을 위한, live 상태인지 아닌지 계속 판단해주는 로직
   useEffect(() => {
@@ -347,7 +348,7 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
             <Chat
               userId={userInfomation?.userId}
               userRole={userInfomation?.userRole}
-              currentUrl={props.classroom?.sendbird?.channel_url}
+              currentUrl={props?.classroom?.sendbird?.channel_url}
               isChatOpen={isChatOpen}
               setIsChatOpen={setIsChatOpen}
               emojiContainer={emojiContainer}
