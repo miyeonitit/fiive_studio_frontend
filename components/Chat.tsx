@@ -81,11 +81,14 @@ const Chat = (props: props) => {
 
   useEffect(() => {
     contextAddEmojiContainer(props.emojiContainer)
+    console.log(props, '1. 컴디마 props')
   }, [])
 
   // not have sendbird's user access token, create sendbird's user access token
   useEffect(() => {
     if (!props.sendbirdAccessToken) {
+      console.log(props, '2. sendbird props')
+
       const intiateSession = async () => {
         const token = await issueSessionToken()
         setAccessToken(token)
@@ -100,7 +103,7 @@ const Chat = (props: props) => {
       <SendbirdProvider
         appId={appId}
         userId={props?.userId}
-        accessToken={accessToken}
+        accessToken={props?.sendbirdAccessToken}
         stringSet={stringSet}
         dateLocale={kr}
       >
