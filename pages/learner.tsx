@@ -237,11 +237,11 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
 
   // 최상단 Nav의 live 상태 표현을 위한, live 상태인지 아닌지 계속 판단해주는 로직
   useEffect(() => {
-    savedCallback.current = getLiveStreamInfomation()
+    let liveStatusCount = null
 
     // get live channel stream infomation
-    let liveStatusCount = setInterval(() => {
-      savedCallback.current
+    liveStatusCount = setInterval(() => {
+      getLiveStreamInfomation()
     }, 5000)
 
     return () => {
@@ -363,6 +363,7 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
               emojiContainer={emojiContainer}
               chatHeightStyle={chatHeightStyle}
               sendbirdAccessToken={props?.sendbirdAccessToken}
+              authToken={props?.auth_token}
             />
           ) : (
             <FakeChat status='liveEnd' chatHeightStyle={chatHeightStyle} />
