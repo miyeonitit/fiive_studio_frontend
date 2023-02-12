@@ -240,10 +240,14 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
   // 최상단 Nav의 live 상태 표현을 위한, live 상태인지 아닌지 계속 판단해주는 로직
   useEffect(() => {
     // get live channel stream infomation
-    setInterval(() => {
+    let liveStatusCount = setInterval(() => {
       getLiveStreamInfomation(props)
       console.log(props, '1. learner props')
     }, 5000)
+
+    return () => {
+      clearInterval(liveStatusCount)
+    }
   }, [ivsPlayStatus])
 
   return (
