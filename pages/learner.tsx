@@ -4,6 +4,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
 import Router from 'next/router'
+import { useRouter } from 'next/router'
 import { CSSProperties } from 'styled-components'
 
 import AxiosRequest from '../utils/AxiosRequest'
@@ -56,11 +57,12 @@ const Chat = dynamic(() => import('../components/Chat'), {
 })
 
 const LearnerPage: NextPageWithLayout = (props: props) => {
+  const router = useRouter()
+
   // 반응형 미디어쿼리 스타일 지정을 위한 브라우저 넓이 측정 전역 state
   const offsetX = fiiveStudioUseStore((state: any) => state.offsetX)
 
   console.log(props, 'learner props')
-  console.log(props.class_id, 'props.class_id')
 
   // 반응형 사이즈에서 header의 라이브 참여자 목록을 볼 때, UI height 버그를 처리하기 위해 확인하는 boolean state
   const isOpenResponsiveLiveMember = fiiveStudioUseStore(
@@ -127,6 +129,7 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
 
   const getUserInfomation = async (token: string) => {
     const requestUrl = `/auth`
+    const classId = router.query.classId
 
     const responseData = await AxiosRequest({
       url: requestUrl,
@@ -142,7 +145,7 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
 
       Router.push({
         pathname: '/not-access',
-        query: { classId: props?.class_id },
+        query: { classId: classId },
       })
     }
   }
@@ -162,9 +165,11 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
     addEmojiContainer(responseData.emojis)
   }
 
-  const getLiveStreamInfomation = async (classId: string) => {
+  const getLiveStreamInfomation = async () => {
+    const classId = router.query.classId
+
     const requestUrl = `/classroom/${classId}/ivs/stream`
-    console.log(classId, 'classId가 undefined로 확인되는지')
+    console.log(classId, 'url query params')
 
     const body = {
       channelArn: props?.classroom?.ivs?.channel?.arn,
@@ -236,13 +241,10 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
   // 최상단 Nav의 live 상태 표현을 위한, live 상태인지 아닌지 계속 판단해주는 로직
   useEffect(() => {
     // get live channel stream infomation
-    if (props?.class_id) {
-      console.log(props?.class_id, 'props?.class_id')
 
-      setInterval(() => {
-        getLiveStreamInfomation(props?.class_id)
-      }, 5000)
-    }
+    setInterval(() => {
+      getLiveStreamInfomation()
+    }, 5000)
   }, [ivsPlayStatus])
 
   return (
