@@ -62,8 +62,6 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
   // 반응형 미디어쿼리 스타일 지정을 위한 브라우저 넓이 측정 전역 state
   const offsetX = fiiveStudioUseStore((state: any) => state.offsetX)
 
-  console.log(props, 'learner props')
-
   // 반응형 사이즈에서 header의 라이브 참여자 목록을 볼 때, UI height 버그를 처리하기 위해 확인하는 boolean state
   const isOpenResponsiveLiveMember = fiiveStudioUseStore(
     (state: any) => state.isOpenResponsiveLiveMember
@@ -165,11 +163,10 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
     addEmojiContainer(responseData.emojis)
   }
 
-  const getLiveStreamInfomation = async () => {
-    const classId = router.query.classId
-
-    const requestUrl = `/classroom/${classId}/ivs/stream`
-    console.log(classId, 'url query params')
+  const getLiveStreamInfomation = async (props: any) => {
+    const requestUrl = `/classroom/${props.class_id}/ivs/stream`
+    console.log(props, '2. props in method scope')
+    console.log(props.class_id, '3. props.class_id')
 
     const body = {
       channelArn: props?.classroom?.ivs?.channel?.arn,
@@ -226,6 +223,8 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
   }, [])
 
   useEffect(() => {
+    console.log(props?.auth_token, '4. etc - props를 읽지 못하고 있는 현상')
+    console.log(props, '5. etc props')
     if (props?.auth_token && props?.auth_token.length !== 0) {
       // 1. get user auth_token
       setAuthToken(props?.auth_token)
@@ -241,9 +240,9 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
   // 최상단 Nav의 live 상태 표현을 위한, live 상태인지 아닌지 계속 판단해주는 로직
   useEffect(() => {
     // get live channel stream infomation
-
     setInterval(() => {
-      getLiveStreamInfomation()
+      getLiveStreamInfomation(props)
+      console.log(props, '1. learner props')
     }, 5000)
   }, [ivsPlayStatus])
 
