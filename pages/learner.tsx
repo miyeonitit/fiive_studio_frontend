@@ -163,10 +163,8 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
     addEmojiContainer(responseData.emojis)
   }
 
-  const getLiveStreamInfomation = async (props: any) => {
+  const getLiveStreamInfomation = async () => {
     const requestUrl = `/classroom/${props.class_id}/ivs/stream`
-    console.log(props, '2. props in method scope')
-    console.log(props.class_id, '3. props.class_id')
 
     const body = {
       channelArn: props?.classroom?.ivs?.channel?.arn,
@@ -223,8 +221,6 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
   }, [])
 
   useEffect(() => {
-    console.log(props?.auth_token, '4. etc - props를 읽지 못하고 있는 현상')
-    console.log(props, '5. etc props')
     if (props?.auth_token && props?.auth_token.length !== 0) {
       // 1. get user auth_token
       setAuthToken(props?.auth_token)
@@ -237,12 +233,15 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
     }
   }, [props?.auth_token])
 
+  let savedCallback = useRef()
+
   // 최상단 Nav의 live 상태 표현을 위한, live 상태인지 아닌지 계속 판단해주는 로직
   useEffect(() => {
+    savedCallback.current = getLiveStreamInfomation()
+
     // get live channel stream infomation
     let liveStatusCount = setInterval(() => {
-      getLiveStreamInfomation(props)
-      console.log(props, '1. learner props')
+      savedCallback.current
     }, 5000)
 
     return () => {

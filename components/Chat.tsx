@@ -63,7 +63,7 @@ const Chat = (props: props) => {
   const issueSessionToken = async () => {
     const period = DEFAULT_SESSION_TOKEN_PERIOD
 
-    const requestUrl = `/user/token`
+    const requestUrl = `/user/token/`
 
     const body = {
       expires_at: Date.now() + period,
