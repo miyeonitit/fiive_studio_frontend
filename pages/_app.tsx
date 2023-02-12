@@ -70,7 +70,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
     // save class Data in classroom
     setClassData(pageProps?.classroom?.class)
-  }, [])
+  }, [pageProps])
 
   // 현재 시간 기준으로 0초가 될 때, 5초의 주기마다 갱신
   useEffect(() => {
