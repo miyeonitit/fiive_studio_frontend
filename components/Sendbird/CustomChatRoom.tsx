@@ -47,6 +47,7 @@ type messageSenderObj = {
 type props = {
   message: object
   userId: string
+  userRole: string
   channelUrl: string
   emojiContainer: object
 }
@@ -78,7 +79,7 @@ const CustomChatRoom = (props: props) => {
     messageInfomation.reactions ? messageInfomation.reactions : []
   )
 
-  const [userRole, setUserRole] = useState('')
+  // const [userRole, setUserRole] = useState('')
 
   const [allMessagesLength, setAllMessagesLength] = useState(allMessages.length)
 
@@ -393,7 +394,7 @@ const CustomChatRoom = (props: props) => {
     /* 신규 채팅방일 때는 sender가 없으므로, 있을 때의 조건을 걸어 가공 처리 */
     if (messageInfomation?.sender) {
       setSender(messageInfomation?.sender)
-      setUserRole(messageInfomation?.sender.role)
+      // setUserRole(messageInfomation?.sender.role)
 
       const findMutedUser = currentGroupChannel.members.find(
         (user: any) => user?.userId === sender?.userId
@@ -610,7 +611,7 @@ const CustomChatRoom = (props: props) => {
                   ref={miniMenuRef}
                 >
                   <div className='more_mini_menu'>
-                    {userRole === 'operator' &&
+                    {props?.userRole !== 'learner' &&
                       (isMutedUser ? (
                         <div
                           className='list_in_menu'
@@ -675,7 +676,7 @@ const CustomChatRoom = (props: props) => {
                       </div>
                     )}
 
-                    {userRole === 'operator' && (
+                    {props?.userRole !== 'learner' && (
                       <div
                         className='list_in_menu'
                         onClick={() => deleteMessage()}

@@ -125,6 +125,7 @@ const Chat = (props: props) => {
               <CustomChatRoom
                 message={message}
                 userId={props?.userId}
+                userRole={props?.userRole}
                 channelUrl={props?.currentUrl}
                 emojiContainer={props?.emojiContainer}
               />
