@@ -59,6 +59,8 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
   // 반응형 미디어쿼리 스타일 지정을 위한 브라우저 넓이 측정 전역 state
   const offsetX = fiiveStudioUseStore((state: any) => state.offsetX)
 
+  console.log(props, 'learner props')
+
   // 반응형 사이즈에서 header의 라이브 참여자 목록을 볼 때, UI height 버그를 처리하기 위해 확인하는 boolean state
   const isOpenResponsiveLiveMember = fiiveStudioUseStore(
     (state: any) => state.isOpenResponsiveLiveMember

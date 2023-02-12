@@ -108,7 +108,7 @@ const CustomChatRoom = (props: props) => {
   // 반응형(tablet, mobile size)일 때, error message를 다시 보내거나 삭제할 수 있는 반응형 모달 on,off boolean state
   const [isResponsiveErrorMsgModal, setIsResponsiveErrorMsgModal] =
     useState(false)
-
+  console.log(currentGroupChannel, 'sender')
   const miniMenuRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
   const responsiveMoreMenuRef =
     React.useRef() as React.MutableRefObject<HTMLDivElement>
