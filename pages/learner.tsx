@@ -56,6 +56,27 @@ const Chat = dynamic(() => import('../components/Chat'), {
   loading: () => <FakeChat status='loading' />,
 })
 
+const useInterval = (callback: any, delay: number) => {
+  console.log(callback, '3 callback')
+  const savedCallback = useRef()
+
+  useEffect(() => {
+    savedCallback.current = callback
+  }, [callback])
+
+  useEffect(() => {
+    const tick = () => {
+      savedCallback.current()
+    }
+
+    if (delay !== null) {
+      let replayMethod = setInterval(tick, delay)
+
+      return () => clearInterval(replayMethod)
+    }
+  }, [delay])
+}
+
 const LearnerPage: NextPageWithLayout = (props: props) => {
   const router = useRouter()
 
@@ -163,8 +184,8 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
     addEmojiContainer(responseData.emojis)
   }
 
-  const getLiveStreamInfomation = async () => {
-    const requestUrl = `/classroom/${props.class_id}/ivs/stream`
+  const getLiveStreamInfomation = async (classId: string) => {
+    const requestUrl = `/classroom/${classId}/ivs/stream`
 
     const body = {
       channelArn: props?.classroom?.ivs?.channel?.arn,
@@ -233,21 +254,25 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
     }
   }, [props?.auth_token])
 
-  let savedCallback = useRef()
-
   // 최상단 Nav의 live 상태 표현을 위한, live 상태인지 아닌지 계속 판단해주는 로직
-  useEffect(() => {
-    let liveStatusCount = null
+  // useEffect(() => {
+  //   let liveStatusCount = null
 
-    // get live channel stream infomation
-    liveStatusCount = setInterval(() => {
-      getLiveStreamInfomation()
-    }, 5000)
+  //   // get live channel stream infomation
+  //   liveStatusCount = setInterval(() => {
+  //     getLiveStreamInfomation()
+  //   }, 5000)
 
-    return () => {
-      clearInterval(liveStatusCount)
-    }
-  }, [ivsPlayStatus])
+  //   return () => {
+  //     clearInterval(liveStatusCount)
+  //   }
+  // }, [ivsPlayStatus])
+
+  useInterval(() => {
+    console.log(props, '1. leanrner props')
+    console.log(props?.class_id, '2. props class id')
+    getLiveStreamInfomation(props?.class_id)
+  }, 5000)
 
   return (
     <div className='fiive learner page'>

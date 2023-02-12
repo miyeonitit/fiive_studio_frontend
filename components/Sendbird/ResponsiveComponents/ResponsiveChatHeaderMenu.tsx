@@ -161,7 +161,7 @@ const ResponsiveChatHeaderMenu = (props: props) => {
             <div className='user_list_button_text_box'>라이브 참여자 보기</div>
           </div>
 
-          {props.userRole === 'teacher' && (
+          {props.userRole !== 'learner' && (
             <>
               <div
                 className='modal_line_menu'
