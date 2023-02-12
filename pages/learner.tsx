@@ -296,11 +296,12 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
           <section className='class-wrapper'>
             <div className='class_infomation_wrapper'>
               <div className='class_title_box'>
-                {classData?.class_name} {classData?.session}회차
+                {props?.classroom?.class?.class_name}{' '}
+                {props?.classroom?.class?.session}회차
               </div>
 
               <div className='class_description_box'>
-                {classData?.curriculum_contents}
+                {props?.classroom?.class?.curriculum_contents}
               </div>
             </div>
 
@@ -314,7 +315,8 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
                   alt='announceIcon'
                 />
                 <span className='class_title'>
-                  {classData?.session}회차 라이브에 오신 것을 환영해요
+                  {props?.classroom?.class?.session}회차 라이브에 오신 것을
+                  환영해요
                 </span>
               </div>
               <div className='notification_description_box'>

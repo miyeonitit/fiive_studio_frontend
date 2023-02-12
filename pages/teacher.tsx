@@ -57,6 +57,26 @@ const Chat = dynamic(() => import('../components/Chat'), {
   loading: () => <FakeChat status='loading' />,
 })
 
+const useInterval = (callback: any, delay: number) => {
+  const savedCallback = useRef()
+
+  useEffect(() => {
+    savedCallback.current = callback
+  }, [callback])
+
+  useEffect(() => {
+    const tick = () => {
+      savedCallback.current()
+    }
+
+    if (delay !== null) {
+      let replayMethod = setInterval(tick, delay)
+
+      return () => clearInterval(replayMethod)
+    }
+  }, [delay])
+}
+
 const TeacherPage: NextPageWithLayout = (props: props) => {
   // 반응형 미디어쿼리 스타일 지정을 위한 브라우저 넓이 측정 전역 state
   const offsetX = fiiveStudioUseStore((state: any) => state.offsetX)
@@ -154,8 +174,8 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
     addEmojiContainer(responseData.emojis)
   }
 
-  const getLiveStreamInfomation = async () => {
-    const requestUrl = `/classroom/${props.class_id}/ivs/stream`
+  const getLiveStreamInfomation = async (classId: string) => {
+    const requestUrl = `/classroom/${classId}/ivs/stream`
 
     const body = {
       channelArn: props?.classroom?.ivs?.channel?.arn,
@@ -207,12 +227,12 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
     }
   }, [props.auth_token])
 
-  useEffect(() => {
-    // get live channel stream infomation
-    setInterval(() => {
-      getLiveStreamInfomation()
-    }, 5000)
-  }, [ivsPlayStatus])
+  // 최상단 Nav의 live 상태 표현을 위한, live 상태인지 아닌지 계속 판단해주는 로직
+  // setInterval은 state 갱신이 되지 않아, 페이지 렌더 전 초기의 빈 state만을 기억하여 콜백함수를 호출한다는 단점이 존재함
+  // 따라서 react custom hooks인 useInterval 사용
+  useInterval(() => {
+    getLiveStreamInfomation(props?.class_id)
+  }, 5000)
 
   return (
     <div className='fiive teacher page'>
@@ -261,10 +281,13 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
         {(offsetX >= 1023 || !isChatOpen) && (
           <section className='class-wrapper'>
             <div className='class_infomation_wrapper'>
-              <div className='class_title_box'>{classData?.class_name}</div>
+              <div className='class_title_box'>
+                {props?.classroom?.class?.class_name}{' '}
+                {props?.classroom?.class?.session}회차
+              </div>
 
               <div className='class_description_box'>
-                {classData?.curriculum_contents}
+                {props?.classroom?.class?.curriculum_contents}
               </div>
             </div>
 
@@ -317,6 +340,7 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
               emojiContainer={emojiContainer}
               chatHeightStyle={chatHeightStyle}
               sendbirdAccessToken={props?.sendbirdAccessToken}
+              authToken={props?.auth_token}
             />
           ) : (
             <FakeChat status='liveEnd' chatHeightStyle={chatHeightStyle} />
