@@ -162,8 +162,9 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
     addEmojiContainer(responseData.emojis)
   }
 
-  const getLiveStreamInfomation = async () => {
-    const requestUrl = `/classroom/${props?.class_id}/ivs/stream`
+  const getLiveStreamInfomation = async (classId: string) => {
+    const requestUrl = `/classroom/${classId}/ivs/stream`
+    console.log(classId, 'classId가 undefined로 확인되는지')
 
     const body = {
       channelArn: props?.classroom?.ivs?.channel?.arn,
@@ -235,9 +236,13 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
   // 최상단 Nav의 live 상태 표현을 위한, live 상태인지 아닌지 계속 판단해주는 로직
   useEffect(() => {
     // get live channel stream infomation
-    setInterval(() => {
-      getLiveStreamInfomation()
-    }, 5000)
+    if (props?.class_id) {
+      console.log(props?.class_id, 'props?.class_id')
+
+      setInterval(() => {
+        getLiveStreamInfomation(props?.class_id)
+      }, 5000)
+    }
   }, [ivsPlayStatus])
 
   return (
