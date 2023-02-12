@@ -26,6 +26,7 @@ type props = {
   emojiContainer: object
   chatHeightStyle: CSSProperties
   sendbirdAccessToken: string
+  authToken: string
 }
 
 const Chat = (props: props) => {
@@ -38,9 +39,6 @@ const Chat = (props: props) => {
   const contextAddEmojiContainer = useStore(
     (state: any) => state.addEmojiContainer
   )
-
-  // user auth token for API
-  const authToken = fiiveStudioUseStore((state: any) => state.authToken)
 
   // user access token for Senbird Access
   const [accessToken, setAccessToken] = useState(props?.sendbirdAccessToken)
@@ -63,7 +61,7 @@ const Chat = (props: props) => {
   const issueSessionToken = async () => {
     const period = DEFAULT_SESSION_TOKEN_PERIOD
 
-    const requestUrl = `/user/token/`
+    const requestUrl = `/user/token`
 
     const body = {
       expires_at: Date.now() + period,
@@ -73,7 +71,7 @@ const Chat = (props: props) => {
       url: requestUrl,
       method: 'POST',
       body: body,
-      token: authToken,
+      token: props?.authToken,
     })
 
     const result = await responseData
