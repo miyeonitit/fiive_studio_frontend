@@ -56,6 +56,12 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   useEffect(() => {
     reset()
 
+    console.log(pageProps, '1. app pageProps')
+
+    if (typeof pageProps !== 'undefined') {
+      console.log(pageProps, '2. app blocked pageProps')
+    }
+
     // save classId
     setClassId(pageProps?.class_id)
 

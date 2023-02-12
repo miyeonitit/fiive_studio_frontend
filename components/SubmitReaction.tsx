@@ -1,23 +1,28 @@
-import useStore from '../store/video'
+import { useRouter } from 'next/router'
 import { v4 as uuidv4 } from 'uuid'
 
 import AxiosRequest from '../utils/AxiosRequest'
+import useStore from '../store/video'
 import classRoomUseStore from '../store/classRoom'
+import fiiveStudioUseStore from '../store/FiiveStudio'
 
 interface props {
   toggle: () => void
 }
 
 const SubmitReaction = (props: props) => {
+  const router = useRouter()
+
   const channel = useStore((state: any) => state.channel)
 
   // ivs, sendbird chat infomation 정보를 저장하는 state
   const ivsData = classRoomUseStore((state: any) => state.ivsData)
 
-  const testIvsValue = process.env.NEXT_PUBLIC_TEST_IVS_CHANNEL_VALUE
+  // user auth token for API
+  const authToken = fiiveStudioUseStore((state: any) => state.authToken)
 
   const embedMetadata = async (type: string) => {
-    const requestUrl = `/classroom/${testIvsValue}/ivs/meta`
+    const requestUrl = `/classroom/${router.query.classId}/ivs/meta`
 
     const body = {
       arn: ivsData?.arn,
@@ -34,7 +39,7 @@ const SubmitReaction = (props: props) => {
       url: requestUrl,
       method: 'POST',
       body: body,
-      token: '',
+      token: authToken,
     })
   }
 
