@@ -178,7 +178,6 @@
         .edited_message_status {
           display: flex;
           align-items: flex-end;
-          margin-left: 2px;
           @include body-3-400;
           color: $bluegray-6;
         }
@@ -192,7 +191,7 @@
         display: flex;
         align-items: center;
         flex-wrap: wrap;
-        margin-top: 10px;
+        margin-top: 6px;
         margin-left: 32px;
 
         /* Emoji Icon div 영역 */
@@ -204,6 +203,7 @@
           align-items: center;
           justify-content: center;
           padding: 3px 8px;
+          margin-top: 4px;
           margin-right: 4px;
           border-radius: 6px;
           border: 1px solid $bluegray-2;

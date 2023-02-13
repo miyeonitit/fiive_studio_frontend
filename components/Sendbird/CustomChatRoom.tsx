@@ -389,6 +389,13 @@ const CustomChatRoom = (props: props) => {
     }
   }, [isMoreMiniMenu, isReactionTopBox, isReactionBottomBox])
 
+  // 메시지를 수정할 때 edit textarea value 제거
+  useEffect(() => {
+    if (isEditedMessage) {
+      editInputRef.current.value = messageInfomation.message
+    }
+  }, [isEditedMessage])
+
   // 신규 채팅방일 때의 조건 로직
   useEffect(() => {
     /* 신규 채팅방일 때는 sender가 없으므로, 있을 때의 조건을 걸어 가공 처리 */
@@ -766,12 +773,13 @@ const CustomChatRoom = (props: props) => {
                               <br />
                             </span>
                           ))}
+
+                    {messageInfomation.data !== messageInfomation.message &&
+                      messageInfomation.updatedAt !== 0 &&
+                      !isBlockUser && (
+                        <span className='edited_message_status'>(수정됨)</span>
+                      )}
                   </span>
-                  {messageInfomation.data !== messageInfomation.message &&
-                    messageInfomation.updatedAt !== 0 &&
-                    !isBlockUser && (
-                      <span className='edited_message_status'>(수정됨)</span>
-                    )}
                 </div>
               )}
 

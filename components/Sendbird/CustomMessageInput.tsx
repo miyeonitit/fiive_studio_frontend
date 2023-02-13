@@ -139,6 +139,13 @@ const CustomMessageInput = (props: props) => {
     }
   }
 
+  // Sendbird chat이 Freeze 되었을 때 input 비활성화 스타일링 및 textarea value 제거
+  useEffect(() => {
+    if (currentGroupChannel.isFrozen) {
+      messageInputRef.current.value = ''
+    }
+  }, [currentGroupChannel.isFrozen])
+
   // Typing Indicator 도입시 주석 해제
   // useEffect(() => {
   //   const body = {
