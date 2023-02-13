@@ -56,32 +56,31 @@ const Video = (props: props) => {
 
   // userInfomation의 정보가 갱신되어야 하고, streamInfomation으로 LIVE 중인지 아닌지를 판단해야 함
   useEffect(() => {
-    setIvsPlayStatus('play')
-    // if (Object.keys(userInfomation).length !== 0) {
-    //   const liveStartDate = new Date(classData?.start_date)
+    if (Object.keys(userInfomation).length !== 0) {
+      const liveStartDate = new Date(classData?.start_date)
 
-    //   const liveEndDate = new Date(classData?.end_date)
+      const liveEndDate = new Date(classData?.end_date)
 
-    //   // 현재 회차 라이브 방송 종료
-    //   if (nowTime > liveEndDate) {
-    //     setIvsPlayStatus('end')
-    //     console.log('1 end')
-    //   } else if (nowTime < liveStartDate) {
-    //     // 현재 회차 라이브 방송 시작 전
-    //     setIvsPlayStatus('waiting')
-    //     console.log('2 waiting')
-    //   } else {
-    //     // 방송이 켜져 있어야지만, 현재 회차 라이브 방송 플레이어 재생 시작
-    //     if (
-    //       nowTime >= liveStartDate &&
-    //       nowTime <= liveEndDate &&
-    //       streamInfomation?.state === 'LIVE'
-    //     ) {
-    //       initVideo()
-    //       console.log('3 play')
-    //     }
-    //   }
-    // }
+      // 현재 회차 라이브 방송 종료
+      if (nowTime > liveEndDate) {
+        setIvsPlayStatus('end')
+        console.log('1 end')
+      } else if (nowTime < liveStartDate) {
+        // 현재 회차 라이브 방송 시작 전
+        setIvsPlayStatus('waiting')
+        console.log('2 waiting')
+      } else {
+        // 방송이 켜져 있어야지만, 현재 회차 라이브 방송 플레이어 재생 시작
+        if (
+          nowTime >= liveStartDate &&
+          nowTime <= liveEndDate &&
+          streamInfomation?.state === 'LIVE'
+        ) {
+          initVideo()
+          console.log('3 play')
+        }
+      }
+    }
   }, [nowTime, userInfomation, streamInfomation])
 
   const getChannelData = async () => {
