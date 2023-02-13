@@ -269,9 +269,9 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
   //   }
   // }, [ivsPlayStatus])
 
-  useInterval(() => {
-    getLiveStreamInfomation(props?.class_id)
-  }, 5000)
+  // useInterval(() => {
+  //   getLiveStreamInfomation(props?.class_id)
+  // }, 5000)
 
   return (
     <div className='fiive learner page'>
