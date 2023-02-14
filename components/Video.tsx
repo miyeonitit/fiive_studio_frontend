@@ -50,6 +50,11 @@ const Video = (props: props) => {
   const classData = classRoomUseStore((state: any) => state.classData)
 
   const [init, setInit] = useState(false)
+
+  // 한 번이라도 재생한 적이 있는지 알아보기 위한 boolean state
+  // 한 번이라도 재생한 적이 있다면  OBS 방송이 갑자기 꺼졌을 때 라이브 방송 종료로 간주
+  const [isLiveEnd, setIsLiveEnd] = useState(false)
+
   // const [messages, setMessages] = useState<any[]>([]);
 
   const ivsPlayer = useRef<HTMLVideoElement>(null)
@@ -61,24 +66,28 @@ const Video = (props: props) => {
 
       const liveEndDate = new Date(classData?.end_date)
 
-      // 현재 회차 라이브 방송 종료
-      if (nowTime > liveEndDate) {
-        setIvsPlayStatus('end')
-        console.log('1 end')
-      } else if (nowTime < liveStartDate) {
-        // 현재 회차 라이브 방송 시작 전
-        setIvsPlayStatus('waiting')
-        console.log('2 waiting')
-      } else {
-        // 방송이 켜져 있어야지만, 현재 회차 라이브 방송 플레이어 재생 시작
-        if (
-          nowTime >= liveStartDate &&
-          nowTime <= liveEndDate &&
-          streamInfomation?.state === 'LIVE'
-        ) {
+      // OBS 방송이 켜져 있다면
+      if (streamInfomation?.state === 'LIVE') {
+        // OBS 방송이 켜져 있어도, 현재 시간 기준으로 end_date가 지나면 (방송 종료 시간이 지나면) 현재 회차 라이브 방송 종료 화면 설정
+        if (nowTime > liveEndDate) {
+          setIvsPlayStatus('end')
+          console.log('1 end')
+        } else {
+          // OBS 방송이 켜져 있고, 현재 시간 기준으로 end_date가 지나지 않았다면 (방송 종료 시간 전이라면) 무조건 IVS 플레이어 재생
           initVideo()
           console.log('3 play')
         }
+      } else if (isLiveEnd || nowTime > liveEndDate) {
+        // 한 번이라도 재생한 적이 있다면 OBS 방송이 갑자기 꺼졌을 때 라이브 방송 종료로 간주하거나 (teacher가 라이브 종료 버튼 없이 OBS 종료만 했을 때를 대비한 장치) || 라이브 방송 종료 시간이 지났을 때 방송 종료 화면 설정
+        setIvsPlayStatus('end')
+      } else if (nowTime >= liveStartDate && nowTime <= liveEndDate) {
+        // OBS 방송이 꺼져 있고, 현재 시간 기준으로 start_date가 지났으면 (방송 시작 이후이면) 라이브 방송 준비 화면 설정
+        setIvsPlayStatus('waiting')
+        console.log('2 waiting')
+      } else {
+        // OBS 방송이 꺼져 있고, 그 외에는 '잠시만 기다려 주세요' 라이브 준비 화면 세팅
+        setIvsPlayStatus('error')
+        console.log('4. error')
       }
     }
   }, [nowTime, userInfomation, streamInfomation])
@@ -186,6 +195,7 @@ const Video = (props: props) => {
       player.load(playbackUrl)
 
       setIvsPlayStatus('play')
+      setIsLiveEnd(true)
 
       player.play()
 
