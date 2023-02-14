@@ -121,6 +121,9 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
     (state: any) => state.addEmojiContainer
   )
 
+  // update now local time
+  const nowTime = fiiveStudioUseStore((state: any) => state.nowTime)
+
   // const [announcementModal, toggleAnnouncementModal] = useState(false)
   // const [timerModal, toggleTimerModal] = useState(false)
 
@@ -185,13 +188,30 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
       url: requestUrl,
       method: 'POST',
       body: body,
-      token: props.auth_token,
+      token: props?.auth_token,
     })
 
     if (responseData.name !== 'AxiosError') {
+      // LIVE 방송 중일 때
       setStreamInfomation(responseData.stream)
     } else {
+      // LIVE 방송 중이지 않을 때 (ivsPlayStatus가 waiting 이거나 end)
+      let nowDate = new Intl.DateTimeFormat('kr', {
+        dateStyle: 'full',
+        timeStyle: 'full',
+      }).format()
+
+      const liveEndDate = new Intl.DateTimeFormat('kr', {
+        dateStyle: 'full',
+        timeStyle: 'full',
+      }).format(classData?.end_date)
+
       setStreamInfomation({})
+
+      // 현재 회차 라이브 방송이 종료되었다면
+      if (nowDate > liveEndDate) {
+        setIvsPlayStatus('end')
+      }
     }
   }
 

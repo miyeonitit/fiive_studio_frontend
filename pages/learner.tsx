@@ -122,6 +122,9 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
     (state: any) => state.addEmojiContainer
   )
 
+  // update now local time
+  const nowTime = fiiveStudioUseStore((state: any) => state.nowTime)
+
   // const questions = useStore((state: any) => state.questions)
 
   // const [questionModal, toggleQuestionModal] = useState(false)
