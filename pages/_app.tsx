@@ -74,7 +74,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       if (timeSeconds < 5) {
         setNowTime(new Date())
       }
-    }, 5000)
+    }, 1000)
   }, [nowTime])
 
   return (
