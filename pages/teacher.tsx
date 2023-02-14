@@ -121,6 +121,9 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
     (state: any) => state.addEmojiContainer
   )
 
+  // update now local time
+  const nowTime = fiiveStudioUseStore((state: any) => state.nowTime)
+
   // const [announcementModal, toggleAnnouncementModal] = useState(false)
   // const [timerModal, toggleTimerModal] = useState(false)
 
@@ -228,9 +231,13 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
   }, [props.auth_token])
 
   // 최상단 Nav의 live 상태 표현을 위한, live 상태인지 아닌지 계속 판단해주는 로직
-  useInterval(() => {
+  // useInterval(() => {
+  //   getLiveStreamInfomation(props?.class_id)
+  // }, 5000)
+
+  useEffect(() => {
     getLiveStreamInfomation(props?.class_id)
-  }, 5000)
+  }, [nowTime])
 
   return (
     <div className='fiive teacher page'>
