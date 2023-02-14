@@ -256,19 +256,6 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
   // 최상단 Nav의 live 상태 표현을 위한, live 상태인지 아닌지 계속 판단해주는 로직
   // setInterval은 state 갱신이 되지 않아, 페이지 렌더 전 초기의 빈 state만을 기억하여 콜백함수를 호출한다는 단점이 존재함
   // 따라서 react custom hooks인 useInterval 사용
-  //  useEffect(() => {
-  //   let liveStatusCount = null
-
-  //   // get live channel stream infomation
-  //   liveStatusCount = setInterval(() => {
-  //     getLiveStreamInfomation()
-  //   }, 5000)
-
-  //   return () => {
-  //     clearInterval(liveStatusCount)
-  //   }
-  // }, [ivsPlayStatus])
-
   useInterval(() => {
     getLiveStreamInfomation(props?.class_id)
   }, 5000)
