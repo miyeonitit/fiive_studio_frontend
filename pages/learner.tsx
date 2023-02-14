@@ -257,13 +257,9 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
   }, [props?.auth_token])
 
   // 최상단 Nav의 live 상태 표현을 위한, live 상태인지 아닌지 계속 판단해주는 로직
-  // useInterval(() => {
-  //   getLiveStreamInfomation(props?.class_id)
-  // }, 5000)
-
-  useEffect(() => {
+  useInterval(() => {
     getLiveStreamInfomation(props?.class_id)
-  }, [nowTime])
+  }, 5000)
 
   return (
     <div className='fiive learner page'>

@@ -188,13 +188,30 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
       url: requestUrl,
       method: 'POST',
       body: body,
-      token: props.auth_token,
+      token: props?.auth_token,
     })
 
     if (responseData.name !== 'AxiosError') {
+      // LIVE 방송 중일 때
       setStreamInfomation(responseData.stream)
     } else {
+      // LIVE 방송 중이지 않을 때 (ivsPlayStatus가 waiting 이거나 end)
+      let nowDate = new Intl.DateTimeFormat('kr', {
+        dateStyle: 'full',
+        timeStyle: 'full',
+      }).format()
+
+      const liveEndDate = new Intl.DateTimeFormat('kr', {
+        dateStyle: 'full',
+        timeStyle: 'full',
+      }).format(classData?.end_date)
+
       setStreamInfomation({})
+
+      // 현재 회차 라이브 방송이 종료되었다면
+      if (nowDate > liveEndDate) {
+        setIvsPlayStatus('end')
+      }
     }
   }
 
@@ -231,13 +248,9 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
   }, [props.auth_token])
 
   // 최상단 Nav의 live 상태 표현을 위한, live 상태인지 아닌지 계속 판단해주는 로직
-  // useInterval(() => {
-  //   getLiveStreamInfomation(props?.class_id)
-  // }, 5000)
-
-  useEffect(() => {
+  useInterval(() => {
     getLiveStreamInfomation(props?.class_id)
-  }, [nowTime])
+  }, 5000)
 
   return (
     <div className='fiive teacher page'>
