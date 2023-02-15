@@ -136,34 +136,39 @@ MyApp.getInitialProps = async ({ Component, ctx }: AppContext) => {
     }
   })
 
-  // 5. get user's classroom infomation API
-  const classroomRequestUrl = `/classroom/${class_id}/session/${session_idx}`
+  let classroom
+  let sendbirdAccessToken
 
-  const classroom = await AxiosRequest({
-    url: classroomRequestUrl,
-    method: 'GET',
-    body: '',
-    token: authoriztion['auth-token'],
-  })
+  if (!ctx?.asPath?.startsWith('/chat-monitor')) {
+    // 5. get user's classroom infomation API
+    const classroomRequestUrl = `/classroom/${class_id}/session/${session_idx}`
 
-  // 6. create user's sendbird access token
-  // Set default session token expiration period to 1 minute.
-  const DEFAULT_SESSION_TOKEN_PERIOD = 1 * 60 * 1000
+    classroom = await AxiosRequest({
+      url: classroomRequestUrl,
+      method: 'GET',
+      body: '',
+      token: authoriztion['auth-token'],
+    })
 
-  const accessTokenRequestUrl = `/user/token`
+    // 6. create user's sendbird access token
+    // Set default session token expiration period to 1 minute.
+    const DEFAULT_SESSION_TOKEN_PERIOD = 1 * 60 * 1000
 
-  const body = {
-    expires_at: Date.now() + DEFAULT_SESSION_TOKEN_PERIOD,
+    const accessTokenRequestUrl = `/user/token`
+
+    const body = {
+      expires_at: Date.now() + DEFAULT_SESSION_TOKEN_PERIOD,
+    }
+
+    const responseData = await AxiosRequest({
+      url: accessTokenRequestUrl,
+      method: 'POST',
+      body: body,
+      token: authoriztion['auth-token'],
+    })
+
+    sendbirdAccessToken = await responseData.token
   }
-
-  const responseData = await AxiosRequest({
-    url: accessTokenRequestUrl,
-    method: 'POST',
-    body: body,
-    token: authoriztion['auth-token'],
-  })
-
-  const sendbirdAccessToken = await responseData.token
 
   pageProps = {
     ...pageProps,

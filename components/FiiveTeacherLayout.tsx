@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
 import Image from 'next/image'
+import { useRouter } from 'next/router'
 import { CSSProperties } from 'styled-components'
 
+import AxiosRequest from '../utils/AxiosRequest'
 import classRoomUseStore from '../store/classRoom'
 import fiiveStudioUseStore from '../store/FiiveStudio'
 
 import Popover from '../components/VideoComponents/PopOver'
 
 const FiiveLayout = (props: any) => {
+  const router = useRouter()
+
   const { children } = props
 
   // 반응형 미디어쿼리 스타일 지정을 위한 브라우저 넓이 측정 전역 state
@@ -44,6 +48,9 @@ const FiiveLayout = (props: any) => {
   // update now local time
   const nowTime = fiiveStudioUseStore((state: any) => state.nowTime)
 
+  // user auth token for API
+  const authToken = fiiveStudioUseStore((state: any) => state.authToken)
+
   // class infomation 정보를 저장하는 state
   const classData = classRoomUseStore((state: any) => state.classData)
 
@@ -75,6 +82,25 @@ const FiiveLayout = (props: any) => {
     let minutes = Math.ceil(gap / 1000 / 60)
 
     return minutes
+  }
+
+  const endLiveClass = async () => {
+    const classId = router.query.classId
+    const sessionIdx = router.query.sessionIdx
+
+    const requestUrl = `/classroom/${classId}/session/${sessionIdx}`
+
+    const responseData = await AxiosRequest({
+      url: requestUrl,
+      method: 'DELETE',
+      body: '',
+      token: authToken,
+    })
+
+    if (responseData.name !== 'AxiosError') {
+      setIvsPlayStatus('end')
+      console.log('방송 종료 완')
+    }
   }
 
   // 현재 시간 업데이트 될 때마다, 10분 남았을 때부터 툴팁이 띄워지도록 하는 로직
@@ -230,7 +256,7 @@ const FiiveLayout = (props: any) => {
         </div>
 
         {/* 라이브 나가기 버튼 영역 */}
-        <div className='quit_button_wrapper'>
+        <div className='quit_button_wrapper' onClick={() => endLiveClass()}>
           {/* live endTime이 끝나기 전에 teacher에게 노출되는 툴팁 */}
           {isLiveEndPopOver && (
             <Popover
@@ -245,15 +271,12 @@ const FiiveLayout = (props: any) => {
 
           <Image
             src='../layouts/fiive/quit_live_icon.svg'
-            onClick={() => setIvsPlayStatus('end')}
+            onClick={() => endLiveClass()}
             width={22}
             height={22}
             alt='quitLiveIcon'
           />
-          <span
-            className='quit_button_text'
-            onClick={() => setIvsPlayStatus('end')}
-          >
+          <span className='quit_button_text' onClick={() => endLiveClass()}>
             라이브 종료
           </span>
         </div>

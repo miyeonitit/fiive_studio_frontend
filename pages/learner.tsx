@@ -160,14 +160,15 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
     })
 
     if (responseData.name !== 'AxiosError') {
-      setUserInfomation(responseData)
-    } else {
-      console.log('수강 권한 없음')
+      // 접속한 본인의 role이 learner만 not-access 페이지로 이동
+      if (responseData.userRole === 'teacher') {
+        Router.push({
+          pathname: '/not-access',
+          query: { classId: classId },
+        })
+      }
 
-      Router.push({
-        pathname: '/not-access',
-        query: { classId: classId },
-      })
+      setUserInfomation(responseData)
     }
   }
 
@@ -244,7 +245,20 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
   }, [])
 
   useEffect(() => {
+    const classId = router.query.classId
+
     if (props?.auth_token && props?.auth_token.length !== 0) {
+      // 수강 권한 없는 user가 접근 시 not-access 페이지로 이동
+      if (props.classroom.name === 'AxiosError') {
+        // [TODO] error code로 변경
+        console.log(props.classroom.response.status === 403, '수강 권한 없음')
+        Router.push({
+          pathname: '/not-access',
+          query: { classId: classId },
+        })
+        return
+      }
+
       // 1. get user auth_token
       setAuthToken(props?.auth_token)
 

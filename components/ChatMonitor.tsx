@@ -97,8 +97,11 @@ const ChatMonitor = (props: props) => {
         stringSet={stringSet}
         dateLocale={kr}
       >
-        <ChannelProvider channelUrl={props?.channelUrl}>
-          <MessageList></MessageList>
+        <ChannelProvider
+          channelUrl={props?.channelUrl}
+          isReactionEnabled={true}
+        >
+          <MessageList userId={props?.userId}></MessageList>
         </ChannelProvider>
       </SendbirdProvider>
     </div>
