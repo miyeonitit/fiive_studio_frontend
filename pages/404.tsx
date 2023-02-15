@@ -35,7 +35,7 @@ const not_found = () => {
         <button
           className='home_button'
           onClick={() => {
-            window.open('https://fiive.me/', '_self')
+            window.open('https://alpha.fiive.me/', '_self')
           }}
         >
           홈으로

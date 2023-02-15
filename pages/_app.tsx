@@ -64,7 +64,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
     // auth-token cookie가 존재하지 않다면 fiive classpage로 이동
     if (classId && !getCookie('auth-token')) {
-      window.open(`https://fiive.me/contents/${classId}`, '_self')
+      window.open(`https://alpha.fiive.me/contents/${classId}`, '_self')
     }
 
     // save classId
