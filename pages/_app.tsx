@@ -3,6 +3,8 @@ import type { AppContext } from 'next/app'
 import Head from 'next/head'
 import Script from 'next/script'
 import cookies from 'next-cookies'
+import { useRouter } from 'next/router'
+import { getCookie } from 'cookies-next'
 import type { AppPropsWithLayout } from '../types/AppPropsWithLayout'
 
 import '@sendbird/uikit-react/dist/index.css'
@@ -20,6 +22,8 @@ import classRoomUseStore from '../store/classRoom'
 import fiiveStudioUseStore from '../store/FiiveStudio'
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+  const router = useRouter()
+
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout ?? ((page) => page)
 
@@ -54,7 +58,14 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   })
 
   useEffect(() => {
+    const classId = router.query.classId
+
     reset()
+
+    // auth-token cookie가 존재하지 않다면 fiive classpage로 이동
+    if (classId && !getCookie('auth-token')) {
+      window.open(`https://fiive.me/contents/${classId}`, '_self')
+    }
 
     // save classId
     setClassId(pageProps?.class_id)

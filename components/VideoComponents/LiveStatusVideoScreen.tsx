@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
 import Image from 'next/image'
 
 type props = {
@@ -7,6 +8,8 @@ type props = {
 }
 
 const LiveStatusVideoScreen = (props: props) => {
+  const router = useRouter()
+
   const TEXT_LIST_GROUP_A = [
     '커피를 내리고 있어요.',
     '귀여운 고양이를 쓰다듬고 있어요.',
@@ -57,16 +60,17 @@ const LiveStatusVideoScreen = (props: props) => {
 
   const handleSubText = (status: string) => {
     let subText = ''
+    const sessionIdx = Number(router.query.sessionIdx)
 
     switch (status) {
       // waiting: 라이브 전 재생 대기중
       case 'waiting':
-        subText = 'n회차 라이브 전'
+        subText = `${sessionIdx + 1}회차 라이브 전`
         break
 
       // end: 라이브 종료
       case 'end':
-        subText = 'n회차 라이브 종료'
+        subText = `${sessionIdx + 1}회차 라이브 종료`
         break
 
       // error : 재생 에러
