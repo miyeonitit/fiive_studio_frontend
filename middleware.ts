@@ -10,6 +10,8 @@ export function middleware(request: NextRequest) {
     (request.nextUrl.pathname.startsWith('/learner') ||
       request.nextUrl.pathname.startsWith('/teacher'))
   ) {
-    return NextResponse.redirect(new URL('https://fiive.me/login', request.url))
+    return NextResponse.redirect(
+      new URL('https://alpha.fiive.me/login', request.url)
+    )
   }
 }

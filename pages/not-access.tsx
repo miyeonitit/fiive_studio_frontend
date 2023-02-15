@@ -147,7 +147,7 @@ const not_access = () => {
           <button
             className='home_button'
             onClick={() => {
-              window.open('https://fiive.me/', '_self')
+              window.open('https://alpha.fiive.me/', '_self')
             }}
           >
             홈으로
@@ -156,7 +156,7 @@ const not_access = () => {
             className='apply_button'
             onClick={() => {
               window.open(
-                `https://fiive.me/contents/${router.query.classId}`,
+                `https://alpha.fiive.me/contents/${router.query.classId}`,
                 '_self'
               )
             }}
