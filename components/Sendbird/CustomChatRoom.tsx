@@ -774,7 +774,8 @@ const CustomChatRoom = (props: props) => {
                             </span>
                           ))}
 
-                    {messageInfomation.data !== messageInfomation.message &&
+                    {messageInfomation.message.includes('\n') &&
+                      messageInfomation.data !== messageInfomation.message &&
                       messageInfomation.updatedAt !== 0 &&
                       !isBlockUser && (
                         <span className='edited_message_status'>(수정됨)</span>

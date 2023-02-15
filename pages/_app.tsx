@@ -3,6 +3,8 @@ import type { AppContext } from 'next/app'
 import Head from 'next/head'
 import Script from 'next/script'
 import cookies from 'next-cookies'
+import { useRouter } from 'next/router'
+import { getCookie } from 'cookies-next'
 import type { AppPropsWithLayout } from '../types/AppPropsWithLayout'
 
 import '@sendbird/uikit-react/dist/index.css'
@@ -20,6 +22,8 @@ import classRoomUseStore from '../store/classRoom'
 import fiiveStudioUseStore from '../store/FiiveStudio'
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+  const router = useRouter()
+
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout ?? ((page) => page)
 
@@ -54,7 +58,14 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   })
 
   useEffect(() => {
+    const classId = router.query.classId
+
     reset()
+
+    // auth-token cookie가 존재하지 않다면 fiive classpage로 이동
+    if (classId && !getCookie('auth-token')) {
+      window.open(`https://fiive.me/contents/${classId}`, '_self')
+    }
 
     // save classId
     setClassId(pageProps?.class_id)
@@ -136,34 +147,39 @@ MyApp.getInitialProps = async ({ Component, ctx }: AppContext) => {
     }
   })
 
-  // 5. get user's classroom infomation API
-  const classroomRequestUrl = `/classroom/${class_id}/session/${session_idx}`
+  let classroom
+  let sendbirdAccessToken
 
-  const classroom = await AxiosRequest({
-    url: classroomRequestUrl,
-    method: 'GET',
-    body: '',
-    token: authoriztion['auth-token'],
-  })
+  if (!ctx?.asPath?.startsWith('/chat-monitor')) {
+    // 5. get user's classroom infomation API
+    const classroomRequestUrl = `/classroom/${class_id}/session/${session_idx}`
 
-  // 6. create user's sendbird access token
-  // Set default session token expiration period to 1 minute.
-  const DEFAULT_SESSION_TOKEN_PERIOD = 1 * 60 * 1000
+    classroom = await AxiosRequest({
+      url: classroomRequestUrl,
+      method: 'GET',
+      body: '',
+      token: authoriztion['auth-token'],
+    })
 
-  const accessTokenRequestUrl = `/user/token`
+    // 6. create user's sendbird access token
+    // Set default session token expiration period to 1 minute.
+    const DEFAULT_SESSION_TOKEN_PERIOD = 1 * 60 * 1000
 
-  const body = {
-    expires_at: Date.now() + DEFAULT_SESSION_TOKEN_PERIOD,
+    const accessTokenRequestUrl = `/user/token`
+
+    const body = {
+      expires_at: Date.now() + DEFAULT_SESSION_TOKEN_PERIOD,
+    }
+
+    const responseData = await AxiosRequest({
+      url: accessTokenRequestUrl,
+      method: 'POST',
+      body: body,
+      token: authoriztion['auth-token'],
+    })
+
+    sendbirdAccessToken = await responseData.token
   }
-
-  const responseData = await AxiosRequest({
-    url: accessTokenRequestUrl,
-    method: 'POST',
-    body: body,
-    token: authoriztion['auth-token'],
-  })
-
-  const sendbirdAccessToken = await responseData.token
 
   pageProps = {
     ...pageProps,

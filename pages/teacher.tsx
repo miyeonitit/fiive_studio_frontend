@@ -3,6 +3,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
 import Router from 'next/router'
+import { useRouter } from 'next/router'
 import { CSSProperties } from 'styled-components'
 
 import AxiosRequest from '../utils/AxiosRequest'
@@ -78,6 +79,8 @@ const useInterval = (callback: any, delay: number) => {
 }
 
 const TeacherPage: NextPageWithLayout = (props: props) => {
+  const router = useRouter()
+
   // 반응형 미디어쿼리 스타일 지정을 위한 브라우저 넓이 측정 전역 state
   const offsetX = fiiveStudioUseStore((state: any) => state.offsetX)
 
@@ -142,6 +145,8 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
 
   const getUserInfomation = async (token: string) => {
     const requestUrl = `/auth`
+    const classId = router.query.classId
+    const sessionIdx = router.query.sessionIdx
 
     const responseData = await AxiosRequest({
       url: requestUrl,
@@ -151,14 +156,15 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
     })
 
     if (responseData.name !== 'AxiosError') {
-      setUserInfomation(responseData)
-    } else {
-      console.log('수강 권한 없음')
+      // 접속한 본인의 role이 learner면 not-access 페이지로 이동
+      if (responseData.userRole === 'learner') {
+        Router.push({
+          pathname: '/not-access',
+          query: { classId: classId, sessionIdx: sessionIdx },
+        })
+      }
 
-      Router.push({
-        pathname: '/not-access',
-        query: { classId: props.class_id },
-      })
+      setUserInfomation(responseData)
     }
   }
 
@@ -235,7 +241,21 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
   }, [])
 
   useEffect(() => {
+    const classId = router.query.classId
+    const sessionIdx = router.query.sessionIdx
+
     if (props.auth_token && props.auth_token.length !== 0) {
+      // 수강 권한 없는 user가 접근 시 not-access 페이지로 이동
+      if (props.classroom.name === 'AxiosError') {
+        // [TODO] error code로 변경
+        // console.log(props.classroom.response.status === 403, '수강 권한 없음')
+        Router.push({
+          pathname: '/not-access',
+          query: { classId: classId, sessionIdx: sessionIdx },
+        })
+        return
+      }
+
       // 1. get user auth_token
       setAuthToken(props.auth_token)
 
@@ -301,7 +321,7 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
             <div className='class_infomation_wrapper'>
               <div className='class_title_box'>
                 {props?.classroom?.class?.class_name}{' '}
-                {props?.classroom?.class?.session}회차
+                {props?.classroom?.class?.session + 1}회차
               </div>
 
               <div className='class_description_box'>
@@ -319,7 +339,8 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
                   alt='announceIcon'
                 />
                 <span className='class_title'>
-                  n회차 라이브에 오신 것을 환영해요
+                  {props?.classroom?.class?.session + 1}회차 라이브에 오신 것을
+                  환영해요
                 </span>
               </div>
               <div className='notification_description_box'>

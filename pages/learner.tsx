@@ -151,6 +151,7 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
   const getUserInfomation = async (token: string) => {
     const requestUrl = `/auth`
     const classId = router.query.classId
+    const sessionIdx = router.query.sessionIdx
 
     const responseData = await AxiosRequest({
       url: requestUrl,
@@ -160,14 +161,15 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
     })
 
     if (responseData.name !== 'AxiosError') {
-      setUserInfomation(responseData)
-    } else {
-      console.log('수강 권한 없음')
+      // 접속한 본인의 role이 learner만 not-access 페이지로 이동
+      if (responseData.userRole === 'teacher') {
+        Router.push({
+          pathname: '/not-access',
+          query: { classId: classId, sessionIdx: sessionIdx },
+        })
+      }
 
-      Router.push({
-        pathname: '/not-access',
-        query: { classId: classId },
-      })
+      setUserInfomation(responseData)
     }
   }
 
@@ -244,7 +246,21 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
   }, [])
 
   useEffect(() => {
+    const classId = router.query.classId
+    const sessionIdx = router.query.sessionIdx
+
     if (props?.auth_token && props?.auth_token.length !== 0) {
+      // 수강 권한 없는 user가 접근 시 not-access 페이지로 이동
+      if (props.classroom.name === 'AxiosError') {
+        // [TODO] error code로 변경
+        // console.log(props.classroom.response.status === 403, '수강 권한 없음')
+        Router.push({
+          pathname: '/not-access',
+          query: { classId: classId, sessionIdx: sessionIdx },
+        })
+        return
+      }
+
       // 1. get user auth_token
       setAuthToken(props?.auth_token)
 
@@ -316,7 +332,7 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
                   alt='announceIcon'
                 />
                 <span className='class_title'>
-                  {props?.classroom?.class?.session}회차 라이브에 오신 것을
+                  {props?.classroom?.class?.session + 1}회차 라이브에 오신 것을
                   환영해요
                 </span>
               </div>
