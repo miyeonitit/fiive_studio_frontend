@@ -9,6 +9,8 @@ const not_access = () => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const router = useRouter()
 
+  const classId = router.query.classId
+
   return (
     <div className='not_access'>
       <Head>
@@ -155,10 +157,7 @@ const not_access = () => {
           <button
             className='apply_button'
             onClick={() => {
-              window.open(
-                `https://alpha.fiive.me/contents/${router.query.classId}`,
-                '_self'
-              )
+              window.open(`https://alpha.fiive.me/contents/${classId}`, '_self')
             }}
           >
             수강 신청하기

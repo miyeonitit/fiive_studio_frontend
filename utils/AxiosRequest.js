@@ -46,6 +46,17 @@ const AxiosRequest = async ({ url, method, body, token }) => {
         )
         break
 
+      case 'PATCH':
+        successData = await axios.patch(
+          `${ApiStudioProxy}${url}`,
+          body,
+          {
+            headers,
+          },
+          { withCredentials: true }
+        )
+        break
+
       case 'DELETE':
         successData = await axios.delete(
           `${ApiStudioProxy}${url}`,

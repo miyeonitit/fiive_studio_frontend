@@ -181,6 +181,10 @@
           @include body-3-400;
           color: $bluegray-6;
         }
+
+        .edited_message_status.by_side {
+          margin-left: 2px;
+        }
       }
 
       .text_message_box.fail {

@@ -27,20 +27,20 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout ?? ((page) => page)
 
-  // 반응형 미디어쿼리 스타일 지정을 위한 브라우저 넓이 측정 전역 state
-  const setOffsetX = fiiveStudioUseStore((state: any) => state.setOffsetX)
-
-  // save class id
-  const setClassId = fiiveStudioUseStore((state: any) => state.setClassId)
-
   // update now local time
   const nowTime = fiiveStudioUseStore((state: any) => state.nowTime)
   const setNowTime = fiiveStudioUseStore((state: any) => state.setNowTime)
 
-  // ivs infomation 정보를 저장하는 state
+  // 반응형 미디어쿼리 스타일 지정을 위한 브라우저 넓이 측정 전역 state
+  const setOffsetX = fiiveStudioUseStore((state: any) => state.setOffsetX)
+
+  // 1. save class id
+  const setClassId = fiiveStudioUseStore((state: any) => state.setClassId)
+
+  // 2. ivs infomation 정보를 저장하는 state
   const setIvsData = classRoomUseStore((state: any) => state.setIvsData)
 
-  // class infomation 정보를 저장하는 state
+  // 3. class infomation 정보를 저장하는 state
   const setClassData = classRoomUseStore((state: any) => state.setClassData)
 
   const reset = () => {
@@ -58,22 +58,22 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   })
 
   useEffect(() => {
-    const classId = router.query.classId
-
     reset()
 
-    // auth-token cookie가 존재하지 않다면 fiive classpage로 이동
+    // auth-token cookie가 존재하지 않다면 fiive login page로 이동
+    const classId = router.query.classId
+
     if (classId && !getCookie('auth-token')) {
-      window.open(`https://alpha.fiive.me/contents/${classId}`, '_self')
+      window.open('https://alpha.fiive.me/login', '_self')
     }
 
-    // save classId
+    // 1. save classId
     setClassId(pageProps?.class_id)
 
-    // save ivs Data in classroom
+    // 2. save ivs Data in classroom
     setIvsData(pageProps?.classroom?.ivs?.channel)
 
-    // save class Data in classroom
+    // 3. save class Data in classroom
     setClassData(pageProps?.classroom?.class)
   }, [pageProps])
 

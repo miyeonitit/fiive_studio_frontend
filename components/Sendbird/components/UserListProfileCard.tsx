@@ -38,8 +38,8 @@ const UserListProfileCard = (props: props) => {
   const [isMoreMiniMenu, setIsMoreMiniMenu] = useState(false)
 
   // sender의 차단 여부 boolean state
-  const [isBlockUser, setIsBlockUser] = useState(props.user.isBlockedByMe)
-  const [isMutedUser, setIsMutedUser] = useState(props.user.isMuted)
+  const [isBlockUser, setIsBlockUser] = useState(false)
+  const [isMutedUser, setIsMutedUser] = useState(false)
 
   // blocked, muted 된 user 아이콘 설명 툴팁 boolean state
   const [isMutedUserTooltip, setIsMutedUserTooltip] = useState(false)
@@ -223,11 +223,15 @@ const UserListProfileCard = (props: props) => {
         const indexOfMutedUser =
           props.currentGroupChannel.members.indexOf(findMutedUser)
 
-        // 해당 유저가 muted 되었는지 여부 확인
-        const isUserMuted =
-          props.currentGroupChannel.members[indexOfMutedUser].isMuted
+        // 해당 group channel에 속하지 않은 user가 뮤트된 user 목록(채팅 정지된 참여자)에 있을 경우를 위한 undefined error 방지
+        if (indexOfMutedUser > 0) {
+          // 해당 유저가 muted 되었는지 여부 확인
+          const isUserMuted =
+            props.currentGroupChannel.members[indexOfMutedUser].isMuted
 
-        setIsMutedUser(isUserMuted)
+          setIsMutedUser(isUserMuted)
+        }
+
         break
 
       case '차단된 참여자':
@@ -240,14 +244,18 @@ const UserListProfileCard = (props: props) => {
         const indexOfFindedUser =
           props.currentGroupChannel.members.indexOf(findBlockedUser)
 
-        // 해당 유저가 blocked 되었는지 여부 확인
-        const isUserBlocked =
-          props.currentGroupChannel.members[indexOfFindedUser].isBlockedByMe
+        // 해당 group channel에 속하지 않은 user가 차단된 user 목록(차단된 참여자)에 있을 경우를 위한 undefined error 방지
+        if (indexOfFindedUser > 0) {
+          // 해당 유저가 blocked 되었는지 여부 확인
+          const isUserBlocked =
+            props.currentGroupChannel.members[indexOfFindedUser].isBlockedByMe
 
-        setIsBlockUser(isUserBlocked)
+          setIsBlockUser(isUserBlocked)
+        }
+
         break
     }
-  }, [props.isUserFilterMiniMenu])
+  }, [props.userFilter, props.isUserFilterMiniMenu])
 
   return (
     <div className='UserListProfileCard'>
@@ -315,6 +323,7 @@ const UserListProfileCard = (props: props) => {
                   )}
                 </div>
               )}
+
               {isMutedUser && (
                 <div className='user_muted_status_box'>
                   <Image

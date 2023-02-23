@@ -37,6 +37,9 @@ const MetaReactionEmojiList = (props: props) => {
     if (!isNotActivedReaction) {
       const requestUrl = `/classroom/${classId}/ivs/meta`
 
+      // emoji reaction img의 위치를 랜덤으로 조정하기 위한 random value
+      let randomValue = Math.floor(Math.random() * 50)
+
       const body = {
         arn: ivsData?.arn,
         metadata: JSON.stringify({
@@ -44,6 +47,7 @@ const MetaReactionEmojiList = (props: props) => {
           message: {
             id: uuidv4(),
             type: reaction,
+            random_value: randomValue < 16 ? randomValue + 16 : randomValue,
           },
         }),
       }
