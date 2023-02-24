@@ -43,6 +43,9 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   // 3. class infomation 정보를 저장하는 state
   const setClassData = classRoomUseStore((state: any) => state.setClassData)
 
+  // 4. sendbird chat infomation 정보를 저장하는 state
+  const setChatData = classRoomUseStore((state: any) => state.setChatData)
+
   const reset = () => {
     if (typeof window !== 'undefined') {
       setOffsetX(window.innerWidth)
@@ -75,6 +78,9 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 
     // 3. save class Data in classroom
     setClassData(pageProps?.classroom?.class)
+
+    // 4. save chat Data
+    setChatData(pageProps?.classroom?.sendbird)
   }, [pageProps])
 
   // 현재 시간 기준으로 0초가 될 때, 5초의 주기마다 갱신

@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
-// import { getCookie, setCookie } from 'cookies-next'
+import { getCookie, setCookie } from 'cookies-next'
 import { ToastContainer, toast, cssTransition } from 'react-toastify'
 
 import 'animate.css'
@@ -12,7 +12,6 @@ import '../../node_modules/react-toastify/dist/ReactToastify.css'
 import { NextPageWithLayout } from '../types/NextPageWithLayout'
 
 import AxiosRequest from '../utils/AxiosRequest'
-import fiiveStudioUseStore from '../store/FiiveStudio'
 
 type ivsType = {
   channel: { arn: string; authorized: boolean; playbackUrl: string }
@@ -116,7 +115,7 @@ const ChatMonitorPage: NextPageWithLayout = (props: props) => {
     // url 중 params query로 token이 전해지지 않았다면, 다시 url 복사 버튼 클릭 유도
     if (authToken) {
       // 토큰값이 저장되지 않았다면, 다시 params query로 정해진 token을 setState로 저장
-      // setCookie('auth-token', authToken)
+      setCookie('auth-token', authToken)
 
       // 2-1. get user's classroom infomation API
       getClassRoomData(authToken)

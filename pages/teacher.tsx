@@ -157,12 +157,12 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
 
     if (responseData.name !== 'AxiosError') {
       // 접속한 본인의 role이 learner면 not-access 페이지로 이동
-      if (responseData.userRole === 'learner') {
-        Router.push({
-          pathname: '/not-access',
-          query: { classId: classId, sessionIdx: sessionIdx },
-        })
-      }
+      // if (responseData.userRole === 'learner') {
+      //   Router.push({
+      //     pathname: '/404',
+      //     query: { classId: classId, sessionIdx: sessionIdx },
+      //   })
+      // }
 
       setUserInfomation(responseData)
     }
@@ -238,8 +238,7 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
 
     if (props.auth_token && props.auth_token.length !== 0) {
       // 수강 권한 없는 user가 접근 시 not-access 페이지로 이동
-      if (props.classroom.name === 'AxiosError') {
-        // [TODO] error code로 변경
+      if (props.classroom.status === 401) {
         // console.log(props.classroom.response.status === 403, '수강 권한 없음')
         Router.push({
           pathname: '/not-access',
@@ -260,9 +259,9 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
   }, [props.auth_token])
 
   // 최상단 Nav의 live 상태 표현을 위한, live 상태인지 아닌지 계속 판단해주는 로직
-  useInterval(() => {
-    getLiveStreamInfomation(props?.class_id)
-  }, 5000)
+  // useInterval(() => {
+  //   getLiveStreamInfomation(props?.class_id)
+  // }, 5000)
 
   return (
     <div className='fiive teacher page'>

@@ -15,6 +15,7 @@ import '../../node_modules/react-toastify/dist/ReactToastify.css'
 
 import AxiosRequest from '../../utils/AxiosRequest'
 import sendBirdUseStore from '../../store/Sendbird'
+import classRoomUseStore from '../../store/classRoom'
 import fiiveStudioUseStore from '../../store/FiiveStudio'
 
 import UserListProfileCard from './components/UserListProfileCard'
@@ -98,12 +99,15 @@ const CustomChatHeader = (props: props) => {
   // user auth token for API
   const authToken = fiiveStudioUseStore((state: any) => state.authToken)
 
+  // sendbird infomation 정보를 저장하는 state
+  const chatData = classRoomUseStore((state: any) => state.chatData)
+
   // 유저 리스트 전역 state
   const contextSetIsUserList = sendBirdUseStore(
     (state: any) => state.setIsUserList
   )
 
-  let { currentGroupChannel } = useChannelContext()
+  const { currentGroupChannel } = useChannelContext()
 
   // 더보기 메뉴 노출 boolean state
   const [isMoreMiniMenu, setIsMoreMiniMenu] = useState(false)
@@ -281,7 +285,7 @@ const CustomChatHeader = (props: props) => {
     })
   }
 
-  const retrieveOnlineUser = async (members: string[]) => {
+  const retrieveOnlineUser = async (members: string[], test: number) => {
     const queryParams: ApplicationUserListQueryParams = {
       userIdsFilter: members,
     }
@@ -300,7 +304,7 @@ const CustomChatHeader = (props: props) => {
     // teacher 페이지에 접속했을 경우, 기존에 저장된 actived user 수보다 현재 actived user 수가 더 많을 때 maximum value request
     if (
       router.pathname === '/teacher' &&
-      numberOfLiveUser <= activedUser.length
+      numberOfLiveUser < activedUser.length
     ) {
       sendMaxNumberOfLiveUser(activedUser.length)
     }
@@ -364,7 +368,7 @@ const CustomChatHeader = (props: props) => {
       // 2. members의 실시간 connectionStatus 판단 로직
       if (Object.keys(sdk).length > 0) {
         let activedUserCount = setInterval(
-          () => retrieveOnlineUser(membersIdArr),
+          () => retrieveOnlineUser(membersIdArr, numberOfLiveUser),
           5000
         )
 
@@ -374,7 +378,13 @@ const CustomChatHeader = (props: props) => {
         }
       }
     }
-  }, [userList])
+  }, [userList, numberOfLiveUser])
+
+  useEffect(() => {
+    if (chatData?.isChatFreezed) {
+      setIsFreezeChat(!isFreezeChat)
+    }
+  }, [chatData])
 
   return (
     <div className='CustomChatHeader'>

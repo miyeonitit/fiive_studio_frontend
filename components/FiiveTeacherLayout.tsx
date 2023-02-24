@@ -54,6 +54,10 @@ const FiiveLayout = (props: any) => {
   // class infomation 정보를 저장하는 state
   const classData = classRoomUseStore((state: any) => state.classData)
 
+  // sendbird infomation 정보를 저장하는 state
+  const chatData = classRoomUseStore((state: any) => state.chatData)
+  const setChatData = classRoomUseStore((state: any) => state.setChatData)
+
   // live endTime이 끝나기 전에 teacher에게 노출되는 말풍선 boolean state
   const [isLiveEndPopOver, setIsLiveEndPopOver] = useState(false)
 
@@ -84,6 +88,7 @@ const FiiveLayout = (props: any) => {
     return minutes
   }
 
+  // teacher의 수업 라이브 종료 버튼 클릭시, IVS streamkey 파기 및 sendbird chat freezing
   const endLiveClass = async () => {
     const classId = router.query.classId
     const sessionIdx = router.query.sessionIdx
@@ -98,9 +103,30 @@ const FiiveLayout = (props: any) => {
     })
 
     if (responseData.name !== 'AxiosError') {
+      // teacher, learner page UI 비활성화
       setIvsPlayStatus('end')
-      console.log('방송 종료 완')
+
+      // sendbird chat freezing
+      controlFreezeChat()
     }
+  }
+
+  const controlFreezeChat = async () => {
+    const requestUrl = `/sendbird/group_channels/${chatData?.channel_url}/freeze`
+
+    const body = {
+      freeze: true,
+    }
+
+    const responseData = await AxiosRequest({
+      url: requestUrl,
+      method: 'PUT',
+      body: body,
+      token: authToken,
+    })
+
+    // teacher의 방송종료에 의해 sendbird chat이 freeze 되었음을 알기 위한 isChatFreezed 추가
+    setChatData({ ...chatData, isChatFreezed: true })
   }
 
   // 현재 시간 업데이트 될 때마다, 10분 남았을 때부터 툴팁이 띄워지도록 하는 로직
@@ -256,29 +282,28 @@ const FiiveLayout = (props: any) => {
         </div>
 
         {/* 라이브 나가기 버튼 영역 */}
-        <div className='quit_button_wrapper' onClick={() => endLiveClass()}>
+        <div className='quit_button_wrapper'>
           {/* live endTime이 끝나기 전에 teacher에게 노출되는 툴팁 */}
-          {isLiveEndPopOver && (
-            <Popover
-              liveStatusObject={
-                getBeforeMinutesEndTime(classData?.end_date) <= 1
-                  ? liveEndBefore1Minutes
-                  : liveEndBefore10Minutes
-              }
-              setIsLiveEndPopOver={setIsLiveEndPopOver}
-            />
-          )}
-
-          <Image
-            src='../layouts/fiive/quit_live_icon.svg'
-            onClick={() => endLiveClass()}
-            width={22}
-            height={22}
-            alt='quitLiveIcon'
+          {/* {isLiveEndPopOver && ( */}
+          <Popover
+            liveStatusObject={
+              getBeforeMinutesEndTime(classData?.end_date) <= 1
+                ? liveEndBefore1Minutes
+                : liveEndBefore10Minutes
+            }
+            setIsLiveEndPopOver={setIsLiveEndPopOver}
           />
-          <span className='quit_button_text' onClick={() => endLiveClass()}>
-            라이브 종료
-          </span>
+          {/* )} */}
+
+          <div className='quit_button_box' onClick={() => endLiveClass()}>
+            <Image
+              src='../layouts/fiive/quit_live_icon.svg'
+              width={22}
+              height={22}
+              alt='quitLiveIcon'
+            />
+            <span className='quit_button_text'>라이브 종료</span>
+          </div>
         </div>
       </footer>
     </div>

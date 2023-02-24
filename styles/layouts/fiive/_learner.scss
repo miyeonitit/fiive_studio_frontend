@@ -154,7 +154,6 @@
         display: flex;
         align-items: center;
         flex-direction: column;
-        width: 75px;
         padding: 10px;
       }
 
@@ -171,7 +170,7 @@
         top: -95px;
         left: -1%;
         padding: 12px;
-        width: 204px;
+        min-width: 204px;
         border-radius: 3px;
         color: white;
         background-color: $bluegray-9;

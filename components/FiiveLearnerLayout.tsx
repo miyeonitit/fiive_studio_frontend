@@ -48,6 +48,9 @@ const FiiveLayout = (props: any) => {
   // class infomation 정보를 저장하는 state
   const classData = classRoomUseStore((state: any) => state.classData)
 
+  // now local time
+  const nowTime = fiiveStudioUseStore((state: any) => state.nowTime)
+
   const emojiListRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
 
   const responsiveZindexStyle: CSSProperties =
@@ -250,34 +253,35 @@ const FiiveLayout = (props: any) => {
           )}
 
           {/* live 방송 시작 전, 대기 중일 때 popover으로 emoji 전송이 되지 않음을 안내 */}
-          {(ivsPlayStatus === 'waiting' || ivsPlayStatus === 'error') && (
-            <div
-              className={`live_waiting_reaction_popover ${
-                isOffReactionPopOver && 'non_active'
-              }`}
-            >
-              <div className='popover_title_box'>
-                <div className='popover_title_text_box'>
-                  채팅보다 빠른 리액션 👏
+          {nowTime < classData?.start_date &&
+            (ivsPlayStatus === 'waiting' || ivsPlayStatus === 'error') && (
+              <div
+                className={`live_waiting_reaction_popover ${
+                  isOffReactionPopOver && 'non_active'
+                }`}
+              >
+                <div className='popover_title_box'>
+                  <div className='popover_title_text_box'>
+                    채팅보다 빠른 리액션 👏
+                  </div>
+                  <div className='popover_close_box'>
+                    <Image
+                      src='../layouts/fiive/popover_close_button.svg'
+                      onClick={() => setIsOffReactionPopOver(true)}
+                      width={12}
+                      height={12}
+                      alt='closeButton'
+                    />
+                  </div>
                 </div>
-                <div className='popover_close_box'>
-                  <Image
-                    src='../layouts/fiive/popover_close_button.svg'
-                    onClick={() => setIsOffReactionPopOver(true)}
-                    width={12}
-                    height={12}
-                    alt='closeButton'
-                  />
-                </div>
-              </div>
 
-              <div className='popover_sub_text_box'>
-                수업이 시작되면 이모지 리액션으로
-                <br />
-                다같이 선생님과 인사해볼까요?
+                <div className='popover_sub_text_box'>
+                  수업이 시작되면 이모지 리액션으로
+                  <br />
+                  다같이 선생님과 인사해볼까요?
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
           <div
             className='live_chat_box'
