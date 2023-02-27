@@ -122,16 +122,7 @@ const FiiveLayout = (props: any) => {
     <div className='fiive_layout learner_layout'>
       <header className='layout_header'>
         <div className='left_header_box'>
-          {offsetX < 1023 ? (
-            <div className='back_button_box'>
-              <Image
-                src='../layouts/fiive/arrow_back.svg'
-                width={20}
-                height={20}
-                alt='backButton'
-              />
-            </div>
-          ) : (
+          {offsetX > 1023 && (
             <>
               {/* fiive logo image 영역 */}
               <div className='fiive_logo_box'>
@@ -253,7 +244,7 @@ const FiiveLayout = (props: any) => {
           )}
 
           {/* live 방송 시작 전, 대기 중일 때 popover으로 emoji 전송이 되지 않음을 안내 */}
-          {nowTime < classData?.start_date &&
+          {ivsPlayStatus !== 'end' &&
             (ivsPlayStatus === 'waiting' || ivsPlayStatus === 'error') && (
               <div
                 className={`live_waiting_reaction_popover ${

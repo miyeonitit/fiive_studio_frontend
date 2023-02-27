@@ -36,7 +36,7 @@
 
 @media screen and (max-width: 1023px) {
   .MetaReactionEmojiList {
-    top: -75px;
+    top: -60px;
     left: 0%;
 
     .reaction_emoji_wrapper {
@@ -44,6 +44,8 @@
 
       .reaction_emoji_box {
         div {
+          width: 40px;
+          height: 40px;
           padding: 4px;
         }
       }

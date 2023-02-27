@@ -146,16 +146,7 @@ const FiiveLayout = (props: any) => {
     <div className='fiive_layout teacher_layout'>
       <header className='layout_header'>
         <div className='left_header_box'>
-          {offsetX < 1023 ? (
-            <div className='back_button_box'>
-              <Image
-                src='../layouts/fiive/arrow_back.svg'
-                width={20}
-                height={20}
-                alt='backButton'
-              />
-            </div>
-          ) : (
+          {offsetX > 1023 && (
             <>
               {/* fiive logo image 영역 */}
               <div className='fiive_logo_box'>
@@ -284,16 +275,16 @@ const FiiveLayout = (props: any) => {
         {/* 라이브 나가기 버튼 영역 */}
         <div className='quit_button_wrapper'>
           {/* live endTime이 끝나기 전에 teacher에게 노출되는 툴팁 */}
-          {/* {isLiveEndPopOver && ( */}
-          <Popover
-            liveStatusObject={
-              getBeforeMinutesEndTime(classData?.end_date) <= 1
-                ? liveEndBefore1Minutes
-                : liveEndBefore10Minutes
-            }
-            setIsLiveEndPopOver={setIsLiveEndPopOver}
-          />
-          {/* )} */}
+          {isLiveEndPopOver && (
+            <Popover
+              liveStatusObject={
+                getBeforeMinutesEndTime(classData?.end_date) <= 1
+                  ? liveEndBefore1Minutes
+                  : liveEndBefore10Minutes
+              }
+              setIsLiveEndPopOver={setIsLiveEndPopOver}
+            />
+          )}
 
           <div className='quit_button_box' onClick={() => endLiveClass()}>
             <Image

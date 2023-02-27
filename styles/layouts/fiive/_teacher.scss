@@ -41,13 +41,6 @@
       display: flex;
       align-items: center;
 
-      .back_button_box {
-        display: flex;
-        align-items: center;
-        margin-right: 12px;
-        cursor: pointer;
-      }
-
       .fiive_logo_box {
         display: flex;
         align-items: center;
@@ -148,6 +141,7 @@
         display: flex;
         align-items: center;
         flex-direction: column;
+        min-width: 76px;
         padding: 10px;
       }
 

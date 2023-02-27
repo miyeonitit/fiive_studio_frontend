@@ -139,7 +139,7 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
   const chatHeightStyle: CSSProperties =
     offsetX < 1023
       ? {
-          height: `calc(100vh  - 163px - ${chatOffsetHeight}px)`,
+          height: `calc(100vh  - 57px - ${chatOffsetHeight}px)`,
         }
       : {}
 
@@ -342,7 +342,7 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
               <button
                 className='community_guide_button'
                 onClick={() =>
-                  window.open(
+                  router.push(
                     'https://www.notion.so/pureblack/86412e7f47b54f3680b76029777bfc0d'
                   )
                 }
