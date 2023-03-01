@@ -158,14 +158,14 @@ const MetaReactionEmojiList = (props: props) => {
             onClick={() => postReaction('CLAP')}
           />
           <div
-            className='smiling'
-            ref={smilingRef}
-            onClick={() => postReaction('SMILE')}
-          />
-          <div
             className='grinning'
             ref={grinningRef}
             onClick={() => postReaction('GRINNING')}
+          />
+          <div
+            className='smiling'
+            ref={smilingRef}
+            onClick={() => postReaction('SMILE')}
           />
           <div
             className='crying'

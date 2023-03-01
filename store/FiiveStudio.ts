@@ -19,13 +19,14 @@ interface FiiveStudioState {
   setIsChatOpen: (isChatOpen: boolean) => void
 
   // ivs 재생 status string state
-  // waiting: 라이브 전 재생 대기중 <> play: 재생중 <> end: 라이브 종료 <> error : 재생 에러
+  // waiting: 라이브 전 재생 대기중 <> play: 재생중 <> fast-end: end_date + 2시간이 지나기 전 라이브 종료 <> end_date + 2시간이 지난 후 라이브 종료 <> error : 재생 에러
   ivsPlayStatus: string
   setIvsPlayStatus: (ivsPlayStatus: string) => void
 
   // 라이브 중일 때의 정보를 저장하기 위한 stream infomation state
-  streamInfomation: object
-  setStreamInfomation: (streamInfomation: object) => void
+  // LIVE-ON: LIVE ON <> LIVE-OFF: LIVE OFF
+  streamInfomation: string
+  setStreamInfomation: (streamInfomation: string) => void
 
   // 라이브 참가자 수를 표현하기 위한 센드버드 number of actived user state
   numberOfLiveUser: number
@@ -93,7 +94,7 @@ const useStore = create(
           userInfomation,
         })),
 
-      streamInfomation: {},
+      streamInfomation: 'LIVE-OFF',
       setStreamInfomation: (streamInfomation) =>
         set(() => ({
           streamInfomation,

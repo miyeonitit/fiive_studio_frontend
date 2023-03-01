@@ -67,7 +67,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     const classId = router.query.classId
 
     if (classId && !getCookie('auth-token')) {
-      window.open('https://alpha.fiive.me/login', '_self')
+      router.push('https://alpha.fiive.me/')
     }
 
     // 1. save classId

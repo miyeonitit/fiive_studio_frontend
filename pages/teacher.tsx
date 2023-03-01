@@ -58,26 +58,6 @@ const Chat = dynamic(() => import('../components/Chat'), {
   loading: () => <FakeChat status='loading' />,
 })
 
-const useInterval = (callback: any, delay: number) => {
-  const savedCallback = useRef()
-
-  useEffect(() => {
-    savedCallback.current = callback
-  }, [callback])
-
-  useEffect(() => {
-    const tick = () => {
-      savedCallback.current()
-    }
-
-    if (delay !== null) {
-      let replayMethod = setInterval(tick, delay)
-
-      return () => clearInterval(replayMethod)
-    }
-  }, [delay])
-}
-
 const TeacherPage: NextPageWithLayout = (props: props) => {
   const router = useRouter()
 
@@ -258,11 +238,6 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
     }
   }, [props.auth_token])
 
-  // 최상단 Nav의 live 상태 표현을 위한, live 상태인지 아닌지 계속 판단해주는 로직
-  // useInterval(() => {
-  //   getLiveStreamInfomation(props?.class_id)
-  // }, 5000)
-
   return (
     <div className='fiive teacher page'>
       <Head>
@@ -295,6 +270,7 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
             playbackUrl={props?.classroom?.ivs?.channel?.playbackUrl}
             authToken={props?.auth_token}
             classId={userInfomation?.classId}
+            userRole={userInfomation?.userRole}
           />
 
           {/* live 시작 전, 재생 에러, live 종료일 때 띄우는 준비 화면 컴포넌트 */}

@@ -50,6 +50,7 @@ const Chat = (props: props) => {
     TYPING_INDICATOR__MULTIPLE_TYPING: '여러 명이 입력 중이에요.',
     CHANNEL__MESSAGE_LIST__NOTIFICATION__NEW_MESSAGE: '개의 새로운 메시지',
     CHANNEL__MESSAGE_LIST__NOTIFICATION__ON: '도착',
+    PLACE_HOLDER__WRONG: 'test test',
   })
 
   const appId = process.env.NEXT_PUBLIC_SENDBIRD_APP_ID

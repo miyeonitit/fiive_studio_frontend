@@ -70,6 +70,7 @@ const LiveStatusVideoScreen = (props: props) => {
 
       // end: 라이브 종료
       case 'end':
+      case 'fast-end':
         subText = `${sessionIdx + 1}회차 라이브 종료`
         break
 
@@ -143,10 +144,13 @@ const LiveStatusVideoScreen = (props: props) => {
           <div className='video_main_text_box'>
             <div
               className={`video_main_text ${
-                props.ivsPlayStatus !== 'end' && 'rollig_text'
+                (props.ivsPlayStatus === 'error' ||
+                  props.ivsPlayStatus === 'waiting') &&
+                'rollig_text'
               }`}
             >
-              {props.ivsPlayStatus !== 'end'
+              {props.ivsPlayStatus === 'error' ||
+              props.ivsPlayStatus === 'waiting'
                 ? randomRollingTextList[randomCountIndex]
                 : '다음 라이브에서 만나요!'}
             </div>

@@ -1,6 +1,6 @@
 import React from 'react'
 import Head from 'next/head'
-import Router from 'next/router'
+import router from 'next/router'
 
 const not_found = () => {
   return (
@@ -27,7 +27,7 @@ const not_found = () => {
         <button
           className='prev_button'
           onClick={() => {
-            Router.back()
+            router.back()
           }}
         >
           이전으로
@@ -35,7 +35,7 @@ const not_found = () => {
         <button
           className='home_button'
           onClick={() => {
-            window.open('https://alpha.fiive.me/', '_self')
+            router.push('https://alpha.fiive.me/')
           }}
         >
           홈으로

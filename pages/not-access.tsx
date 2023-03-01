@@ -149,7 +149,7 @@ const not_access = () => {
           <button
             className='home_button'
             onClick={() => {
-              window.open('https://alpha.fiive.me/', '_self')
+              router.push('https://alpha.fiive.me/')
             }}
           >
             홈으로
@@ -157,7 +157,7 @@ const not_access = () => {
           <button
             className='apply_button'
             onClick={() => {
-              window.open(`https://alpha.fiive.me/contents/${classId}`, '_self')
+              router.push(`https://alpha.fiive.me/contents/${classId}`)
             }}
           >
             수강 신청하기

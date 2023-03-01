@@ -169,10 +169,10 @@ const FiiveLayout = (props: any) => {
           {/* LIVE 상태 정보 영역 */}
           <div
             className={`live_status ${
-              streamInfomation?.state === 'LIVE' && 'play'
+              streamInfomation === 'LIVE-ON' && 'play'
             }`}
           >
-            {streamInfomation?.state === 'LIVE' ? 'LIVE' : 'LIVE 중이 아님'}
+            {streamInfomation === 'LIVE-ON' ? 'LIVE' : 'LIVE 중이 아님'}
           </div>
 
           {/* 현재 라이브 참여자 수 영역 */}
