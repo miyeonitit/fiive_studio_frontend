@@ -66,6 +66,13 @@
           @include body-1-700;
           color: $bluegray-9;
         }
+
+        .teacher_name_box.non_active {
+          width: 56px;
+          height: 20px;
+          border-radius: 2px;
+          background-color: $bluegray-2;
+        }
       }
     }
 

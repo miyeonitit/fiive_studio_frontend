@@ -87,7 +87,7 @@ const Video = (props: props) => {
       const liveStartDate = new Date(classData?.start_date)
       const liveEndDateAfterTwoHours = new Date(classData?.end_date + 7200000)
 
-      // 현재 시간 기준으로 end_date + 2시간이 (총 4시간) 지나면 현재 회차 라이브 방송 종료 화면 설정
+      // 현재 시간 기준으로 end_date + 2시간이 (총 4시간) 지나면, ivs 영역 비활성화 + chat 영역 비활성화
       if (nowTime >= liveStartDate && nowTime > liveEndDateAfterTwoHours) {
         setIvsPlayStatus('end')
       } else {

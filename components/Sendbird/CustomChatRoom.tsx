@@ -12,7 +12,6 @@ import { useChannelContext } from '@sendbird/uikit-react/Channel/context'
 import useSendbirdStateContext from '@sendbird/uikit-react/useSendbirdStateContext'
 import sendbirdSelectors from '@sendbird/uikit-react/sendbirdSelectors'
 import ImageRenderer from '@sendbird/uikit-react/ui/ImageRenderer'
-import { GroupChannelHandler } from '@sendbird/chat/groupChannel'
 
 import 'animate.css'
 import '../../node_modules/react-toastify/dist/ReactToastify.css'

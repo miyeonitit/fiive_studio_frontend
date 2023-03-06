@@ -115,6 +115,11 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
 
   const playerHeightRef = React.useRef() as React.MutableRefObject<HTMLElement>
 
+  // classroom Data 구조 분해 할당
+  const ivsInfomation = props?.classroom?.ivs
+  const classInfomation = props?.classroom?.class
+  const sendbirdInfomation = props?.classroom?.sendbird
+
   // 반응형일 때, 전체 페이지 height(100vh) - ( Nav height(57px) + fix bottom height(82px) + content margin up & down(24px) = 163px )- Video height
   const chatHeightStyle: CSSProperties =
     offsetX < 1023
@@ -223,14 +228,14 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
 
     if (props?.auth_token && props?.auth_token.length !== 0) {
       // 수강 권한 없는 user가 접근 시 not-access 페이지로 이동
-      // if (props.classroom.status === 401) {
-      //   // console.log(props.classroom.response.status === 403, '수강 권한 없음')
-      //   Router.push({
-      //     pathname: '/not-access',
-      //     query: { classId: classId, sessionIdx: sessionIdx },
-      //   })
-      //   return
-      // }
+      if (props.classroom.status === 401) {
+        // console.log(props.classroom.response.status === 403, '수강 권한 없음')
+        Router.push({
+          pathname: '/not-access',
+          query: { classId: classId, sessionIdx: sessionIdx },
+        })
+        return
+      }
 
       // 1. get user auth_token
       setAuthToken(props?.auth_token)
@@ -260,7 +265,7 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
 
           {/* ivs video player 영역 컴포넌트 */}
           <Video
-            playbackUrl={props?.classroom?.ivs?.channel?.playbackUrl}
+            playbackUrl={ivsInfomation?.channel?.playbackUrl}
             authToken={props?.auth_token}
             classId={userInfomation?.classId}
             userRole={userInfomation?.userRole}
@@ -270,7 +275,7 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
           {ivsPlayStatus !== 'play' && (
             <LiveStatusVideoScreen
               ivsPlayStatus={ivsPlayStatus}
-              thumbnailImgSrc={props?.classroom?.class?.class_thumbnail}
+              thumbnailImgSrc={classInfomation?.class_thumbnail}
             />
           )}
         </section>
@@ -278,46 +283,69 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
         {/* class infomation 영역 */}
         {(offsetX >= 1023 || !isChatOpen) && (
           <section className='class-wrapper'>
-            <div className='class_infomation_wrapper'>
-              <div className='class_title_box'>
-                {props?.classroom?.class?.class_name}{' '}
-                {props?.classroom?.class?.session + 1}회차
-              </div>
+            {Object.keys(classInfomation).length > 0 && (
+              <div className='class_infomation_wrapper'>
+                <div className='class_title_box'>
+                  {classInfomation?.class_name} {classInfomation?.session + 1}
+                  회차
+                </div>
 
-              <div className='class_description_box'>
-                {props?.classroom?.class?.curriculum_contents}
+                <div className='class_description_box'>
+                  {classInfomation?.curriculum_contents}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* class notification 영역 */}
-            <div className='class_notification_wrapper'>
-              <div className='nonotification_title_box'>
-                <Image
-                  src='../layouts/fiive/announce_icon.svg'
-                  width={16}
-                  height={16}
-                  alt='announceIcon'
-                />
-                <span className='class_title'>
-                  {props?.classroom?.class?.session + 1}회차 라이브에 오신 것을
-                  환영해요
-                </span>
+            {Object.keys(classInfomation).length > 0 ? (
+              <div className='class_notification_wrapper'>
+                <div className='nonotification_title_box'>
+                  <Image
+                    src='../layouts/fiive/announce_icon.svg'
+                    width={16}
+                    height={16}
+                    alt='announceIcon'
+                  />
+                  <span className='class_title'>
+                    {classInfomation?.session + 1}회차 라이브에 오신 것을
+                    환영해요
+                  </span>
+                </div>
+                <div className='notification_description_box'>
+                  선생님과 수강생이 함께 소통하는 공간이에요. 피이브 커뮤니티
+                  가이드를 준수하는 것을 잊지 마세요.
+                </div>
+                <button
+                  className='community_guide_button'
+                  onClick={() =>
+                    router.push(
+                      'https://www.notion.so/pureblack/86412e7f47b54f3680b76029777bfc0d'
+                    )
+                  }
+                >
+                  커뮤니티 가이드 알아보기
+                </button>
               </div>
-              <div className='notification_description_box'>
-                선생님과 수강생이 함께 소통하는 공간이에요. 피이브 커뮤니티
-                가이드를 준수하는 것을 잊지 마세요.
+            ) : (
+              <div className='class_notification_wrapper'>
+                <div className='nonotification_title_box'>
+                  <Image
+                    src='../layouts/fiive/alert_icon.svg'
+                    width={16}
+                    height={16}
+                    alt='alertIcon'
+                  />
+                  <span className='class_title'>
+                    라이브 정보를 가져오는데 문제가 생겼어요.
+                  </span>
+                </div>
+                <div className='notification_description_box'>
+                  [ClassDoesnotExistsError / Status Code: nnn] <br />
+                  수업 참여에는 문제가 없으나 이 메시지가 자주 보이는 경우
+                  피이브 고객센터에 메시지 내용을 그대로 보내주세요.
+                </div>
               </div>
-              <button
-                className='community_guide_button'
-                onClick={() =>
-                  router.push(
-                    'https://www.notion.so/pureblack/86412e7f47b54f3680b76029777bfc0d'
-                  )
-                }
-              >
-                커뮤니티 가이드 알아보기
-              </button>
-            </div>
+            )}
           </section>
         )}
       </main>
@@ -354,7 +382,7 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
             <Chat
               userId={userInfomation?.userId}
               userRole={userInfomation?.userRole}
-              currentUrl={props?.classroom?.sendbird?.channel_url}
+              currentUrl={sendbirdInfomation?.channel_url}
               isChatOpen={isChatOpen}
               setIsChatOpen={setIsChatOpen}
               emojiContainer={emojiContainer}

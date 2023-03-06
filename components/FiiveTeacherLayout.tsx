@@ -103,8 +103,16 @@ const FiiveLayout = (props: any) => {
     })
 
     if (responseData.name !== 'AxiosError') {
-      // teacher, learner page UI 비활성화
-      setIvsPlayStatus('end')
+      const liveStartDate = new Date(classData?.start_date)
+      const liveEndDateAfterTwoHours = new Date(classData?.end_date + 7200000)
+
+      // 현재 시간 기준으로 end_date + 2시간이 (총 4시간) 지나면, ivs 영역 비활성화 + chat 영역 비활성화
+      if (nowTime >= liveStartDate && nowTime > liveEndDateAfterTwoHours) {
+        setIvsPlayStatus('end')
+      } else {
+        // 현재 시간 기준으로 end_date + 2시간 전일 때, ivs 영역 비활성화 + chat 영역 freezing
+        setIvsPlayStatus('fast-end')
+      }
 
       // sendbird chat freezing
       controlFreezeChat()
@@ -185,7 +193,11 @@ const FiiveLayout = (props: any) => {
               />
             </div>
 
-            <div className='teacher_name_box'>{classData?.teacher_name}</div>
+            {Object.keys(classData).length > 0 ? (
+              <div className='teacher_name_box'>{classData?.teacher_name}</div>
+            ) : (
+              <div className='teacher_name_box non_active'> </div>
+            )}
           </div>
         </div>
 
@@ -207,7 +219,9 @@ const FiiveLayout = (props: any) => {
               height={12}
               alt='liveParticipant'
             />
-            <span className='live_participant_number'>{numberOfLiveUser}</span>
+            <span className='live_participant_number'>
+              {numberOfLiveUser ? numberOfLiveUser : '불러올 수 없음'}
+            </span>
           </div>
         </div>
 

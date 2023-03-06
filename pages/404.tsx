@@ -8,6 +8,7 @@ const not_found = () => {
       <Head>
         <title>404 error</title>
       </Head>
+
       <div className='title_box'>
         <div className='image_box'>
           <img

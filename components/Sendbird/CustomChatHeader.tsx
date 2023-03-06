@@ -9,6 +9,7 @@ import { CSSProperties } from 'styled-components'
 import sendbirdSelectors from '@sendbird/uikit-react/sendbirdSelectors'
 import { useChannelContext } from '@sendbird/uikit-react/Channel/context'
 import useSendbirdStateContext from '@sendbird/uikit-react/useSendbirdStateContext'
+import { SendBirdError } from 'sendbird'
 
 import 'animate.css'
 import '../../node_modules/react-toastify/dist/ReactToastify.css'

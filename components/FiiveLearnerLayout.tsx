@@ -48,9 +48,6 @@ const FiiveLayout = (props: any) => {
   // class infomation 정보를 저장하는 state
   const classData = classRoomUseStore((state: any) => state.classData)
 
-  // now local time
-  const nowTime = fiiveStudioUseStore((state: any) => state.nowTime)
-
   const emojiListRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
 
   const responsiveZindexStyle: CSSProperties =
@@ -161,7 +158,11 @@ const FiiveLayout = (props: any) => {
               />
             </div>
 
-            <div className='teacher_name_box'>{classData?.teacher_name}</div>
+            {Object.keys(classData).length > 0 ? (
+              <div className='teacher_name_box'>{classData?.teacher_name}</div>
+            ) : (
+              <div className='teacher_name_box non_active'> </div>
+            )}
           </div>
         </div>
 
@@ -183,7 +184,9 @@ const FiiveLayout = (props: any) => {
               height={12}
               alt='liveParticipant'
             />
-            <span className='live_participant_number'>{numberOfLiveUser}</span>
+            <span className='live_participant_number'>
+              {numberOfLiveUser ? numberOfLiveUser : '불러올 수 없음'}
+            </span>
           </div>
         </div>
 
@@ -220,7 +223,6 @@ const FiiveLayout = (props: any) => {
         {offsetX >= 1023 && (
           <div
             className='help_button_wrapper'
-            id='test'
             onClick={() => clickChannelTalk()}
           >
             <Image
