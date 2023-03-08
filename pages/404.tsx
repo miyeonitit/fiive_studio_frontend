@@ -3,6 +3,8 @@ import Head from 'next/head'
 import router from 'next/router'
 
 const not_found = () => {
+  const redirectFiive = process.env.NEXT_PUBLIC_FIIVE_URL
+
   return (
     <div className='not_found'>
       <Head>
@@ -36,7 +38,7 @@ const not_found = () => {
         <button
           className='home_button'
           onClick={() => {
-            router.push('https://alpha.fiive.me/')
+            router.push(`${redirectFiive}`)
           }}
         >
           홈으로

@@ -367,7 +367,7 @@ const CustomChatHeader = (props: props) => {
       )
 
       // 2. members의 실시간 connectionStatus 판단 로직
-      if (Object.keys(sdk).length > 0) {
+      if (typeof sdk !== 'undefined' && Object.keys(sdk).length > 0) {
         let activedUserCount = setInterval(
           () => retrieveOnlineUser(membersIdArr, numberOfLiveUser),
           5000

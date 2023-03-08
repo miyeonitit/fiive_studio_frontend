@@ -130,7 +130,9 @@ const ChatMonitorPage: NextPageWithLayout = (props: props) => {
 
   return (
     <div className='fiive chat-monitor page'>
-      {Object.keys(userInfomation).length > 0 &&
+      {typeof userInfomation !== 'undefined' &&
+        typeof currentChannelUrl !== 'undefined' &&
+        Object.keys(userInfomation).length > 0 &&
         Object.keys(currentChannelUrl).length > 0 &&
         accessToken && (
           <ChatMonitor

@@ -46,6 +46,8 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   // 4. sendbird chat infomation 정보를 저장하는 state
   const setChatData = classRoomUseStore((state: any) => state.setChatData)
 
+  const redirectFiive = process.env.NEXT_PUBLIC_FIIVE_URL
+
   const reset = () => {
     if (typeof window !== 'undefined') {
       setOffsetX(window.innerWidth)
@@ -67,7 +69,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     const classId = router.query.classId
 
     if (classId && !getCookie('auth-token')) {
-      router.push('https://alpha.fiive.me/')
+      router.push(`${redirectFiive}`)
     }
 
     // 1. save classId

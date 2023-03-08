@@ -102,9 +102,6 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
     (state: any) => state.addEmojiContainer
   )
 
-  // now local time
-  const nowTime = fiiveStudioUseStore((state: any) => state.nowTime)
-
   // const questions = useStore((state: any) => state.questions)
 
   // const [questionModal, toggleQuestionModal] = useState(false)
@@ -147,12 +144,12 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
 
     if (responseData.name !== 'AxiosError') {
       // 접속한 본인의 role이 teacher나 admin일 경우, 404 페이지로 이동
-      if (responseData.userRole !== 'learner') {
-        Router.push({
-          pathname: '/404',
-          query: { classId: classId, sessionIdx: sessionIdx },
-        })
-      }
+      // if (responseData.userRole !== 'learner') {
+      //   Router.push({
+      //     pathname: '/404',
+      //     query: { classId: classId, sessionIdx: sessionIdx },
+      //   })
+      // }
 
       setUserInfomation(responseData)
     }
@@ -171,36 +168,6 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
     })
 
     addEmojiContainer(responseData.emojis)
-  }
-
-  const getLiveStreamInfomation = async (classId: string) => {
-    const liveEndDateAfterTwoHours = new Date(classData?.end_date + 7200000)
-
-    if (nowTime > liveEndDateAfterTwoHours) {
-      setIvsPlayStatus('end')
-      return
-    }
-
-    const requestUrl = `/classroom/${classId}/ivs/stream`
-
-    const body = {
-      channelArn: props?.classroom?.ivs?.channel?.arn,
-    }
-
-    const responseData = await AxiosRequest({
-      url: requestUrl,
-      method: 'POST',
-      body: body,
-      token: props?.auth_token,
-    })
-
-    if (responseData.name !== 'AxiosError') {
-      // LIVE 방송 중일 때
-      setStreamInfomation(responseData.stream)
-    } else {
-      // LIVE 방송 중이지 않을 때 (ivsPlayStatus가 waiting 이거나 end)
-      setStreamInfomation({})
-    }
   }
 
   // 브라우저 resize 할 때마다 <Video /> 의 height 감지
@@ -228,14 +195,14 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
 
     if (props?.auth_token && props?.auth_token.length !== 0) {
       // 수강 권한 없는 user가 접근 시 not-access 페이지로 이동
-      if (props.classroom.status === 401) {
-        // console.log(props.classroom.response.status === 403, '수강 권한 없음')
-        Router.push({
-          pathname: '/not-access',
-          query: { classId: classId, sessionIdx: sessionIdx },
-        })
-        return
-      }
+      // if (props.classroom.status === 401) {
+      //   // console.log(props.classroom.response.status === 403, '수강 권한 없음')
+      //   Router.push({
+      //     pathname: '/not-access',
+      //     query: { classId: classId, sessionIdx: sessionIdx },
+      //   })
+      //   return
+      // }
 
       // 1. get user auth_token
       setAuthToken(props?.auth_token)
@@ -283,21 +250,23 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
         {/* class infomation 영역 */}
         {(offsetX >= 1023 || !isChatOpen) && (
           <section className='class-wrapper'>
-            {Object.keys(classInfomation).length > 0 && (
-              <div className='class_infomation_wrapper'>
-                <div className='class_title_box'>
-                  {classInfomation?.class_name} {classInfomation?.session + 1}
-                  회차
-                </div>
+            {typeof classInfomation !== 'undefined' &&
+              Object.keys(classInfomation).length > 0 && (
+                <div className='class_infomation_wrapper'>
+                  <div className='class_title_box'>
+                    {classInfomation?.class_name} {classInfomation?.session + 1}
+                    회차
+                  </div>
 
-                <div className='class_description_box'>
-                  {classInfomation?.curriculum_contents}
+                  <div className='class_description_box'>
+                    {classInfomation?.curriculum_contents}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
             {/* class notification 영역 */}
-            {Object.keys(classInfomation).length > 0 ? (
+            {typeof classInfomation !== 'undefined' &&
+            Object.keys(classInfomation).length > 0 ? (
               <div className='class_notification_wrapper'>
                 <div className='nonotification_title_box'>
                   <Image
@@ -359,9 +328,7 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
           <button type='button' className='arrow'>
             <img src='/icons/move_right.svg' alt='Arrow' />
           </button>
-
           <h3>실시간 채팅</h3>
-
           <button type='button' className='notifications'>
             <img src='/icons/announce.svg' alt='Notifications' />
           </button>

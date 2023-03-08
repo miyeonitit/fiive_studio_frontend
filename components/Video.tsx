@@ -50,6 +50,14 @@ const Video = (props: props) => {
   // update now local time
   const nowTime = fiiveStudioUseStore((state: any) => state.nowTime)
 
+  // 반응형 미디어쿼리 스타일 지정을 위한 브라우저 넓이 측정 전역 state
+  const offsetX = fiiveStudioUseStore((state: any) => state.offsetX)
+
+  // 반응형 미디어쿼리 스타일 지정을 위한 video player height 측정 전역 state
+  const setVideoStatusScreenHeight = fiiveStudioUseStore(
+    (state: any) => state.setVideoStatusScreenHeight
+  )
+
   // class infomation 정보를 저장하는 state
   const classData = classRoomUseStore((state: any) => state.classData)
 
@@ -83,7 +91,10 @@ const Video = (props: props) => {
 
   // userInfomation의 정보가 갱신되어야 하고, streamInfomation으로 LIVE 중인지 아닌지를 판단해야 함
   useEffect(() => {
-    if (Object.keys(userInfomation).length !== 0) {
+    if (
+      typeof userInfomation !== 'undefined' &&
+      Object.keys(userInfomation).length !== 0
+    ) {
       const liveStartDate = new Date(classData?.start_date)
       const liveEndDateAfterTwoHours = new Date(classData?.end_date + 7200000)
 
@@ -95,6 +106,16 @@ const Video = (props: props) => {
       }
     }
   }, [nowTime, userInfomation, streamInfomation])
+
+  useEffect(() => {
+    if (typeof ivsPlayer !== 'undefined') {
+      setVideoStatusScreenHeight(ivsPlayer.current?.offsetHeight)
+      console.log(
+        ivsPlayer.current?.offsetHeight,
+        'ivsPlayer.current?.offsetHeight'
+      )
+    }
+  }, [offsetX])
 
   const getChannelData = async () => {
     const requestUrl = `/classroom/${userInfomation.classId}/ivs/key`

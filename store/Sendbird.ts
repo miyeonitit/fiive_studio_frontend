@@ -15,6 +15,9 @@ interface SendbirdState {
   // customed emoji list state
   emojiContainer: object | null
   addEmojiContainer: (emojiContainer: object) => void
+
+  sendbirdAccessToken: string
+  setSendbirdAccessToken: (sendbirdAccessToken: string) => void
 }
 
 const useStore = create(
@@ -42,6 +45,12 @@ const useStore = create(
       addEmojiContainer: (emojiContainer) =>
         set(() => ({
           emojiContainer,
+        })),
+
+      sendbirdAccessToken: '',
+      setSendbirdAccessToken: (sendbirdAccessToken) =>
+        set(() => ({
+          sendbirdAccessToken,
         })),
     })
   )

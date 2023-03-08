@@ -11,6 +11,8 @@ const not_access = () => {
 
   const classId = router.query.classId
 
+  const redirectFiive = process.env.NEXT_PUBLIC_FIIVE_URL
+
   return (
     <div className='not_access'>
       <Head>
@@ -149,7 +151,7 @@ const not_access = () => {
           <button
             className='home_button'
             onClick={() => {
-              router.push('https://alpha.fiive.me/')
+              router.push(`${redirectFiive}`)
             }}
           >
             홈으로
@@ -157,7 +159,7 @@ const not_access = () => {
           <button
             className='apply_button'
             onClick={() => {
-              router.push(`https://alpha.fiive.me/contents/${classId}`)
+              router.push(`${redirectFiive}/${classId}`)
             }}
           >
             수강 신청하기

@@ -14,6 +14,10 @@ interface FiiveStudioState {
   isOpenResponsiveLiveMember: false
   setIsOpenResponsiveLiveMember: (isOpenResponsiveLiveMember: boolean) => void
 
+  // 반응형 사이즈에서 video player의 height을 읽어, LiveStatusVideoScreen의 height을 조정하기 위한 number state
+  videoStatusScreenHeight: number
+  setVideoStatusScreenHeight: (videoStatusScreenHeight: number) => void
+
   // sendbird chat UI open <> close toggle boolean state
   isChatOpen: boolean
   setIsChatOpen: (isChatOpen: boolean) => void
@@ -68,6 +72,12 @@ const useStore = create(
       setIsOpenResponsiveLiveMember: (isOpenResponsiveLiveMember) =>
         set(() => ({
           isOpenResponsiveLiveMember,
+        })),
+
+      videoStatusScreenHeight: 0,
+      setVideoStatusScreenHeight: (videoStatusScreenHeight) =>
+        set(() => ({
+          videoStatusScreenHeight,
         })),
 
       isChatOpen: true,

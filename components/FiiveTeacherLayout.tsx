@@ -141,6 +141,7 @@ const FiiveLayout = (props: any) => {
   // 라이브 종료 시간이 지나면 음수로 표현되는데, 음수일 때는 실행되지 않도록 방지
   useEffect(() => {
     if (
+      typeof classData !== 'undefined' &&
       Object.keys(classData).length !== 0 &&
       getBeforeMinutesEndTime(classData?.end_date) >= 0
     ) {
@@ -193,7 +194,8 @@ const FiiveLayout = (props: any) => {
               />
             </div>
 
-            {Object.keys(classData).length > 0 ? (
+            {typeof classData !== 'undefined' &&
+            Object.keys(classData).length > 0 ? (
               <div className='teacher_name_box'>{classData?.teacher_name}</div>
             ) : (
               <div className='teacher_name_box non_active'> </div>

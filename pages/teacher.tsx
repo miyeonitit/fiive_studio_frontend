@@ -64,20 +64,12 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
   // 반응형 미디어쿼리 스타일 지정을 위한 브라우저 넓이 측정 전역 state
   const offsetX = fiiveStudioUseStore((state: any) => state.offsetX)
 
-  // 반응형 사이즈에서 header의 라이브 참여자 목록을 볼 때, UI height 버그를 처리하기 위해 확인하는 boolean state
-  const isOpenResponsiveLiveMember = fiiveStudioUseStore(
-    (state: any) => state.isOpenResponsiveLiveMember
-  )
-
   // sendbird Chat open <> close 동작을 위한 toggle boolean state
   const isChatOpen = fiiveStudioUseStore((state: any) => state.isChatOpen)
   const setIsChatOpen = fiiveStudioUseStore((state: any) => state.setIsChatOpen)
 
   // waiting: 라이브 전 재생 대기중 <> play: 재생중 <> end: 라이브 종료 <> error : 재생 에러
   const ivsPlayStatus = fiiveStudioUseStore((state: any) => state.ivsPlayStatus)
-  const setIvsPlayStatus = fiiveStudioUseStore(
-    (state: any) => state.setIvsPlayStatus
-  )
 
   // user infomation state
   const userInfomation = fiiveStudioUseStore(
@@ -90,22 +82,11 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
   // user auth token for API
   const setAuthToken = fiiveStudioUseStore((state: any) => state.setAuthToken)
 
-  // 라이브 중일 때의 정보를 저장하기 위한 stream infomation state
-  const setStreamInfomation = fiiveStudioUseStore(
-    (state: any) => state.setStreamInfomation
-  )
-
-  // class infomation 정보를 저장하는 state
-  const classData = classRoomUseStore((state: any) => state.classData)
-
   // save sendbird emoji list container
   const emojiContainer = sendbirdUseStore((state: any) => state.emojiContainer)
   const addEmojiContainer = sendbirdUseStore(
     (state: any) => state.addEmojiContainer
   )
-
-  // update now local time
-  const nowTime = fiiveStudioUseStore((state: any) => state.nowTime)
 
   // const [announcementModal, toggleAnnouncementModal] = useState(false)
   // const [timerModal, toggleTimerModal] = useState(false)
@@ -120,7 +101,6 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
   const classInfomation = props?.classroom?.class
   const sendbirdInfomation = props?.classroom?.sendbird
 
-  // 반응형일 때, 전체 페이지 height(100vh) - ( Nav height(57px) + fix bottom height(82px) + content margin up & down(24px) = 163px )- Video height
   const chatHeightStyle: CSSProperties =
     offsetX < 1023
       ? {
@@ -143,10 +123,10 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
     if (responseData.name !== 'AxiosError') {
       // 접속한 본인의 role이 learner면 not-access 페이지로 이동
       if (responseData.userRole === 'learner') {
-        Router.push({
-          pathname: '/404',
-          query: { classId: classId, sessionIdx: sessionIdx },
-        })
+        // router.push({
+        //   pathname: '/404',
+        //   query: { classId: classId, sessionIdx: sessionIdx },
+        // })
       }
 
       setUserInfomation(responseData)
@@ -166,36 +146,6 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
     })
 
     addEmojiContainer(responseData.emojis)
-  }
-
-  const getLiveStreamInfomation = async (classId: string) => {
-    const liveEndDateAfterTwoHours = new Date(classData?.end_date + 7200000)
-
-    if (nowTime > liveEndDateAfterTwoHours) {
-      setIvsPlayStatus('end')
-      return
-    }
-
-    const requestUrl = `/classroom/${classId}/ivs/stream`
-
-    const body = {
-      channelArn: props?.classroom?.ivs?.channel?.arn,
-    }
-
-    const responseData = await AxiosRequest({
-      url: requestUrl,
-      method: 'POST',
-      body: body,
-      token: props?.auth_token,
-    })
-
-    if (responseData.name !== 'AxiosError') {
-      // LIVE 방송 중일 때
-      setStreamInfomation(responseData.stream)
-    } else {
-      // LIVE 방송 중이지 않을 때 (ivsPlayStatus가 waiting 이거나 end)
-      setStreamInfomation({})
-    }
   }
 
   // 브라우저 resize 할 때마다 <Video /> 의 height 감지
@@ -223,14 +173,14 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
 
     if (props.auth_token && props.auth_token.length !== 0) {
       // 수강 권한 없는 user가 접근 시 not-access 페이지로 이동
-      if (props.classroom.status === 401) {
-        // console.log(props.classroom.response.status === 403, '수강 권한 없음')
-        Router.push({
-          pathname: '/not-access',
-          query: { classId: classId, sessionIdx: sessionIdx },
-        })
-        return
-      }
+      // if (props.classroom.status === 401) {
+      //   // console.log(props.classroom.response.status === 403, '수강 권한 없음')
+      //   router.push({
+      //     pathname: '/not-access',
+      //     query: { classId: classId, sessionIdx: sessionIdx },
+      //   })
+      //   return
+      // }
 
       // 1. get user auth_token
       setAuthToken(props.auth_token)
@@ -290,21 +240,23 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
         {/* class infomation 영역 */}
         {(offsetX >= 1023 || !isChatOpen) && (
           <section className='class-wrapper'>
-            {Object.keys(classInfomation).length > 0 && (
-              <div className='class_infomation_wrapper'>
-                <div className='class_title_box'>
-                  {classInfomation?.class_name} {classInfomation?.session + 1}
-                  회차
-                </div>
+            {typeof classInfomation !== 'undefined' &&
+              Object.keys(classInfomation).length > 0 && (
+                <div className='class_infomation_wrapper'>
+                  <div className='class_title_box'>
+                    {classInfomation?.class_name} {classInfomation?.session + 1}
+                    회차
+                  </div>
 
-                <div className='class_description_box'>
-                  {classInfomation?.curriculum_contents}
+                  <div className='class_description_box'>
+                    {classInfomation?.curriculum_contents}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
 
             {/* class notification 영역 */}
-            {Object.keys(classInfomation).length > 0 ? (
+            {typeof classInfomation !== 'undefined' &&
+            Object.keys(classInfomation).length > 0 ? (
               <div className='class_notification_wrapper'>
                 <div className='nonotification_title_box'>
                   <Image
@@ -359,10 +311,7 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
       </main>
 
       {/* chat을 펼쳤을 때 aside bar */}
-      <aside
-        className={`chat ${!isChatOpen && 'close'}`}
-        style={chatHeightStyle}
-      >
+      <aside className={`chat ${!isChatOpen && 'close'}`}>
         <div className='chatroom'>
           {ivsPlayStatus !== 'end' ? (
             <Chat

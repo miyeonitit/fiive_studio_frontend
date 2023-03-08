@@ -1,4 +1,5 @@
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.4/dist/web/variable/pretendardvariable.css');
+
 body {
   font-face: 'Pretendard Variable', -apple-system, BlinkMacSystemFont, system-ui,
     Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR',
@@ -14,17 +15,3 @@ body {
 @import './layouts/index';
 @import './pages/index';
 @import './components/index';
-
-/* obs 이용시 새창열기 팝업 chat */
-@import '../components/Sendbird/CustomTeacherPopupChat';
-
-.chat-monitor {
-  .sendbird-conversation {
-    overflow: auto;
-    background-color: transparent !important;
-  }
-
-  .sendbird-notification {
-    display: none;
-  }
-}
