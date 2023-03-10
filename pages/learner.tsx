@@ -1,10 +1,9 @@
 import React, { useState, useRef, useEffect, ReactElement } from 'react'
-import { NextPageWithLayout } from '../types/NextPageWithLayout'
 import Head from 'next/head'
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
-import Router from 'next/router'
-import { useRouter } from 'next/router'
+import Router, { useRouter } from 'next/router'
+import { NextPageWithLayout } from '../types/NextPageWithLayout'
 import { CSSProperties } from 'styled-components'
 
 import AxiosRequest from '../utils/AxiosRequest'
@@ -44,10 +43,8 @@ type sendbirdChatType = {
 }
 
 type props = {
-  emoji_data?: { emojis: Array<object>; id: number; name: string; url: string }
   classroom: { ivs: ivsType; sendbird: sendbirdChatType; class: classType }
-  class_id: string
-  auth_token: string
+  authTokenValue: string
   sendbirdAccessToken: string
 }
 
@@ -193,27 +190,30 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
     const classId = router.query.classId
     const sessionIdx = router.query.sessionIdx
 
-    if (props?.auth_token && props?.auth_token.length !== 0) {
-      // 수강 권한 없는 user가 접근 시 not-access 페이지로 이동
-      // if (props.classroom.status === 401) {
-      //   // console.log(props.classroom.response.status === 403, '수강 권한 없음')
-      //   Router.push({
-      //     pathname: '/not-access',
-      //     query: { classId: classId, sessionIdx: sessionIdx },
-      //   })
-      //   return
-      // }
+    console.log(classInfomation, 'classInfomation')
+    // 수강 권한 없는 user가 접근 시 not-access 페이지로 이동
+    // if (typeof classInfomation === 'undefined') {
+    //   console.log('수강 권한 없음')
+    //   router.push({
+    //     pathname: '/not-access',
+    //     query: { classId: classId, sessionIdx: sessionIdx },
+    //   })
+    //   return
+    // }
 
+    if (props?.authTokenValue.length !== 0) {
       // 1. get user auth_token
-      setAuthToken(props?.auth_token)
+      setAuthToken(props?.authTokenValue)
 
       // 2. get user infomation with user auth_token
-      getUserInfomation(props?.auth_token)
+      getUserInfomation(props?.authTokenValue)
 
       // 3. get chat's emoji list container
-      getChatEmojiContainer(props?.auth_token)
+      getChatEmojiContainer(props?.authTokenValue)
     }
-  }, [props?.auth_token])
+
+    console.log(ivsInfomation, ';ivsInfomation')
+  }, [props?.authTokenValue])
 
   return (
     <div className='fiive learner page'>
@@ -233,7 +233,7 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
           {/* ivs video player 영역 컴포넌트 */}
           <Video
             playbackUrl={ivsInfomation?.channel?.playbackUrl}
-            authToken={props?.auth_token}
+            authToken={props?.authTokenValue}
             classId={userInfomation?.classId}
             userRole={userInfomation?.userRole}
           />
@@ -355,7 +355,7 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
               emojiContainer={emojiContainer}
               chatHeightStyle={chatHeightStyle}
               sendbirdAccessToken={props?.sendbirdAccessToken}
-              authToken={props?.auth_token}
+              authTokenValue={props?.authTokenValue}
             />
           ) : (
             <FakeChat status='liveEnd' chatHeightStyle={chatHeightStyle} />

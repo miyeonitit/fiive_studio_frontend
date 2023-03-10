@@ -2,8 +2,8 @@ import React, { useState, useRef, useEffect, ReactElement } from 'react'
 import Head from 'next/head'
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
-import Router from 'next/router'
-import { useRouter } from 'next/router'
+import Router, { useRouter } from 'next/router'
+import { NextPageWithLayout } from '../types/NextPageWithLayout'
 import { CSSProperties } from 'styled-components'
 
 import AxiosRequest from '../utils/AxiosRequest'
@@ -11,7 +11,6 @@ import sendbirdUseStore from '../store/Sendbird'
 import classRoomUseStore from '../store/classRoom'
 import fiiveStudioUseStore from '../store/FiiveStudio'
 
-import { NextPageWithLayout } from '../types/NextPageWithLayout'
 import Layout from '../components/FiiveTeacherLayout'
 import Video from '../components/Video'
 import LectureTools from '../components/LectureTools'
@@ -46,10 +45,8 @@ type sendbirdChatType = {
 }
 
 type props = {
-  emoji_data?: { emojis: Array<object>; id: number; name: string; url: string }
   classroom: { ivs: ivsType; sendbird: sendbirdChatType; class: classType }
-  class_id: string
-  auth_token: string
+  authTokenValue: string
   sendbirdAccessToken: string
 }
 
@@ -171,27 +168,27 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
     const classId = router.query.classId
     const sessionIdx = router.query.sessionIdx
 
-    if (props.auth_token && props.auth_token.length !== 0) {
-      // 수강 권한 없는 user가 접근 시 not-access 페이지로 이동
-      // if (props.classroom.status === 401) {
-      //   // console.log(props.classroom.response.status === 403, '수강 권한 없음')
-      //   router.push({
-      //     pathname: '/not-access',
-      //     query: { classId: classId, sessionIdx: sessionIdx },
-      //   })
-      //   return
-      // }
+    // 수강 권한 없는 user가 접근 시 not-access 페이지로 이동
+    // if (typeof classInfomation === 'undefined') {
+    //   console.log('수강 권한 없음')
+    //   router.push({
+    //     pathname: '/not-access',
+    //     query: { classId: classId, sessionIdx: sessionIdx },
+    //   })
+    //   return
+    // }
 
+    if (props?.authTokenValue.length !== 0) {
       // 1. get user auth_token
-      setAuthToken(props.auth_token)
+      setAuthToken(props?.authTokenValue)
 
       // 2. get user infomation with user auth_token
-      getUserInfomation(props.auth_token)
+      getUserInfomation(props?.authTokenValue)
 
       // 3. get chat's emoji list container
-      getChatEmojiContainer(props.auth_token)
+      getChatEmojiContainer(props?.authTokenValue)
     }
-  }, [props.auth_token])
+  }, [props?.authTokenValue])
 
   return (
     <div className='fiive teacher page'>
@@ -223,7 +220,7 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
           {/* ivs video player 영역 컴포넌트 */}
           <Video
             playbackUrl={ivsInfomation?.channel?.playbackUrl}
-            authToken={props?.auth_token}
+            authToken={props?.authTokenValue}
             classId={userInfomation?.classId}
             userRole={userInfomation?.userRole}
           />
@@ -323,7 +320,7 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
               emojiContainer={emojiContainer}
               chatHeightStyle={chatHeightStyle}
               sendbirdAccessToken={props?.sendbirdAccessToken}
-              authToken={props?.auth_token}
+              authTokenValue={props?.authTokenValue}
             />
           ) : (
             <FakeChat status='liveEnd' chatHeightStyle={chatHeightStyle} />

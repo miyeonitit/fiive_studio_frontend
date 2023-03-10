@@ -8,10 +8,6 @@ const ErrorPage = () => {
   // channelTalk open <> close toggle boolean state
   const [isOpenChannelTalk, setIsOpenChannelTalk] = useState(false)
 
-  const closeBrowser = () => {
-    window.open('about:blank', '_self').close()
-  }
-
   // channelTalk open <> close toggle
   const clickChannelTalk = () => {
     if (!isOpenChannelTalk) {

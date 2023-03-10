@@ -132,7 +132,7 @@ const CustomChatHeader = (props: props) => {
   const miniMenuRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
   const userFilterRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
 
-  const studioUrl = process.env.NEXT_PUBLIC_TEST_STUDIO_URL
+  const studioUrl = process.env.NEXT_PUBLIC_STUDIO_URL
 
   const fadeUp = cssTransition({
     enter: 'animate__animated animate__customFadeInUp',

@@ -110,10 +110,6 @@ const Video = (props: props) => {
   useEffect(() => {
     if (typeof ivsPlayer !== 'undefined') {
       setVideoStatusScreenHeight(ivsPlayer.current?.offsetHeight)
-      console.log(
-        ivsPlayer.current?.offsetHeight,
-        'ivsPlayer.current?.offsetHeight'
-      )
     }
   }, [offsetX])
 
@@ -137,131 +133,134 @@ const Video = (props: props) => {
   }
 
   const initVideo = async () => {
-    // Bail if already initialized
-    if (init) return
+    console.log(props, 'init video')
+    if (typeof props?.playbackUrl !== 'undefined') {
+      // Bail if already initialized
+      if (init) return
 
-    // Bail if IVS sdk is not loaded
-    const { IVSPlayer } = window
+      // Bail if IVS sdk is not loaded
+      const { IVSPlayer } = window
 
-    if (typeof IVSPlayer === 'undefined') return
+      if (typeof IVSPlayer === 'undefined') return
 
-    // Bail if player is not supported
-    if (!IVSPlayer.isPlayerSupported) return
+      // Bail if player is not supported
+      if (!IVSPlayer.isPlayerSupported) return
 
-    // get user's token for ivs play
-    const { token } = await getChannelData()
+      // get user's token for ivs play
+      const { token } = await getChannelData()
 
-    // get playbackUrl in channelData
-    const playbackUrl = props.playbackUrl + `?token=${token}`
+      // get playbackUrl in channelData
+      const playbackUrl = props.playbackUrl + `?token=${token}`
 
-    const player = IVSPlayer.create()
+      const player = IVSPlayer.create()
 
-    player.addEventListener(IVSPlayer.PlayerState.IDLE, () => {
-      console.log('1. idle')
-      setIvsPlayStatus('waiting')
-    })
+      player.addEventListener(IVSPlayer.PlayerState.IDLE, () => {
+        console.log('1. idle')
+        setIvsPlayStatus('waiting')
+      })
 
-    player.addEventListener(IVSPlayer.PlayerState.READY, () => {
-      console.log('2. ready')
-      setIvsPlayStatus('waiting')
-    })
+      player.addEventListener(IVSPlayer.PlayerState.READY, () => {
+        console.log('2. ready')
+        setIvsPlayStatus('waiting')
+      })
 
-    player.addEventListener(IVSPlayer.PlayerState.BUFFERING, () => {
-      console.log('3. buffering')
-      setIvsPlayStatus('error')
-    })
+      player.addEventListener(IVSPlayer.PlayerState.BUFFERING, () => {
+        console.log('3. buffering')
+        setIvsPlayStatus('error')
+      })
 
-    player.addEventListener(IVSPlayer.PlayerState.PLAYING, () => {
-      console.log('4. playing')
-      setIvsPlayStatus('play')
-      setStreamInfomation('LIVE-ON')
-    })
+      player.addEventListener(IVSPlayer.PlayerState.PLAYING, () => {
+        console.log('4. playing')
+        setIvsPlayStatus('play')
+        setStreamInfomation('LIVE-ON')
+      })
 
-    player.addEventListener(IVSPlayer.PlayerState.ENDED, () => {
-      console.log('5. end')
-      setIvsPlayStatus('fast-end')
-      setStreamInfomation('LIVE-OFF')
+      player.addEventListener(IVSPlayer.PlayerState.ENDED, () => {
+        console.log('5. end')
+        setIvsPlayStatus('fast-end')
+        setStreamInfomation('LIVE-OFF')
 
-      if (props.userRole !== 'learner') {
-        controlFreezeChat()
-      }
-    })
-
-    // Handle embedded metadata events
-    player.addEventListener(
-      IVSPlayer.PlayerEventType.TEXT_METADATA_CUE,
-      (cue: any) => {
-        // const type = cue.text
-        const { text: json } = cue
-        const { type, message } = JSON.parse(json)
-
-        switch (type) {
-          case 'ANNOUNCEMENT':
-            // addAnnouncement(message)
-            break
-          case 'QUESTION':
-            // addQuestion(message)
-            break
-          case 'RESOLVE_QUESTION':
-            // resolveQuestion(message)
-            break
-          case 'REACTION':
-            console.log('reaction post success')
-            addReaction(message)
-            break
-          case 'TIMER':
-            // setTimer(message)
-            break
+        if (props.userRole !== 'learner') {
+          controlFreezeChat()
         }
+      })
 
-        /*
-        setMessages((msgs) => [
-          ...msgs,
-          {
-            id: startTime,
-            message,
-          },
-        ]);
-        */
-      }
-    )
+      // Handle embedded metadata events
+      player.addEventListener(
+        IVSPlayer.PlayerEventType.TEXT_METADATA_CUE,
+        (cue: any) => {
+          // const type = cue.text
+          const { text: json } = cue
+          const { type, message } = JSON.parse(json)
 
-    // ivs player의 초기 호출 시 or teacher가 OBS 방송 중이 아닐 시의 케이스
-    player.addEventListener(IVSPlayer.PlayerEventType.ERROR, (error: any) => {
-      const { type = null } = error
-
-      const liveStartDate = new Date(classData?.start_date)
-      const liveEndDateAfterTwoHours = new Date(classData?.end_date + 7200000)
-
-      switch (type) {
-        case 'ErrorNoSource':
-        case 'ErrorNetworkIO':
-          setIvsPlayStatus('error')
-
-        case 'ErrorNotAvailable':
-          if (nowTime > liveStartDate && nowTime < liveEndDateAfterTwoHours) {
-            // 현재 시간 기준으로 start_date가 지났는데도 OBS 방송이 켜져 있지 않을 때 waiting 준비 화면 세팅
-            setIvsPlayStatus('waiting')
+          switch (type) {
+            case 'ANNOUNCEMENT':
+              // addAnnouncement(message)
+              break
+            case 'QUESTION':
+              // addQuestion(message)
+              break
+            case 'RESOLVE_QUESTION':
+              // resolveQuestion(message)
+              break
+            case 'REACTION':
+              console.log('reaction post success')
+              addReaction(message)
+              break
+            case 'TIMER':
+              // setTimer(message)
+              break
           }
 
-          window.setTimeout(() => {
-            player.load(playbackUrl)
-            player.play()
-          }, 5000)
+          /*
+          setMessages((msgs) => [
+            ...msgs,
+            {
+              id: startTime,
+              message,
+            },
+          ]);
+          */
+        }
+      )
 
-          break
-      }
-    })
+      // ivs player의 초기 호출 시 or teacher가 OBS 방송 중이 아닐 시의 케이스
+      player.addEventListener(IVSPlayer.PlayerEventType.ERROR, (error: any) => {
+        const { type = null } = error
 
-    player.attachHTMLVideoElement(ivsPlayer.current)
+        const liveStartDate = new Date(classData?.start_date)
+        const liveEndDateAfterTwoHours = new Date(classData?.end_date + 7200000)
 
-    player.load(playbackUrl)
+        switch (type) {
+          case 'ErrorNoSource':
+          case 'ErrorNetworkIO':
+            setIvsPlayStatus('error')
 
-    setIvsPlayStatus('play')
+          case 'ErrorNotAvailable':
+            if (nowTime > liveStartDate && nowTime < liveEndDateAfterTwoHours) {
+              // 현재 시간 기준으로 start_date가 지났는데도 OBS 방송이 켜져 있지 않을 때 waiting 준비 화면 세팅
+              setIvsPlayStatus('waiting')
+            }
 
-    player.play()
+            window.setTimeout(() => {
+              player.load(playbackUrl)
+              player.play()
+            }, 5000)
 
-    setInit(true)
+            break
+        }
+      })
+
+      player.attachHTMLVideoElement(ivsPlayer.current)
+
+      player.load(playbackUrl)
+
+      setIvsPlayStatus('play')
+
+      player.play()
+
+      setInit(true)
+    }
   }
 
   return (

@@ -17,6 +17,7 @@ import classRoomUseStore from '../store/classRoom'
 import CustomChatHeader from './Sendbird/CustomChatHeader'
 import CustomChatRoom from './Sendbird/CustomChatRoom'
 import CustomMessageInput from './Sendbird/CustomMessageInput'
+import { MessageTypeFilter } from '@sendbird/chat/message'
 
 type props = {
   userId: string
@@ -27,7 +28,7 @@ type props = {
   emojiContainer: object
   chatHeightStyle: CSSProperties
   sendbirdAccessToken: string
-  authToken: string
+  authTokenValue: string
 }
 
 const Chat = (props: props) => {
@@ -73,7 +74,7 @@ const Chat = (props: props) => {
       url: requestUrl,
       method: 'POST',
       body: body,
-      token: props?.authToken,
+      token: props?.authTokenValue,
     })
 
     const result = await responseData
@@ -87,11 +88,12 @@ const Chat = (props: props) => {
 
   // not have sendbird's user access token, create sendbird's user access token
   useEffect(() => {
-    console.log(props.sendbirdAccessToken, 'chat sendbirdAccessToken')
+    console.log(props, 'chat props')
 
     if (!props.sendbirdAccessToken) {
       const intiateSession = async () => {
         const token = await issueSessionToken()
+        console.log(token, 'chat token ')
         setAccessToken(token)
       }
 
@@ -101,54 +103,57 @@ const Chat = (props: props) => {
 
   return (
     <>
-      <SendbirdProvider
-        appId={appId}
-        userId={props?.userId}
-        accessToken={props?.sendbirdAccessToken}
-        stringSet={stringSet}
-        dateLocale={kr}
-      >
-        <ChannelProvider
-          channelUrl={props?.currentUrl}
-          isReactionEnabled={true}
-        >
-          <ChannelUI
-            hasSeparator={true}
-            isReactionEnabled={true}
-            renderChannelHeader={() => (
-              <CustomChatHeader
-                userId={props?.userId}
-                userRole={props?.userRole}
-                channelUrl={props?.currentUrl}
-                isChatOpen={props?.isChatOpen}
-                setIsChatOpen={props?.setIsChatOpen}
-                chatHeightStyle={props?.chatHeightStyle}
-              />
-            )}
-            renderMessage={(message: {}) => (
-              <CustomChatRoom
-                message={message}
-                userId={props?.userId}
-                userRole={props?.userRole}
-                channelUrl={props?.currentUrl}
-                emojiContainer={props?.emojiContainer}
-              />
-            )}
-            renderMessageInput={() =>
-              isUserList ? (
-                <></>
-              ) : (
-                <CustomMessageInput
-                  userId={props?.userId}
-                  userRole={props?.userRole}
-                />
-              )
-            }
-            renderCustomSeparator={() => <div></div>}
-            // renderTypingIndicator={(props) => <Tester props={props} />}
-          ></ChannelUI>
-        </ChannelProvider>
-      </SendbirdProvider>
+      {props.sendbirdAccessToken !== '' &&
+        typeof props.currentUrl !== 'undefined' && (
+          <SendbirdProvider
+            appId={appId}
+            userId={props?.userId}
+            accessToken={props?.sendbirdAccessToken}
+            stringSet={stringSet}
+            dateLocale={kr}
+          >
+            <ChannelProvider
+              channelUrl={props?.currentUrl}
+              isReactionEnabled={true}
+            >
+              <ChannelUI
+                hasSeparator={true}
+                isReactionEnabled={true}
+                renderChannelHeader={() => (
+                  <CustomChatHeader
+                    userId={props?.userId}
+                    userRole={props?.userRole}
+                    channelUrl={props?.currentUrl}
+                    isChatOpen={props?.isChatOpen}
+                    setIsChatOpen={props?.setIsChatOpen}
+                    chatHeightStyle={props?.chatHeightStyle}
+                  />
+                )}
+                renderMessage={(message: {}) => (
+                  <CustomChatRoom
+                    message={message}
+                    userId={props?.userId}
+                    userRole={props?.userRole}
+                    channelUrl={props?.currentUrl}
+                    emojiContainer={props?.emojiContainer}
+                  />
+                )}
+                renderMessageInput={() =>
+                  isUserList ? (
+                    <></>
+                  ) : (
+                    <CustomMessageInput
+                      userId={props?.userId}
+                      userRole={props?.userRole}
+                    />
+                  )
+                }
+                renderCustomSeparator={() => <div></div>}
+                // renderTypingIndicator={(props) => <Tester props={props} />}
+              ></ChannelUI>
+            </ChannelProvider>
+          </SendbirdProvider>
+        )}
     </>
   )
 }

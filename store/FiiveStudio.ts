@@ -44,10 +44,6 @@ interface FiiveStudioState {
   userInfomation: object
   setUserInfomation: (userInfomation: object) => void
 
-  // save class id
-  classId: string
-  setClassId: (classId: string) => void
-
   // 현재 시간 data
   nowTime: object
   setNowTime: (nowTime: object) => void
@@ -114,12 +110,6 @@ const useStore = create(
       setNumberOfLiveUser: (numberOfLiveUser) =>
         set(() => ({
           numberOfLiveUser,
-        })),
-
-      classId: '',
-      setClassId: (classId) =>
-        set(() => ({
-          classId,
         })),
 
       nowTime: new Date(),
