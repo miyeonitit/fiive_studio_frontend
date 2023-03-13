@@ -410,12 +410,6 @@ const CustomChatRoom = (props: props) => {
     }
   }, [])
 
-  // console.log(sender, 'sender')
-  // console.log(messageInfomation, 'info')
-  // console.log(reactedEmojis, 'reactedEmojis')
-  // console.log(offsetX, 'offsetX')
-  // console.log(currentGroupChannel, 'currentGroupChannel')
-
   return (
     <div className='CustomChatRoom'>
       {/* 채팅방이 신규로 생성되었거나 누군가가 입장했을 때의 메시지를 숨김 처리 */}

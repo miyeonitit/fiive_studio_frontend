@@ -88,12 +88,9 @@ const Chat = (props: props) => {
 
   // not have sendbird's user access token, create sendbird's user access token
   useEffect(() => {
-    console.log(props, 'chat props')
-
     if (!props.sendbirdAccessToken) {
       const intiateSession = async () => {
         const token = await issueSessionToken()
-        console.log(token, 'chat token ')
         setAccessToken(token)
       }
 

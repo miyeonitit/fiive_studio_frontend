@@ -16,17 +16,17 @@ type props = {
 }
 
 const Video = (props: props) => {
-  const channel = videoUseStore((state: any) => state.channel)
-  const setChannel = videoUseStore((state: any) => state.setChannel)
+  // const channel = videoUseStore((state: any) => state.channel)
+  // const setChannel = videoUseStore((state: any) => state.setChannel)
 
-  const addAnnouncement = videoUseStore((state: any) => state.addAnnouncement)
+  // const addAnnouncement = videoUseStore((state: any) => state.addAnnouncement)
 
-  const addQuestion = videoUseStore((state: any) => state.addQuestion)
-  const resolveQuestion = videoUseStore((state: any) => state.resolveQuestion)
+  // const addQuestion = videoUseStore((state: any) => state.addQuestion)
+  // const resolveQuestion = videoUseStore((state: any) => state.resolveQuestion)
+
+  // const setTimer = videoUseStore((state: any) => state.setTimer)
 
   const addReaction = videoUseStore((state: any) => state.addReaction)
-
-  const setTimer = videoUseStore((state: any) => state.setTimer)
 
   // user infomation state
   const userInfomation = fiiveStudioUseStore(
@@ -34,15 +34,11 @@ const Video = (props: props) => {
   )
 
   // ivs Player status 상태 표현 state
-  const ivsPlayStatus = fiiveStudioUseStore((state: any) => state.ivsPlayStatus)
   const setIvsPlayStatus = fiiveStudioUseStore(
     (state: any) => state.setIvsPlayStatus
   )
 
   // 라이브 중일 때의 정보를 저장하기 위한 stream infomation state
-  const streamInfomation = fiiveStudioUseStore(
-    (state: any) => state.streamInfomation
-  )
   const setStreamInfomation = fiiveStudioUseStore(
     (state: any) => state.setStreamInfomation
   )
@@ -91,21 +87,16 @@ const Video = (props: props) => {
 
   // userInfomation의 정보가 갱신되어야 하고, streamInfomation으로 LIVE 중인지 아닌지를 판단해야 함
   useEffect(() => {
-    if (
-      typeof userInfomation !== 'undefined' &&
-      Object.keys(userInfomation).length !== 0
-    ) {
-      const liveStartDate = new Date(classData?.start_date)
-      const liveEndDateAfterTwoHours = new Date(classData?.end_date + 7200000)
+    const liveStartDate = new Date(classData?.start_date)
+    const liveEndDateAfterTwoHours = new Date(classData?.end_date + 7200000)
 
-      // 현재 시간 기준으로 end_date + 2시간이 (총 4시간) 지나면, ivs 영역 비활성화 + chat 영역 비활성화
-      if (nowTime >= liveStartDate && nowTime > liveEndDateAfterTwoHours) {
-        setIvsPlayStatus('end')
-      } else {
-        initVideo()
-      }
+    // 현재 시간 기준으로 end_date + 2시간이 (총 4시간) 지나면, ivs 영역 비활성화 + chat 영역 비활성화
+    if (nowTime >= liveStartDate && nowTime > liveEndDateAfterTwoHours) {
+      setIvsPlayStatus('end')
+    } else {
+      initVideo()
     }
-  }, [nowTime, userInfomation, streamInfomation])
+  }, [props?.playbackUrl, nowTime, classData])
 
   useEffect(() => {
     if (typeof ivsPlayer !== 'undefined') {
@@ -133,7 +124,6 @@ const Video = (props: props) => {
   }
 
   const initVideo = async () => {
-    console.log(props, 'init video')
     if (typeof props?.playbackUrl !== 'undefined') {
       // Bail if already initialized
       if (init) return
@@ -167,6 +157,7 @@ const Video = (props: props) => {
       player.addEventListener(IVSPlayer.PlayerState.BUFFERING, () => {
         console.log('3. buffering')
         setIvsPlayStatus('error')
+        setVideoStatusScreenHeight(ivsPlayer.current?.offsetHeight)
       })
 
       player.addEventListener(IVSPlayer.PlayerState.PLAYING, () => {
@@ -179,6 +170,7 @@ const Video = (props: props) => {
         console.log('5. end')
         setIvsPlayStatus('fast-end')
         setStreamInfomation('LIVE-OFF')
+        setVideoStatusScreenHeight(ivsPlayer.current?.offsetHeight)
 
         if (props.userRole !== 'learner') {
           controlFreezeChat()
@@ -235,6 +227,7 @@ const Video = (props: props) => {
           case 'ErrorNoSource':
           case 'ErrorNetworkIO':
             setIvsPlayStatus('error')
+            setVideoStatusScreenHeight(ivsPlayer.current?.offsetHeight)
 
           case 'ErrorNotAvailable':
             if (nowTime > liveStartDate && nowTime < liveEndDateAfterTwoHours) {

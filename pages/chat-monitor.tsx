@@ -111,9 +111,6 @@ const ChatMonitorPage: NextPageWithLayout = (props: props) => {
 
   // 1. params query로 전해진 auth-token 검증
   useEffect(() => {
-    console.log(authToken, 'authToken')
-    console.log(props, 'chat moniter props')
-
     // url 중 params query로 token이 전해지지 않았다면, 다시 url 복사 버튼 클릭 유도
     if (authToken) {
       // 토큰값이 저장되지 않았다면, 다시 params query로 정해진 token을 setState로 저장

@@ -1,4 +1,9 @@
-import React, { useState, useRef, useEffect, ReactElement } from 'react'
+import React, {
+  useState,
+  useEffect,
+  ReactElement,
+  useLayoutEffect,
+} from 'react'
 import Head from 'next/head'
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
