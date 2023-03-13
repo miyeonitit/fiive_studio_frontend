@@ -265,6 +265,11 @@
 
 @media screen and (max-width: 767px) {
   .fiive_layout.learner_layout {
+    // iphone safari에서 input or textarea 활성화시 height 여백이 생기는 이슈에 대한 대응 css 코드
+    @supports (-webkit-touch-callout: none) {
+      height: -webkit-fill-available;
+    }
+
     .layout-footer {
       justify-content: space-between;
 

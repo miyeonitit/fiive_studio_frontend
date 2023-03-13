@@ -123,8 +123,8 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
     })
 
     if (responseData.name !== 'AxiosError') {
-      // 접속한 본인의 role이 teacher나 admin일 경우, 404 페이지로 이동
-      if (responseData.userRole !== 'learner') {
+      // 접속한 본인의 role이 learner일 경우, 404 페이지로 이동
+      if (responseData.userRole === 'learner') {
         router.push({
           pathname: '/404',
           query: { classId: classId, sessionIdx: sessionIdx },

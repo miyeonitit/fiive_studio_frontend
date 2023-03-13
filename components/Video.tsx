@@ -146,10 +146,12 @@ const Video = (props: props) => {
 
       player.addEventListener(IVSPlayer.PlayerState.IDLE, () => {
         setIvsPlayStatus('waiting')
+        setVideoStatusScreenHeight(ivsPlayer.current?.offsetHeight)
       })
 
       player.addEventListener(IVSPlayer.PlayerState.READY, () => {
         setIvsPlayStatus('waiting')
+        setVideoStatusScreenHeight(ivsPlayer.current?.offsetHeight)
       })
 
       player.addEventListener(IVSPlayer.PlayerState.BUFFERING, () => {
