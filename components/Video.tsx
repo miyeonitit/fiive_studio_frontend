@@ -145,29 +145,24 @@ const Video = (props: props) => {
       const player = IVSPlayer.create()
 
       player.addEventListener(IVSPlayer.PlayerState.IDLE, () => {
-        console.log('1. idle')
         setIvsPlayStatus('waiting')
       })
 
       player.addEventListener(IVSPlayer.PlayerState.READY, () => {
-        console.log('2. ready')
         setIvsPlayStatus('waiting')
       })
 
       player.addEventListener(IVSPlayer.PlayerState.BUFFERING, () => {
-        console.log('3. buffering')
         setIvsPlayStatus('error')
         setVideoStatusScreenHeight(ivsPlayer.current?.offsetHeight)
       })
 
       player.addEventListener(IVSPlayer.PlayerState.PLAYING, () => {
-        console.log('4. playing')
         setIvsPlayStatus('play')
         setStreamInfomation('LIVE-ON')
       })
 
       player.addEventListener(IVSPlayer.PlayerState.ENDED, () => {
-        console.log('5. end')
         setIvsPlayStatus('fast-end')
         setStreamInfomation('LIVE-OFF')
         setVideoStatusScreenHeight(ivsPlayer.current?.offsetHeight)
@@ -196,7 +191,6 @@ const Video = (props: props) => {
               // resolveQuestion(message)
               break
             case 'REACTION':
-              console.log('reaction post success')
               addReaction(message)
               break
             case 'TIMER':

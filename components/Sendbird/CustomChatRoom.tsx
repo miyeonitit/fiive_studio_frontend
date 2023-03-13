@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  Dispatch,
-  SetStateAction,
-} from 'react'
+import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { ToastContainer, toast, cssTransition } from 'react-toastify'
 
@@ -24,7 +18,6 @@ import EmojiIcon from './components/EmojiIcon'
 import EmojiContainerBox from './components/EmojiContainerBox'
 import ResponsiveEmojiContainerBox from './ResponsiveComponents/ResponsiveEmojiContainerBox'
 import ResponsiveHandleErrorMessage from './ResponsiveComponents/ResponsiveHandleErrorMessage'
-import { ApplicationUserListQueryParams } from '@sendbird/chat'
 
 type messageSenderObj = {
   connectionStatus: string
@@ -71,8 +64,6 @@ const CustomChatRoom = (props: props) => {
 
   // const sender = messageInfomation?.sender
   const [sender, setSender] = useState<messageSenderObj>({})
-
-  const [indexOfMessage, setIndexOfMessage] = useState(-1)
 
   const [reactedEmojis, setReactedEmojis] = useState(
     messageInfomation.reactions ? messageInfomation.reactions : []
@@ -150,7 +141,6 @@ const CustomChatRoom = (props: props) => {
     deleteMessge(currentGroupChannel, messageInfomation)
       .then((message: any) => {})
       .catch((error: any) => {
-        console.log(error, 'error')
         controlToastPopup(false, '다시 시도해 주세요.')
       })
   }
@@ -162,7 +152,6 @@ const CustomChatRoom = (props: props) => {
     resendUserMessage(currentGroupChannel, messageInfomation)
       .then((message: any) => {})
       .catch((error: any) => {
-        console.log(error, 'error')
         controlToastPopup(false, '다시 시도해 주세요.')
       })
   }

@@ -1,15 +1,12 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  Dispatch,
-  SetStateAction,
-} from 'react'
+import React, { useState, useEffect, Dispatch, SetStateAction } from 'react'
 import Image from 'next/image'
+import { ToastContainer, toast, cssTransition } from 'react-toastify'
 
 import { useChannelContext } from '@sendbird/uikit-react/Channel/context'
 import sendbirdSelectors from '@sendbird/uikit-react/sendbirdSelectors'
 import useSendbirdStateContext from '@sendbird/uikit-react/useSendbirdStateContext'
+
+import fiiveStudioUseStore from '../../../store/FiiveStudio'
 
 type props = {
   messageInfomation: object
@@ -21,11 +18,19 @@ const ResponsiveHandleErrorMessage = (props: props) => {
   const { currentGroupChannel } = useChannelContext()
   const globalStore = useSendbirdStateContext()
 
+  // 반응형 미디어쿼리 스타일 지정을 위한 브라우저 넓이 측정 전역 state
+  const offsetX = fiiveStudioUseStore((state: any) => state.offsetX)
+
   // modal을 닫을 때, 애니메이션 효과와 setTimeout을 하기 위한 boolean state
   const [isCloseModal, setIsCloseModal] = useState(false)
 
   const errorMsgModalRef =
     React.useRef() as React.MutableRefObject<HTMLDivElement>
+
+  const fadeUp = cssTransition({
+    enter: 'animate__animated animate__customFadeInUp',
+    exit: 'animate__animated animate__fadeOut',
+  })
 
   const deleteMessage = () => {
     const deleteMessage = sendbirdSelectors.getDeleteMessage(globalStore)
@@ -33,8 +38,7 @@ const ResponsiveHandleErrorMessage = (props: props) => {
     deleteMessage(currentGroupChannel, props.messageInfomation)
       .then((message: any) => {})
       .catch((error: any) => {
-        console.log(error, 'error')
-        alert('다시 시도해 주세요.')
+        controlToastPopup(false, '다시 시도해 주세요.')
       })
   }
 
@@ -45,8 +49,7 @@ const ResponsiveHandleErrorMessage = (props: props) => {
     resendUserMessage(currentGroupChannel, props.messageInfomation)
       .then((message: any) => {})
       .catch((error: any) => {
-        console.log(error, 'error')
-        alert('다시 시도해 주세요.')
+        controlToastPopup(false, '다시 시도해 주세요.')
       })
   }
 
@@ -58,6 +61,37 @@ const ResponsiveHandleErrorMessage = (props: props) => {
 
     // setTimeout의 cleanUp 처리
     clearSetTimeOut(timer)
+  }
+
+  // status가 true: toast 성공 <> false : toast 에러
+  const controlToastPopup = (status: boolean, contentText: string) => {
+    if (status) {
+      toast.success(
+        <div className='toast_success_box'>
+          <Image
+            src='/pages/Sendbird/toast_success_icon.svg'
+            width={16}
+            height={16}
+            alt='toastSuccessIcon'
+          />
+          <span className='toast_success_text'>{contentText}</span>
+        </div>,
+        { transition: fadeUp }
+      )
+    } else {
+      toast.error(
+        <div className='toast_error_box'>
+          <Image
+            src='/pages/Sendbird/toast_warning_icon.svg'
+            width={16}
+            height={16}
+            alt='toastWarningIcon'
+          />
+          <span className='toast_error_text'>{contentText}</span>
+        </div>,
+        { transition: fadeUp }
+      )
+    }
   }
 
   const clearSetTimeOut = (countTimer: any) => {
@@ -132,6 +166,20 @@ const ResponsiveHandleErrorMessage = (props: props) => {
           </div>
         </div>
       </div>
+
+      <ToastContainer
+        position={offsetX > 1023 ? 'bottom-right' : 'bottom-center'}
+        autoClose={2000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme='colored'
+        transition={fadeUp}
+      />
     </div>
   )
 }

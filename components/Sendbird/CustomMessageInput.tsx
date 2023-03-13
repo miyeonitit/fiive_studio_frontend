@@ -9,11 +9,7 @@ import sendbirdSelectors from '@sendbird/uikit-react/sendbirdSelectors'
 import useSendbirdStateContext from '@sendbird/uikit-react/useSendbirdStateContext'
 import { useChannelContext } from '@sendbird/uikit-react/Channel/context'
 
-import {
-  UserMessageCreateParams,
-  UserMessageUpdateParams,
-  FileMessageCreateParams,
-} from '@sendbird/chat/message'
+import { UserMessageCreateParams } from '@sendbird/chat/message'
 
 type props = {
   userId: string
@@ -25,9 +21,6 @@ const CustomMessageInput = (props: props) => {
   const globalStore = useSendbirdStateContext()
 
   const [messageText, setMessageText] = useState('')
-
-  // const [isUserTyping, setIsUserTyping] = useState(false)
-  // const [typingUsersName, setTypingUsersName] = useState([])
 
   const messageInputWrapperRef =
     React.useRef() as React.MutableRefObject<HTMLDivElement>
@@ -145,44 +138,6 @@ const CustomMessageInput = (props: props) => {
       messageInputRef.current.value = ''
     }
   }, [currentGroupChannel.isFrozen])
-
-  // Typing Indicator 도입시 주석 해제
-  // useEffect(() => {
-  //   const body = {
-  //     user_ids: userId,
-  //   }
-
-  //   if (messageText.length > 0) {
-  //     axios
-  //       .post(
-  //         `${ApiStudio}/sendbird/group_channels/${currentChannelUrl}/typing`,
-  //         body
-  //       )
-  //       .then((data) => {
-  //         const getTypingUsers = currentGroupChannel.getTypingUsers()
-  //         const getTypingUsersName = getTypingUsers.map(
-  //           (user: any) => user.userId
-  //         )
-  //         setTypingUsersName(getTypingUsersName)
-  //       })
-  //       .catch((error) => {
-  //         console.error('실패:', error)
-  //       })
-  //   } else {
-  //     axios
-  //       .delete(
-  //         `${ApiStudio}/sendbird/group_channels/${currentChannelUrl}/typing`,
-  //         body
-  //       )
-  //       .then((data) => {
-  //         setIsUserTyping(false)
-  //         setTypingUsersName([])
-  //       })
-  //       .catch((error) => {
-  //         console.error('실패:', error)
-  //       })
-  //   }
-  // }, [messageText])
 
   return (
     <div className='CustomMessageInput'>

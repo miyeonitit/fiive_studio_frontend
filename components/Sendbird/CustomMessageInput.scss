@@ -39,6 +39,11 @@
     border: 1px solid $bluegray-3;
     border-radius: 2px;
 
+    // iphone safari에서 input or textarea 활성화시 height 여백이 생기는 이슈에 대한 대응 css 코드
+    @supports (-webkit-touch-callout: none) {
+      height: -webkit-fill-available;
+    }
+
     .message_input {
       width: 90%;
       border: none;

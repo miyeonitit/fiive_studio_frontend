@@ -104,8 +104,20 @@ const ChatMonitorPage: NextPageWithLayout = (props: props) => {
     if (responseData.name !== 'AxiosError') {
       setUserInfomation(responseData)
     } else {
-      console.log('수강 권한 없음')
-      // [backlog] 유저 식별에 실패하면 수강권한 없다는 페이지로 이동되어야 함!
+      toast.error(
+        <div className='toast_error_box'>
+          <Image
+            src='/pages/Sendbird/toast_warning_icon.svg'
+            width={16}
+            height={16}
+            alt='toastWarningIcon'
+          />
+          <span className='toast_error_text'>
+            수강 권한을 다시 확인해 주세요!
+          </span>
+        </div>,
+        { transition: fadeUp }
+      )
     }
   }
 

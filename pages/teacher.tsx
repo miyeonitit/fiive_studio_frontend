@@ -123,15 +123,22 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
     })
 
     if (responseData.name !== 'AxiosError') {
-      // 접속한 본인의 role이 learner면 not-access 페이지로 이동
-      if (responseData.userRole === 'learner') {
-        // router.push({
-        //   pathname: '/404',
-        //   query: { classId: classId, sessionIdx: sessionIdx },
-        // })
+      // 접속한 본인의 role이 teacher나 admin일 경우, 404 페이지로 이동
+      if (responseData.userRole !== 'learner') {
+        router.push({
+          pathname: '/404',
+          query: { classId: classId, sessionIdx: sessionIdx },
+        })
       }
 
+      // 유저의 접속 정보가 맞다면, userInfomation에 유저 정보 저장
       setUserInfomation(responseData)
+    } else if (responseData.response.request.status === 401) {
+      // 401 - user의 수강 권한이 없을 경우, not-access 페이지로 이동
+      router.push({
+        pathname: '/not-access',
+        query: { classId: classId, sessionIdx: sessionIdx },
+      })
     }
   }
 
@@ -170,19 +177,6 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
   }, [])
 
   useEffect(() => {
-    const classId = router.query.classId
-    const sessionIdx = router.query.sessionIdx
-
-    // 수강 권한 없는 user가 접근 시 not-access 페이지로 이동
-    // if (typeof classInfomation === 'undefined') {
-    //   console.log('수강 권한 없음')
-    //   router.push({
-    //     pathname: '/not-access',
-    //     query: { classId: classId, sessionIdx: sessionIdx },
-    //   })
-    //   return
-    // }
-
     if (props?.authTokenValue.length !== 0) {
       // 1. get user auth_token
       setAuthToken(props?.authTokenValue)
