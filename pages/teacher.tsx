@@ -176,8 +176,15 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
     reset()
   }, [])
 
-  useEffect(() => {
-    if (props?.authTokenValue.length !== 0) {
+  useLayoutEffect(() => {
+    const redirectFiive = process.env.NEXT_PUBLIC_FIIVE_URL
+
+    // auth-token이 존재하지 않을 경우, fiive login 화면으로 이동
+    if (typeof props?.authTokenValue === 'undefined') {
+      router.push(`${redirectFiive}/login`)
+    }
+    // auth-token이 존재할 경우
+    else if (props?.authTokenValue.length !== 0) {
       // 1. get user auth_token
       setAuthToken(props?.authTokenValue)
 

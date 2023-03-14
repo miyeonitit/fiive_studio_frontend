@@ -45,6 +45,11 @@ const FiiveLayout = (props: any) => {
     (state: any) => state.numberOfLiveUser
   )
 
+  // 반응형 미디어쿼리 스타일 지정을 위한 video player height 측정 전역 state
+  const setVideoStatusScreenHeight = fiiveStudioUseStore(
+    (state: any) => state.setVideoStatusScreenHeight
+  )
+
   // class infomation 정보를 저장하는 state
   const classData = classRoomUseStore((state: any) => state.classData)
 
@@ -77,6 +82,15 @@ const FiiveLayout = (props: any) => {
       setIsOpenChannelTalk(false)
     }
   }
+
+  useEffect(() => {
+    // chat 컴포넌트 열고 닫을 때마다 LiveStatusVideoScreen 준비화면 height 맞춤 조정
+    const ivsPlayerHeight = document.getElementsByTagName('video')[0]
+
+    if (typeof ivsPlayerHeight !== 'undefined') {
+      setVideoStatusScreenHeight(ivsPlayerHeight.offsetHeight)
+    }
+  }, [isChatOpen])
 
   // 더보기 미니 메뉴 outside click
   const clickModalOutside = (e) => {

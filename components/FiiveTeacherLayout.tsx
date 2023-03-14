@@ -51,6 +51,11 @@ const FiiveLayout = (props: any) => {
   // user auth token for API
   const authToken = fiiveStudioUseStore((state: any) => state.authToken)
 
+  // 반응형 미디어쿼리 스타일 지정을 위한 video player height 측정 전역 state
+  const setVideoStatusScreenHeight = fiiveStudioUseStore(
+    (state: any) => state.setVideoStatusScreenHeight
+  )
+
   // class infomation 정보를 저장하는 state
   const classData = classRoomUseStore((state: any) => state.classData)
 
@@ -136,6 +141,15 @@ const FiiveLayout = (props: any) => {
     // teacher의 방송종료에 의해 sendbird chat이 freeze 되었음을 알기 위한 isChatFreezed 추가
     setChatData({ ...chatData, isChatFreezed: true })
   }
+
+  useEffect(() => {
+    // chat 컴포넌트 열고 닫을 때마다 LiveStatusVideoScreen 준비화면 height 맞춤 조정
+    const ivsPlayerHeight = document.getElementsByTagName('video')[0]
+
+    if (typeof ivsPlayerHeight !== 'undefined') {
+      setVideoStatusScreenHeight(ivsPlayerHeight.offsetHeight)
+    }
+  }, [isChatOpen])
 
   // 현재 시간 업데이트 될 때마다, 10분 남았을 때부터 툴팁이 띄워지도록 하는 로직
   // 라이브 종료 시간이 지나면 음수로 표현되는데, 음수일 때는 실행되지 않도록 방지

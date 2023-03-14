@@ -13,7 +13,6 @@ import { CSSProperties } from 'styled-components'
 
 import AxiosRequest from '../utils/AxiosRequest'
 import sendbirdUseStore from '../store/Sendbird'
-import classRoomUseStore from '../store/classRoom'
 import fiiveStudioUseStore from '../store/FiiveStudio'
 
 import Layout from '../components/FiiveLearnerLayout'
@@ -183,11 +182,18 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
   }, [])
 
   useLayoutEffect(() => {
-    if (props?.authTokenValue.length !== 0) {
-      // 1. get user auth_token
+    const redirectFiive = process.env.NEXT_PUBLIC_FIIVE_URL
+
+    // auth-token이 존재하지 않을 경우, fiive login 화면으로 이동
+    if (typeof props?.authTokenValue === 'undefined') {
+      router.push(`${redirectFiive}/login`)
+    }
+    // auth-token이 존재할 경우
+    else if (props?.authTokenValue.length !== 0) {
+      // 1. get user auth-token
       setAuthToken(props?.authTokenValue)
 
-      // 2. get user infomation with user auth_token
+      // 2. get user infomation with user auth-token
       getUserInfomation(props?.authTokenValue)
 
       // 3. get chat's emoji list container
