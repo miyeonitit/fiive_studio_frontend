@@ -47,7 +47,7 @@
   /* 새로운 메시지가 왔다고 알려주는 notification 영역 커스텀 */
   .sendbird-notification {
     position: fixed;
-    right: -12px;
+    right: 0px;
     bottom: 170px;
     width: 316px;
     padding: 8px 0px;
@@ -545,7 +545,7 @@
     .toast_success_box {
       display: flex;
       align-items: center;
-      width: 200px !important;
+      // width: 200px !important;
       height: 50px;
       padding: 0px;
       border-radius: 4px;

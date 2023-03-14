@@ -10,9 +10,6 @@ const Reactions = (props: any) => {
   const addReaction = useStore((state: any) => state.addREaction)
   const removeReaction = useStore((state: any) => state.removeReaction)
 
-  // emoji reaction img의 위치를 랜덤으로 조정하기 위한 random value
-  let randomValue = Math.floor(Math.random() * 50)
-
   const reaction = (type: string) => {
     let img
 
@@ -74,7 +71,7 @@ const Reactions = (props: any) => {
         type: item.type,
         style: {
           top: '120px',
-          left: `${randomValue}px`,
+          left: `${item.random_value}px`,
         },
       })
     }

@@ -12,20 +12,21 @@ type props = {
   authToken: string
   playbackUrl: string
   classId: string
+  userRole: string
 }
 
 const Video = (props: props) => {
-  const channel = videoUseStore((state: any) => state.channel)
-  const setChannel = videoUseStore((state: any) => state.setChannel)
+  // const channel = videoUseStore((state: any) => state.channel)
+  // const setChannel = videoUseStore((state: any) => state.setChannel)
 
-  const addAnnouncement = videoUseStore((state: any) => state.addAnnouncement)
+  // const addAnnouncement = videoUseStore((state: any) => state.addAnnouncement)
 
-  const addQuestion = videoUseStore((state: any) => state.addQuestion)
-  const resolveQuestion = videoUseStore((state: any) => state.resolveQuestion)
+  // const addQuestion = videoUseStore((state: any) => state.addQuestion)
+  // const resolveQuestion = videoUseStore((state: any) => state.resolveQuestion)
+
+  // const setTimer = videoUseStore((state: any) => state.setTimer)
 
   const addReaction = videoUseStore((state: any) => state.addReaction)
-
-  const setTimer = videoUseStore((state: any) => state.setTimer)
 
   // user infomation state
   const userInfomation = fiiveStudioUseStore(
@@ -33,64 +34,75 @@ const Video = (props: props) => {
   )
 
   // ivs Player status 상태 표현 state
-  const ivsPlayStatus = fiiveStudioUseStore((state: any) => state.ivsPlayStatus)
   const setIvsPlayStatus = fiiveStudioUseStore(
     (state: any) => state.setIvsPlayStatus
   )
 
   // 라이브 중일 때의 정보를 저장하기 위한 stream infomation state
-  const streamInfomation = fiiveStudioUseStore(
-    (state: any) => state.streamInfomation
+  const setStreamInfomation = fiiveStudioUseStore(
+    (state: any) => state.setStreamInfomation
   )
 
   // update now local time
   const nowTime = fiiveStudioUseStore((state: any) => state.nowTime)
 
+  // 반응형 미디어쿼리 스타일 지정을 위한 브라우저 넓이 측정 전역 state
+  const offsetX = fiiveStudioUseStore((state: any) => state.offsetX)
+
+  // 반응형 미디어쿼리 스타일 지정을 위한 video player height 측정 전역 state
+  const setVideoStatusScreenHeight = fiiveStudioUseStore(
+    (state: any) => state.setVideoStatusScreenHeight
+  )
+
   // class infomation 정보를 저장하는 state
   const classData = classRoomUseStore((state: any) => state.classData)
 
-  const [init, setInit] = useState(false)
+  // sendbird infomation 정보를 저장하는 state
+  const chatData = classRoomUseStore((state: any) => state.chatData)
+  const setChatData = classRoomUseStore((state: any) => state.setChatData)
 
-  // 한 번이라도 재생한 적이 있는지 알아보기 위한 boolean state
-  // 한 번이라도 재생한 적이 있다면  OBS 방송이 갑자기 꺼졌을 때 라이브 방송 종료로 간주
-  const [isLiveEnd, setIsLiveEnd] = useState(false)
+  const [init, setInit] = useState(false)
 
   // const [messages, setMessages] = useState<any[]>([]);
 
   const ivsPlayer = useRef<HTMLVideoElement>(null)
 
+  const controlFreezeChat = async () => {
+    const requestUrl = `/sendbird/group_channels/${chatData?.channel_url}/freeze`
+
+    const body = {
+      freeze: true,
+    }
+
+    const responseData = await AxiosRequest({
+      url: requestUrl,
+      method: 'PUT',
+      body: body,
+      token: props?.authToken,
+    })
+
+    // teacher의 방송종료에 의해 sendbird chat이 freeze 되었음을 알기 위한 isChatFreezed 추가
+    setChatData({ ...chatData, isChatFreezed: true })
+  }
+
   // userInfomation의 정보가 갱신되어야 하고, streamInfomation으로 LIVE 중인지 아닌지를 판단해야 함
   useEffect(() => {
-    if (Object.keys(userInfomation).length !== 0) {
-      const liveStartDate = new Date(classData?.start_date)
+    const liveStartDate = new Date(classData?.start_date)
+    const liveEndDateAfterTwoHours = new Date(classData?.end_date + 7200000)
 
-      const liveEndDate = new Date(classData?.end_date)
-
-      // OBS 방송이 켜져 있다면
-      if (streamInfomation?.state === 'LIVE') {
-        // OBS 방송이 켜져 있어도, 현재 시간 기준으로 end_date가 지나면 (방송 종료 시간이 지나면) 현재 회차 라이브 방송 종료 화면 설정
-        if (nowTime > liveEndDate) {
-          setIvsPlayStatus('end')
-          console.log('1 end')
-        } else {
-          // OBS 방송이 켜져 있고, 현재 시간 기준으로 end_date가 지나지 않았다면 (방송 종료 시간 전이라면) 무조건 IVS 플레이어 재생
-          initVideo()
-          console.log('3 play')
-        }
-      } else if (isLiveEnd || nowTime > liveEndDate) {
-        // 한 번이라도 재생한 적이 있다면 OBS 방송이 갑자기 꺼졌을 때 라이브 방송 종료로 간주하거나 (teacher가 라이브 종료 버튼 없이 OBS 종료만 했을 때를 대비한 장치) || 라이브 방송 종료 시간이 지났을 때 방송 종료 화면 설정
-        setIvsPlayStatus('end')
-      } else if (nowTime >= liveStartDate && nowTime <= liveEndDate) {
-        // OBS 방송이 꺼져 있고, 현재 시간 기준으로 start_date가 지났으면 (방송 시작 이후이면) 라이브 방송 준비 화면 설정
-        setIvsPlayStatus('waiting')
-        console.log('2 waiting')
-      } else {
-        // OBS 방송이 꺼져 있고, 그 외에는 '잠시만 기다려 주세요' 라이브 준비 화면 세팅
-        setIvsPlayStatus('error')
-        console.log('4. error')
-      }
+    // 현재 시간 기준으로 end_date + 2시간이 (총 4시간) 지나면, ivs 영역 비활성화 + chat 영역 비활성화
+    if (nowTime >= liveStartDate && nowTime > liveEndDateAfterTwoHours) {
+      setIvsPlayStatus('end')
+    } else {
+      initVideo()
     }
-  }, [nowTime, userInfomation, streamInfomation])
+  }, [props?.playbackUrl, nowTime, classData])
+
+  useEffect(() => {
+    if (typeof ivsPlayer !== 'undefined') {
+      setVideoStatusScreenHeight(ivsPlayer.current?.offsetHeight)
+    }
+  }, [offsetX])
 
   const getChannelData = async () => {
     const requestUrl = `/classroom/${userInfomation.classId}/ivs/key`
@@ -112,7 +124,7 @@ const Video = (props: props) => {
   }
 
   const initVideo = async () => {
-    if (streamInfomation?.state === 'LIVE') {
+    if (typeof props?.playbackUrl !== 'undefined') {
       // Bail if already initialized
       if (init) return
 
@@ -131,6 +143,36 @@ const Video = (props: props) => {
       const playbackUrl = props.playbackUrl + `?token=${token}`
 
       const player = IVSPlayer.create()
+
+      player.addEventListener(IVSPlayer.PlayerState.IDLE, () => {
+        setIvsPlayStatus('waiting')
+        setVideoStatusScreenHeight(ivsPlayer.current?.offsetHeight)
+      })
+
+      player.addEventListener(IVSPlayer.PlayerState.READY, () => {
+        setIvsPlayStatus('waiting')
+        setVideoStatusScreenHeight(ivsPlayer.current?.offsetHeight)
+      })
+
+      player.addEventListener(IVSPlayer.PlayerState.BUFFERING, () => {
+        setIvsPlayStatus('error')
+        setVideoStatusScreenHeight(ivsPlayer.current?.offsetHeight)
+      })
+
+      player.addEventListener(IVSPlayer.PlayerState.PLAYING, () => {
+        setIvsPlayStatus('play')
+        setStreamInfomation('LIVE-ON')
+      })
+
+      player.addEventListener(IVSPlayer.PlayerState.ENDED, () => {
+        setIvsPlayStatus('fast-end')
+        setStreamInfomation('LIVE-OFF')
+        setVideoStatusScreenHeight(ivsPlayer.current?.offsetHeight)
+
+        if (props.userRole !== 'learner') {
+          controlFreezeChat()
+        }
+      })
 
       // Handle embedded metadata events
       player.addEventListener(
@@ -151,7 +193,6 @@ const Video = (props: props) => {
               // resolveQuestion(message)
               break
             case 'REACTION':
-              console.log('reaction post success')
               addReaction(message)
               break
             case 'TIMER':
@@ -160,30 +201,39 @@ const Video = (props: props) => {
           }
 
           /*
-        setMessages((msgs) => [
-          ...msgs,
-          {
-            id: startTime,
-            message,
-          },
-        ]);
-        */
+          setMessages((msgs) => [
+            ...msgs,
+            {
+              id: startTime,
+              message,
+            },
+          ]);
+          */
         }
       )
 
+      // ivs player의 초기 호출 시 or teacher가 OBS 방송 중이 아닐 시의 케이스
       player.addEventListener(IVSPlayer.PlayerEventType.ERROR, (error: any) => {
         const { type = null } = error
+
+        const liveStartDate = new Date(classData?.start_date)
+        const liveEndDateAfterTwoHours = new Date(classData?.end_date + 7200000)
 
         switch (type) {
           case 'ErrorNoSource':
           case 'ErrorNetworkIO':
-          case 'ErrorNotAvailable':
             setIvsPlayStatus('error')
+            setVideoStatusScreenHeight(ivsPlayer.current?.offsetHeight)
+
+          case 'ErrorNotAvailable':
+            if (nowTime > liveStartDate && nowTime < liveEndDateAfterTwoHours) {
+              // 현재 시간 기준으로 start_date가 지났는데도 OBS 방송이 켜져 있지 않을 때 waiting 준비 화면 세팅
+              setIvsPlayStatus('waiting')
+            }
 
             window.setTimeout(() => {
               player.load(playbackUrl)
               player.play()
-              setIvsPlayStatus('play')
             }, 5000)
 
             break
@@ -195,7 +245,6 @@ const Video = (props: props) => {
       player.load(playbackUrl)
 
       setIvsPlayStatus('play')
-      setIsLiveEnd(true)
 
       player.play()
 

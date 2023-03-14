@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
-import Image from 'next/image'
+import { CSSProperties } from 'styled-components'
+
+import fiiveStudioUseStore from '../../store/FiiveStudio'
 
 type props = {
   ivsPlayStatus: string
@@ -9,6 +11,15 @@ type props = {
 
 const LiveStatusVideoScreen = (props: props) => {
   const router = useRouter()
+
+  // 반응형 미디어쿼리 스타일 지정을 위한 video player height 측정 전역 state
+  const videoStatusScreenHeight = fiiveStudioUseStore(
+    (state: any) => state.videoStatusScreenHeight
+  )
+
+  const thumbnailHeightStyle: CSSProperties = {
+    height: `${videoStatusScreenHeight}px`,
+  }
 
   const TEXT_LIST_GROUP_A = [
     '커피를 내리고 있어요.',
@@ -70,6 +81,7 @@ const LiveStatusVideoScreen = (props: props) => {
 
       // end: 라이브 종료
       case 'end':
+      case 'fast-end':
         subText = `${sessionIdx + 1}회차 라이브 종료`
         break
 
@@ -125,6 +137,7 @@ const LiveStatusVideoScreen = (props: props) => {
                 ? props?.thumbnailImgSrc
                 : '/dummy/fiive_brand_dummy.jpg'
             }
+            style={thumbnailHeightStyle}
             alt='classThumbnailImage'
           />
         </div>
@@ -143,10 +156,13 @@ const LiveStatusVideoScreen = (props: props) => {
           <div className='video_main_text_box'>
             <div
               className={`video_main_text ${
-                props.ivsPlayStatus !== 'end' && 'rollig_text'
+                (props.ivsPlayStatus === 'error' ||
+                  props.ivsPlayStatus === 'waiting') &&
+                'rollig_text'
               }`}
             >
-              {props.ivsPlayStatus !== 'end'
+              {props.ivsPlayStatus === 'error' ||
+              props.ivsPlayStatus === 'waiting'
                 ? randomRollingTextList[randomCountIndex]
                 : '다음 라이브에서 만나요!'}
             </div>

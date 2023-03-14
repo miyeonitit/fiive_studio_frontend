@@ -23,7 +23,7 @@
       video {
         display: block;
         width: 100%;
-        height: 500px;
+        min-height: 500px;
       }
 
       .messages {
@@ -108,7 +108,7 @@
     display: flex;
     flex-direction: column;
     padding: 0px !important;
-    margin-bottom: 82px;
+    margin-bottom: unset !important;
 
     main {
       width: 100%;
@@ -118,7 +118,7 @@
         border-top-right-radius: 0px;
 
         video {
-          height: auto;
+          min-height: unset;
         }
       }
 
@@ -136,8 +136,8 @@
     }
 
     .chat {
-      margin: 12px;
-      width: calc(100vw - 24px);
+      width: 100%;
+      z-index: 9999;
     }
   }
 }
@@ -147,7 +147,7 @@
     display: flex;
     flex-direction: column;
     padding: 0px !important;
-    margin-bottom: 82px;
+    margin-bottom: unset !important;
 
     main {
       width: 100%;
@@ -157,7 +157,7 @@
         border-top-right-radius: 0px;
 
         video {
-          height: auto;
+          min-height: unset;
         }
       }
 
@@ -175,8 +175,8 @@
     }
 
     .chat {
-      margin: 12px;
-      width: calc(100vw - 24px);
+      width: 100%;
+      z-index: 9999;
     }
   }
 }

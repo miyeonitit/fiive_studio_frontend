@@ -25,7 +25,7 @@ type props = {
 
 const MessageList = (props: props) => {
   const context = useSendbirdStateContext()
-  const sdk = sendbirdSelectors.getSdk(context)
+  const sdk = sendbirdSelectors?.getSdk(context)
 
   useEffect(() => {
     const intvl = window.setInterval(() => {
@@ -36,26 +36,28 @@ const MessageList = (props: props) => {
       }
     }, 1000)
 
-    if (sdk?.groupChannel?.addGroupChannelHandler) {
-      const groupChannelHandler = new GroupChannelHandler({
-        onMessageReceived: (channel: BaseChannel, message: BaseMessage) => {
-          window.setTimeout(() => {
-            window.scrollTo(0, document.body.scrollHeight)
-          }, 100)
-        },
-      })
-
-      sdk.groupChannel.addGroupChannelHandler(
-        'GROUP_CHANNEL_HANDLER',
-        groupChannelHandler
-      )
-    }
-
-    return () => {
-      window.clearInterval(intvl)
-
+    if (typeof sdk !== 'undefined' && Object.keys(sdk).length > 0) {
       if (sdk?.groupChannel?.addGroupChannelHandler) {
-        sdk.groupChannel.removeGroupChannelHandler('GROUP_CHANNEL_HANDLER')
+        const groupChannelHandler = new GroupChannelHandler({
+          onMessageReceived: (channel: BaseChannel, message: BaseMessage) => {
+            window.setTimeout(() => {
+              window.scrollTo(0, document.body.scrollHeight)
+            }, 100)
+          },
+        })
+
+        sdk.groupChannel.addGroupChannelHandler(
+          'GROUP_CHANNEL_HANDLER',
+          groupChannelHandler
+        )
+      }
+
+      return () => {
+        window.clearInterval(intvl)
+
+        if (sdk?.groupChannel?.addGroupChannelHandler) {
+          sdk.groupChannel.removeGroupChannelHandler('GROUP_CHANNEL_HANDLER')
+        }
       }
     }
   })

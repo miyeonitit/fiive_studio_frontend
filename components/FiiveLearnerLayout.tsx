@@ -17,6 +17,9 @@ const FiiveLayout = (props: any) => {
   // metadata emoji list open <> close toggle boolean state
   const [isOpenEmojiList, setIsOpenEmojiList] = useState(false)
 
+  // live 방송 시작 전, 대기 중일 때 popover on/off boolean state
+  const [isOffReactionPopOver, setIsOffReactionPopOver] = useState(false)
+
   // 반응형 미디어쿼리 스타일 지정을 위한 브라우저 넓이 측정 전역 state
   const offsetX = fiiveStudioUseStore((state: any) => state.offsetX)
 
@@ -40,6 +43,11 @@ const FiiveLayout = (props: any) => {
   // 라이브 참가자 수를 표현하기 위한 센드버드 number of actived user state
   const numberOfLiveUser = fiiveStudioUseStore(
     (state: any) => state.numberOfLiveUser
+  )
+
+  // 반응형 미디어쿼리 스타일 지정을 위한 video player height 측정 전역 state
+  const setVideoStatusScreenHeight = fiiveStudioUseStore(
+    (state: any) => state.setVideoStatusScreenHeight
   )
 
   // class infomation 정보를 저장하는 state
@@ -74,6 +82,15 @@ const FiiveLayout = (props: any) => {
       setIsOpenChannelTalk(false)
     }
   }
+
+  useEffect(() => {
+    // chat 컴포넌트 열고 닫을 때마다 LiveStatusVideoScreen 준비화면 height 맞춤 조정
+    const ivsPlayerHeight = document.getElementsByTagName('video')[0]
+
+    if (typeof ivsPlayerHeight !== 'undefined') {
+      setVideoStatusScreenHeight(ivsPlayerHeight.offsetHeight)
+    }
+  }, [isChatOpen])
 
   // 더보기 미니 메뉴 outside click
   const clickModalOutside = (e) => {
@@ -116,16 +133,7 @@ const FiiveLayout = (props: any) => {
     <div className='fiive_layout learner_layout'>
       <header className='layout_header'>
         <div className='left_header_box'>
-          {offsetX < 1023 ? (
-            <div className='back_button_box'>
-              <Image
-                src='../layouts/fiive/arrow_back.svg'
-                width={20}
-                height={20}
-                alt='backButton'
-              />
-            </div>
-          ) : (
+          {offsetX > 1023 && (
             <>
               {/* fiive logo image 영역 */}
               <div className='fiive_logo_box'>
@@ -164,7 +172,12 @@ const FiiveLayout = (props: any) => {
               />
             </div>
 
-            <div className='teacher_name_box'>{classData?.teacher_name}</div>
+            {typeof classData !== 'undefined' &&
+            Object.keys(classData).length > 0 ? (
+              <div className='teacher_name_box'>{classData?.teacher_name}</div>
+            ) : (
+              <div className='teacher_name_box non_active'> </div>
+            )}
           </div>
         </div>
 
@@ -172,10 +185,10 @@ const FiiveLayout = (props: any) => {
           {/* LIVE 상태 정보 영역 */}
           <div
             className={`live_status ${
-              streamInfomation?.state === 'LIVE' && 'play'
+              streamInfomation === 'LIVE-ON' && 'play'
             }`}
           >
-            {streamInfomation?.state === 'LIVE' ? 'LIVE' : 'LIVE 중이 아님'}
+            {streamInfomation === 'LIVE-ON' ? 'LIVE' : 'LIVE 중이 아님'}
           </div>
 
           {/* 현재 라이브 참여자 수 영역 */}
@@ -186,7 +199,9 @@ const FiiveLayout = (props: any) => {
               height={12}
               alt='liveParticipant'
             />
-            <span className='live_participant_number'>{numberOfLiveUser}</span>
+            <span className='live_participant_number'>
+              {numberOfLiveUser ? numberOfLiveUser : '불러올 수 없음'}
+            </span>
           </div>
         </div>
 
@@ -223,7 +238,6 @@ const FiiveLayout = (props: any) => {
         {offsetX >= 1023 && (
           <div
             className='help_button_wrapper'
-            id='test'
             onClick={() => clickChannelTalk()}
           >
             <Image
@@ -245,6 +259,37 @@ const FiiveLayout = (props: any) => {
               setIsOpenEmojiList={setIsOpenEmojiList}
             />
           )}
+
+          {/* live 방송 시작 전, 대기 중일 때 popover으로 emoji 전송이 되지 않음을 안내 */}
+          {ivsPlayStatus !== 'end' &&
+            (ivsPlayStatus === 'waiting' || ivsPlayStatus === 'error') && (
+              <div
+                className={`live_waiting_reaction_popover ${
+                  isOffReactionPopOver && 'non_active'
+                }`}
+              >
+                <div className='popover_title_box'>
+                  <div className='popover_title_text_box'>
+                    채팅보다 빠른 리액션 👏
+                  </div>
+                  <div className='popover_close_box'>
+                    <Image
+                      src='../layouts/fiive/popover_close_button.svg'
+                      onClick={() => setIsOffReactionPopOver(true)}
+                      width={12}
+                      height={12}
+                      alt='closeButton'
+                    />
+                  </div>
+                </div>
+
+                <div className='popover_sub_text_box'>
+                  수업이 시작되면 이모지 리액션으로
+                  <br />
+                  다같이 선생님과 인사해볼까요?
+                </div>
+              </div>
+            )}
 
           <div
             className='live_chat_box'
@@ -275,7 +320,7 @@ const FiiveLayout = (props: any) => {
           <div
             className='live_reaction_box'
             onClick={() =>
-              ivsPlayStatus !== 'end'
+              ivsPlayStatus === 'play'
                 ? setIsOpenEmojiList(!isOpenEmojiList)
                 : setIsOpenEmojiList(false)
             }
@@ -283,7 +328,7 @@ const FiiveLayout = (props: any) => {
             <Image
               className='reaction_icon'
               src={
-                ivsPlayStatus !== 'end'
+                ivsPlayStatus === 'play'
                   ? isOpenEmojiList
                     ? '../layouts/fiive/reaction_icon_active.svg'
                     : '../layouts/fiive/reaction_icon.svg'
@@ -295,7 +340,7 @@ const FiiveLayout = (props: any) => {
             />
             <span
               className={`reaction_button_text ${
-                ivsPlayStatus !== 'end'
+                ivsPlayStatus === 'play'
                   ? isOpenEmojiList && 'active'
                   : 'non_active'
               }`}

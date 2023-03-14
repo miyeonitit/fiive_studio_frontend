@@ -1,9 +1,14 @@
-import React, { useState, useRef, useEffect, ReactElement } from 'react'
+import React, {
+  useState,
+  useEffect,
+  ReactElement,
+  useLayoutEffect,
+} from 'react'
 import Head from 'next/head'
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
-import Router from 'next/router'
-import { useRouter } from 'next/router'
+import Router, { useRouter } from 'next/router'
+import { NextPageWithLayout } from '../types/NextPageWithLayout'
 import { CSSProperties } from 'styled-components'
 
 import AxiosRequest from '../utils/AxiosRequest'
@@ -11,7 +16,6 @@ import sendbirdUseStore from '../store/Sendbird'
 import classRoomUseStore from '../store/classRoom'
 import fiiveStudioUseStore from '../store/FiiveStudio'
 
-import { NextPageWithLayout } from '../types/NextPageWithLayout'
 import Layout from '../components/FiiveTeacherLayout'
 import Video from '../components/Video'
 import LectureTools from '../components/LectureTools'
@@ -46,10 +50,8 @@ type sendbirdChatType = {
 }
 
 type props = {
-  emoji_data?: { emojis: Array<object>; id: number; name: string; url: string }
   classroom: { ivs: ivsType; sendbird: sendbirdChatType; class: classType }
-  class_id: string
-  auth_token: string
+  authTokenValue: string
   sendbirdAccessToken: string
 }
 
@@ -58,36 +60,11 @@ const Chat = dynamic(() => import('../components/Chat'), {
   loading: () => <FakeChat status='loading' />,
 })
 
-const useInterval = (callback: any, delay: number) => {
-  const savedCallback = useRef()
-
-  useEffect(() => {
-    savedCallback.current = callback
-  }, [callback])
-
-  useEffect(() => {
-    const tick = () => {
-      savedCallback.current()
-    }
-
-    if (delay !== null) {
-      let replayMethod = setInterval(tick, delay)
-
-      return () => clearInterval(replayMethod)
-    }
-  }, [delay])
-}
-
 const TeacherPage: NextPageWithLayout = (props: props) => {
   const router = useRouter()
 
   // 반응형 미디어쿼리 스타일 지정을 위한 브라우저 넓이 측정 전역 state
   const offsetX = fiiveStudioUseStore((state: any) => state.offsetX)
-
-  // 반응형 사이즈에서 header의 라이브 참여자 목록을 볼 때, UI height 버그를 처리하기 위해 확인하는 boolean state
-  const isOpenResponsiveLiveMember = fiiveStudioUseStore(
-    (state: any) => state.isOpenResponsiveLiveMember
-  )
 
   // sendbird Chat open <> close 동작을 위한 toggle boolean state
   const isChatOpen = fiiveStudioUseStore((state: any) => state.isChatOpen)
@@ -95,9 +72,6 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
 
   // waiting: 라이브 전 재생 대기중 <> play: 재생중 <> end: 라이브 종료 <> error : 재생 에러
   const ivsPlayStatus = fiiveStudioUseStore((state: any) => state.ivsPlayStatus)
-  const setIvsPlayStatus = fiiveStudioUseStore(
-    (state: any) => state.setIvsPlayStatus
-  )
 
   // user infomation state
   const userInfomation = fiiveStudioUseStore(
@@ -110,22 +84,11 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
   // user auth token for API
   const setAuthToken = fiiveStudioUseStore((state: any) => state.setAuthToken)
 
-  // 라이브 중일 때의 정보를 저장하기 위한 stream infomation state
-  const setStreamInfomation = fiiveStudioUseStore(
-    (state: any) => state.setStreamInfomation
-  )
-
-  // class infomation 정보를 저장하는 state
-  const classData = classRoomUseStore((state: any) => state.classData)
-
   // save sendbird emoji list container
   const emojiContainer = sendbirdUseStore((state: any) => state.emojiContainer)
   const addEmojiContainer = sendbirdUseStore(
     (state: any) => state.addEmojiContainer
   )
-
-  // update now local time
-  const nowTime = fiiveStudioUseStore((state: any) => state.nowTime)
 
   // const [announcementModal, toggleAnnouncementModal] = useState(false)
   // const [timerModal, toggleTimerModal] = useState(false)
@@ -135,11 +98,15 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
 
   const playerHeightRef = React.useRef() as React.MutableRefObject<HTMLElement>
 
-  // 반응형일 때, 전체 페이지 height(100vh) - ( Nav height(57px) + fix bottom height(82px) + content margin up & down(24px) = 163px )- Video height
+  // classroom Data 구조 분해 할당
+  const ivsInfomation = props?.classroom?.ivs
+  const classInfomation = props?.classroom?.class
+  const sendbirdInfomation = props?.classroom?.sendbird
+
   const chatHeightStyle: CSSProperties =
     offsetX < 1023
       ? {
-          height: `calc(100vh  - 163px - ${chatOffsetHeight}px)`,
+          height: `calc(100vh  - 57px - ${chatOffsetHeight}px)`,
         }
       : {}
 
@@ -156,15 +123,22 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
     })
 
     if (responseData.name !== 'AxiosError') {
-      // 접속한 본인의 role이 learner면 not-access 페이지로 이동
+      // 접속한 본인의 role이 learner일 경우, 404 페이지로 이동
       if (responseData.userRole === 'learner') {
-        Router.push({
-          pathname: '/not-access',
+        router.push({
+          pathname: '/404',
           query: { classId: classId, sessionIdx: sessionIdx },
         })
       }
 
+      // 유저의 접속 정보가 맞다면, userInfomation에 유저 정보 저장
       setUserInfomation(responseData)
+    } else if (responseData.response.request.status === 401) {
+      // 401 - user의 수강 권한이 없을 경우, not-access 페이지로 이동
+      router.push({
+        pathname: '/not-access',
+        query: { classId: classId, sessionIdx: sessionIdx },
+      })
     }
   }
 
@@ -181,44 +155,6 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
     })
 
     addEmojiContainer(responseData.emojis)
-  }
-
-  const getLiveStreamInfomation = async (classId: string) => {
-    const requestUrl = `/classroom/${classId}/ivs/stream`
-
-    const body = {
-      channelArn: props?.classroom?.ivs?.channel?.arn,
-    }
-
-    const responseData = await AxiosRequest({
-      url: requestUrl,
-      method: 'POST',
-      body: body,
-      token: props?.auth_token,
-    })
-
-    if (responseData.name !== 'AxiosError') {
-      // LIVE 방송 중일 때
-      setStreamInfomation(responseData.stream)
-    } else {
-      // LIVE 방송 중이지 않을 때 (ivsPlayStatus가 waiting 이거나 end)
-      let nowDate = new Intl.DateTimeFormat('kr', {
-        dateStyle: 'full',
-        timeStyle: 'full',
-      }).format()
-
-      const liveEndDate = new Intl.DateTimeFormat('kr', {
-        dateStyle: 'full',
-        timeStyle: 'full',
-      }).format(classData?.end_date)
-
-      setStreamInfomation({})
-
-      // 현재 회차 라이브 방송이 종료되었다면
-      if (nowDate > liveEndDate) {
-        setIvsPlayStatus('end')
-      }
-    }
   }
 
   // 브라우저 resize 할 때마다 <Video /> 의 height 감지
@@ -240,37 +176,25 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
     reset()
   }, [])
 
-  useEffect(() => {
-    const classId = router.query.classId
-    const sessionIdx = router.query.sessionIdx
+  useLayoutEffect(() => {
+    const redirectFiive = process.env.NEXT_PUBLIC_FIIVE_URL
 
-    if (props.auth_token && props.auth_token.length !== 0) {
-      // 수강 권한 없는 user가 접근 시 not-access 페이지로 이동
-      if (props.classroom.name === 'AxiosError') {
-        // [TODO] error code로 변경
-        // console.log(props.classroom.response.status === 403, '수강 권한 없음')
-        Router.push({
-          pathname: '/not-access',
-          query: { classId: classId, sessionIdx: sessionIdx },
-        })
-        return
-      }
-
+    // auth-token이 존재하지 않을 경우, fiive login 화면으로 이동
+    if (typeof props?.authTokenValue === 'undefined') {
+      router.push(`${redirectFiive}/login`)
+    }
+    // auth-token이 존재할 경우
+    else if (props?.authTokenValue.length !== 0) {
       // 1. get user auth_token
-      setAuthToken(props.auth_token)
+      setAuthToken(props?.authTokenValue)
 
       // 2. get user infomation with user auth_token
-      getUserInfomation(props.auth_token)
+      getUserInfomation(props?.authTokenValue)
 
       // 3. get chat's emoji list container
-      getChatEmojiContainer(props.auth_token)
+      getChatEmojiContainer(props?.authTokenValue)
     }
-  }, [props.auth_token])
-
-  // 최상단 Nav의 live 상태 표현을 위한, live 상태인지 아닌지 계속 판단해주는 로직
-  useInterval(() => {
-    getLiveStreamInfomation(props?.class_id)
-  }, 5000)
+  }, [props?.authTokenValue])
 
   return (
     <div className='fiive teacher page'>
@@ -301,16 +225,17 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
 
           {/* ivs video player 영역 컴포넌트 */}
           <Video
-            playbackUrl={props?.classroom?.ivs?.channel?.playbackUrl}
-            authToken={props?.auth_token}
+            playbackUrl={ivsInfomation?.channel?.playbackUrl}
+            authToken={props?.authTokenValue}
             classId={userInfomation?.classId}
+            userRole={userInfomation?.userRole}
           />
 
           {/* live 시작 전, 재생 에러, live 종료일 때 띄우는 준비 화면 컴포넌트 */}
           {ivsPlayStatus !== 'play' && (
             <LiveStatusVideoScreen
               ivsPlayStatus={ivsPlayStatus}
-              thumbnailImgSrc={props?.classroom?.class?.class_thumbnail}
+              thumbnailImgSrc={classInfomation?.class_thumbnail}
             />
           )}
         </section>
@@ -318,68 +243,90 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
         {/* class infomation 영역 */}
         {(offsetX >= 1023 || !isChatOpen) && (
           <section className='class-wrapper'>
-            <div className='class_infomation_wrapper'>
-              <div className='class_title_box'>
-                {props?.classroom?.class?.class_name}{' '}
-                {props?.classroom?.class?.session + 1}회차
-              </div>
+            {typeof classInfomation !== 'undefined' &&
+              Object.keys(classInfomation).length > 0 && (
+                <div className='class_infomation_wrapper'>
+                  <div className='class_title_box'>
+                    {classInfomation?.class_name} {classInfomation?.session + 1}
+                    회차
+                  </div>
 
-              <div className='class_description_box'>
-                {props?.classroom?.class?.curriculum_contents}
-              </div>
-            </div>
+                  <div className='class_description_box'>
+                    {classInfomation?.curriculum_contents}
+                  </div>
+                </div>
+              )}
 
             {/* class notification 영역 */}
-            <div className='class_notification_wrapper'>
-              <div className='nonotification_title_box'>
-                <Image
-                  src='../layouts/fiive/announce_icon.svg'
-                  width={16}
-                  height={16}
-                  alt='announceIcon'
-                />
-                <span className='class_title'>
-                  {props?.classroom?.class?.session + 1}회차 라이브에 오신 것을
-                  환영해요
-                </span>
+            {typeof classInfomation !== 'undefined' &&
+            Object.keys(classInfomation).length > 0 ? (
+              <div className='class_notification_wrapper'>
+                <div className='nonotification_title_box'>
+                  <Image
+                    src='../layouts/fiive/announce_icon.svg'
+                    width={16}
+                    height={16}
+                    alt='announceIcon'
+                  />
+                  <span className='class_title'>
+                    {classInfomation?.session + 1}회차 라이브에 오신 것을
+                    환영해요
+                  </span>
+                </div>
+                <div className='notification_description_box'>
+                  피이브 스튜디오에서 제공하는 수업 도구와 함께 수강생과
+                  소통하며 라이브 수업을 운영해보세요! 수업 도구 사용법과
+                  업데이트 소식이 궁금하다면 아래에서 확인해보세요.
+                </div>
+                <button
+                  className='community_guide_button'
+                  onClick={() =>
+                    router.push(
+                      'https://www.notion.so/pureblack/86412e7f47b54f3680b76029777bfc0d'
+                    )
+                  }
+                >
+                  커뮤니티 가이드 알아보기
+                </button>
               </div>
-              <div className='notification_description_box'>
-                피이브 스튜디오에서 제공하는 수업 도구와 함께 수강생과 소통하며
-                라이브 수업을 운영해보세요! 수업 도구 사용법과 업데이트 소식이
-                궁금하다면 아래에서 확인해보세요.
+            ) : (
+              <div className='class_notification_wrapper'>
+                <div className='nonotification_title_box'>
+                  <Image
+                    src='../layouts/fiive/alert_icon.svg'
+                    width={16}
+                    height={16}
+                    alt='alertIcon'
+                  />
+                  <span className='class_title'>
+                    라이브 정보를 가져오는데 문제가 생겼어요.
+                  </span>
+                </div>
+                <div className='notification_description_box'>
+                  [ClassDoesnotExistsError / Status Code: nnn] <br />
+                  수업 참여에는 문제가 없으나 이 메시지가 자주 보이는 경우
+                  피이브 고객센터에 메시지 내용을 그대로 보내주세요.
+                </div>
               </div>
-              <button
-                className='community_guide_button'
-                onClick={() =>
-                  window.open(
-                    'https://www.notion.so/pureblack/86412e7f47b54f3680b76029777bfc0d'
-                  )
-                }
-              >
-                커뮤니티 가이드 알아보기
-              </button>
-            </div>
+            )}
           </section>
         )}
       </main>
 
       {/* chat을 펼쳤을 때 aside bar */}
-      <aside
-        className={`chat ${!isChatOpen && 'close'}`}
-        style={chatHeightStyle}
-      >
+      <aside className={`chat ${!isChatOpen && 'close'}`}>
         <div className='chatroom'>
           {ivsPlayStatus !== 'end' ? (
             <Chat
               userId={userInfomation?.userId}
               userRole={userInfomation?.userRole}
-              currentUrl={props.classroom?.sendbird?.channel_url}
+              currentUrl={sendbirdInfomation?.channel_url}
               isChatOpen={isChatOpen}
               setIsChatOpen={setIsChatOpen}
               emojiContainer={emojiContainer}
               chatHeightStyle={chatHeightStyle}
               sendbirdAccessToken={props?.sendbirdAccessToken}
-              authToken={props?.auth_token}
+              authTokenValue={props?.authTokenValue}
             />
           ) : (
             <FakeChat status='liveEnd' chatHeightStyle={chatHeightStyle} />

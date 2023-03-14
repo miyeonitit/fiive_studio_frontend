@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, RefObject } from 'react'
+import { useRouter } from 'next/router'
 import { v4 as uuidv4 } from 'uuid'
 import Lottie from 'lottie-web'
 
@@ -12,14 +13,13 @@ type props = {
 }
 
 const MetaReactionEmojiList = (props: props) => {
+  const router = useRouter()
+
   // ivs infomation 정보를 저장하는 state
   const ivsData = classRoomUseStore((state: any) => state.ivsData)
 
   // user auth token for API
   const authToken = fiiveStudioUseStore((state: any) => state.authToken)
-
-  // classroom class id
-  const classId = fiiveStudioUseStore((state: any) => state.classId)
 
   // emoji reaction - 5초 흐르기 전까지 click 비활성화 해두기 위한 boolean state
   const [isNotActivedReaction, setIsNotActivedReaction] = useState(false)
@@ -32,10 +32,15 @@ const MetaReactionEmojiList = (props: props) => {
   const grinningRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
   const cryingRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
 
+  const classId = router.query.classId
+
   const postReaction = async (reaction: string) => {
     // emoji reaction click active status
     if (!isNotActivedReaction) {
       const requestUrl = `/classroom/${classId}/ivs/meta`
+
+      // emoji reaction img의 위치를 랜덤으로 조정하기 위한 random value
+      let randomValue = Math.floor(Math.random() * 50)
 
       const body = {
         arn: ivsData?.arn,
@@ -44,6 +49,7 @@ const MetaReactionEmojiList = (props: props) => {
           message: {
             id: uuidv4(),
             type: reaction,
+            random_value: randomValue < 16 ? randomValue + 16 : randomValue,
           },
         }),
       }
@@ -154,14 +160,14 @@ const MetaReactionEmojiList = (props: props) => {
             onClick={() => postReaction('CLAP')}
           />
           <div
-            className='smiling'
-            ref={smilingRef}
-            onClick={() => postReaction('SMILE')}
-          />
-          <div
             className='grinning'
             ref={grinningRef}
             onClick={() => postReaction('GRINNING')}
+          />
+          <div
+            className='smiling'
+            ref={smilingRef}
+            onClick={() => postReaction('SMILE')}
           />
           <div
             className='crying'

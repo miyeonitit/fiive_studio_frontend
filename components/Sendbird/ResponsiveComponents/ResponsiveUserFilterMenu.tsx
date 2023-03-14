@@ -36,6 +36,11 @@ const ResponsiveUserFilterMenu = (props: props) => {
     }
   }
 
+  const controlModalCloseAnimation = (status: string) => {
+    closeModal()
+    props.handleUserFilterStatus(status)
+  }
+
   const clickModalOutside = (e) => {
     if (
       props.isUserFilterMiniMenu &&
@@ -79,7 +84,7 @@ const ResponsiveUserFilterMenu = (props: props) => {
         <div className='responsive_modal_container'>
           <div
             className='modal_line_menu'
-            onClick={() => props.handleUserFilterStatus('live')}
+            onClick={() => controlModalCloseAnimation('live')}
           >
             <div className='user_list_button_image_box'>
               <Image
@@ -104,7 +109,7 @@ const ResponsiveUserFilterMenu = (props: props) => {
 
           <div
             className='modal_line_menu'
-            onClick={() => props.handleUserFilterStatus('muted')}
+            onClick={() => controlModalCloseAnimation('muted')}
           >
             <div className='muted_user_list_button_image_box'>
               <Image
@@ -129,7 +134,7 @@ const ResponsiveUserFilterMenu = (props: props) => {
 
           <div
             className='modal_line_menu'
-            onClick={() => props.handleUserFilterStatus('blocked')}
+            onClick={() => controlModalCloseAnimation('blocked')}
           >
             <div className='blocked_user_list_button_image_box'>
               <Image

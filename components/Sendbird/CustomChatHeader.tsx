@@ -6,21 +6,53 @@ import { getCookie, setCookie } from 'cookies-next'
 import { ToastContainer, toast, cssTransition } from 'react-toastify'
 import { CSSProperties } from 'styled-components'
 
+import sendbirdSelectors from '@sendbird/uikit-react/sendbirdSelectors'
 import { useChannelContext } from '@sendbird/uikit-react/Channel/context'
+import useSendbirdStateContext from '@sendbird/uikit-react/useSendbirdStateContext'
+import { SendBirdError } from 'sendbird'
 
 import 'animate.css'
 import '../../node_modules/react-toastify/dist/ReactToastify.css'
 
 import AxiosRequest from '../../utils/AxiosRequest'
 import sendBirdUseStore from '../../store/Sendbird'
+import classRoomUseStore from '../../store/classRoom'
 import fiiveStudioUseStore from '../../store/FiiveStudio'
 
 import UserListProfileCard from './components/UserListProfileCard'
 import ResponsiveChatHeaderMenu from './ResponsiveComponents/ResponsiveChatHeaderMenu'
 import ResponsiveUserFilterMenu from './ResponsiveComponents/ResponsiveUserFilterMenu'
 
+type ApplicationUserListQueryParams = {
+  userIdsFilter: string[]
+}
+
+type memberObj = {
+  connectionStatus: string
+  isActive: boolean
+  isBlockedByMe: boolean
+  isBlockingMe: boolean
+  isMuted: boolean
+  lastSeenAt: number
+  metaData: userOrderObj
+  nickname: string
+  plainProfileUrl: string
+  requireAuth: boolean
+  role: string | null
+  state: string
+  userId: string
+  _iid: string
+}
+
 type userOrderObj = {
   metaData: {
+    name: string
+    role: string
+  }
+}
+
+type blockedOrMutedUserObj = {
+  metadata: {
     name: string
     role: string
   }
@@ -36,6 +68,9 @@ type props = {
 }
 
 const CustomChatHeader = (props: props) => {
+  const context = useSendbirdStateContext()
+  const sdk = sendbirdSelectors.getSdk(context)
+
   const router = useRouter()
 
   // 반응형 미디어쿼리 스타일 지정을 위한 브라우저 넓이 측정 전역 state
@@ -65,12 +100,15 @@ const CustomChatHeader = (props: props) => {
   // user auth token for API
   const authToken = fiiveStudioUseStore((state: any) => state.authToken)
 
+  // sendbird infomation 정보를 저장하는 state
+  const chatData = classRoomUseStore((state: any) => state.chatData)
+
   // 유저 리스트 전역 state
   const contextSetIsUserList = sendBirdUseStore(
     (state: any) => state.setIsUserList
   )
 
-  let { currentGroupChannel } = useChannelContext()
+  const { currentGroupChannel } = useChannelContext()
 
   // 더보기 메뉴 노출 boolean state
   const [isMoreMiniMenu, setIsMoreMiniMenu] = useState(false)
@@ -94,7 +132,7 @@ const CustomChatHeader = (props: props) => {
   const miniMenuRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
   const userFilterRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
 
-  const studioUrl = process.env.NEXT_PUBLIC_TEST_STUDIO_URL
+  const studioUrl = process.env.NEXT_PUBLIC_STUDIO_URL
 
   const fadeUp = cssTransition({
     enter: 'animate__animated animate__customFadeInUp',
@@ -248,6 +286,31 @@ const CustomChatHeader = (props: props) => {
     })
   }
 
+  const retrieveOnlineUser = async (members: string[], test: number) => {
+    const queryParams: ApplicationUserListQueryParams = {
+      userIdsFilter: members,
+    }
+
+    const query = sdk?.createApplicationUserListQuery(queryParams)
+
+    const allMembers = await query.next()
+
+    const activedUser = allMembers.filter(
+      (user: memberObj) => user.connectionStatus === 'online'
+    )
+
+    // actived user의 수를 전역적으로 저장
+    setNumberOfLiveUser(activedUser.length)
+
+    // teacher 페이지에 접속했을 경우, 기존에 저장된 actived user 수보다 현재 actived user 수가 더 많을 때 maximum value request
+    if (
+      router.pathname === '/teacher' &&
+      numberOfLiveUser < activedUser.length
+    ) {
+      sendMaxNumberOfLiveUser(activedUser.length)
+    }
+  }
+
   // 더보기 미니 메뉴 outside click
   const clickModalOutside = (e: MouseEvent<HTMLElement>) => {
     const event = e.target as HTMLDivElement
@@ -295,34 +358,34 @@ const CustomChatHeader = (props: props) => {
     setIsOpenResponsiveLiveMember(isUserList)
   }, [isUserList])
 
+  // 유저들의 실시간 connectionStatus 판단 로직
   useEffect(() => {
-    // '라이브 참여자' 로 필터 보기 할 때만 actived user 업데이트
     if (userFilter === '라이브 참여자') {
-      // 현재 채팅방의 정보를 5초마다 주기적으로 갱신
-      let channelInfomationCount = setInterval(function () {
-        currentGroupChannel.refresh()
-        setUserList(currentGroupChannel.members)
+      // 1. 현재 group channel member 정보 중 userId만 배열로 추출
+      const membersIdArr = currentGroupChannel.members.map(
+        (user: memberObj) => user.userId
+      )
 
-        // actived user가 5초마다 몇 명인지 업데이트 후 전역 state로 저장
-        const activedUser = currentGroupChannel.members.filter(
-          (user) => user.connectionStatus === 'online'
+      // 2. members의 실시간 connectionStatus 판단 로직
+      if (typeof sdk !== 'undefined' && Object.keys(sdk).length > 0) {
+        let activedUserCount = setInterval(
+          () => retrieveOnlineUser(membersIdArr, numberOfLiveUser),
+          5000
         )
 
-        // actived user의 수를 전역적으로 저장
-        setNumberOfLiveUser(activedUser.length)
-
-        // 기존에 저장된 actived user 수보다 현재 actived user 수가 더 많을 때, backend에
-        if (numberOfLiveUser < activedUser.length) {
-          sendMaxNumberOfLiveUser(activedUser.length)
+        // setInterval cleanup
+        return () => {
+          clearInterval(activedUserCount)
         }
-      }, 5000)
-
-      // setInterval 메서드의 cleanup 처리
-      return () => {
-        clearInterval(channelInfomationCount)
       }
     }
-  }, [userList])
+  }, [userList, numberOfLiveUser])
+
+  useEffect(() => {
+    if (chatData?.isChatFreezed) {
+      setIsFreezeChat(!isFreezeChat)
+    }
+  }, [chatData])
 
   return (
     <div className='CustomChatHeader'>
@@ -506,45 +569,70 @@ const CustomChatHeader = (props: props) => {
 
           <div className='user_list_wrapper'>
             {userList &&
-              userList
-                .sort((user1: userOrderObj, user2: userOrderObj) => {
-                  if (
-                    (user1.metaData.role === 'admin' ||
-                      user1.metaData.role === 'teacher') &&
-                    user2.metaData.role === null
-                  ) {
-                    // userRole이 admin이나 teacher일 경우, 앞에 정렬
-                    return -1
-                  } else if (
-                    user1.metaData.role === null &&
-                    (user2.metaData.role === 'admin' ||
-                      user2.metaData.role === 'teacher')
-                  ) {
-                    // userRole이 admin이나 teacher일 경우, 뒤에 정렬
-                    return 1
-                  } else {
-                    // 동등할 경우
-                    return 0
-                  }
-                })
-                .map((user: any, idx: number) => (
-                  <UserListProfileCard
-                    user={user}
-                    key={idx}
-                    index={idx}
-                    userLength={userList.length}
-                    userId={props.userId}
-                    userRole={props.userRole}
-                    channelUrl={props.channelUrl}
-                    isUserList={isUserList}
-                    userFilter={userFilter}
-                    isUserFilterMiniMenu={isUserFilterMiniMenu}
-                    saveIndex={saveIndex}
-                    setSaveIndex={setSaveIndex}
-                    saveComponentIndex={saveComponentIndex}
-                    currentGroupChannel={currentGroupChannel}
-                  />
-                ))}
+              (userFilter === '라이브 참여자'
+                ? userList.sort((user1: userOrderObj, user2: userOrderObj) => {
+                    if (
+                      (user1.metaData.role === 'admin' ||
+                        user1.metaData.role === 'teacher') &&
+                      user2.metaData.role === null
+                    ) {
+                      // [header filter가 '라이브 참여자'일 때는 metaData] userRole이 admin이나 teacher일 경우, 앞에 정렬
+                      return -1
+                    } else if (
+                      user1.metaData.role === null &&
+                      (user2.metaData.role === 'admin' ||
+                        user2.metaData.role === 'teacher')
+                    ) {
+                      // [header filter가 '라이브 참여자'일 때는 metaData] userRole이 admin이나 teacher일 경우, 뒤에 정렬
+                      return 1
+                    } else {
+                      // 동등할 경우
+                      return 0
+                    }
+                  })
+                : userList.sort(
+                    (
+                      user1: blockedOrMutedUserObj,
+                      user2: blockedOrMutedUserObj
+                    ) => {
+                      if (
+                        (user1.metadata.role === 'admin' ||
+                          user1.metadata.role === 'teacher') &&
+                        user2.metadata.role === null
+                      ) {
+                        // [header filter가 '차단된 참여자, 뮤트된 참여자'일 때는 metadata] userRole이 admin이나 teacher일 경우, 앞에 정렬
+                        return -1
+                      } else if (
+                        user1.metadata.role === null &&
+                        (user2.metadata.role === 'admin' ||
+                          user2.metadata.role === 'teacher')
+                      ) {
+                        // [header filter가 '차단된 참여자, 뮤트된 참여자'일 때는 metadata] userRole이 admin이나 teacher일 경우, 뒤에 정렬
+                        return 1
+                      } else {
+                        // 동등할 경우
+                        return 0
+                      }
+                    }
+                  )
+              ).map((user: any, idx: number) => (
+                <UserListProfileCard
+                  user={user}
+                  key={idx}
+                  index={idx}
+                  userLength={userList.length}
+                  userId={props.userId}
+                  userRole={props.userRole}
+                  channelUrl={props.channelUrl}
+                  isUserList={isUserList}
+                  userFilter={userFilter}
+                  isUserFilterMiniMenu={isUserFilterMiniMenu}
+                  saveIndex={saveIndex}
+                  setSaveIndex={setSaveIndex}
+                  saveComponentIndex={saveComponentIndex}
+                  currentGroupChannel={currentGroupChannel}
+                />
+              ))}
           </div>
         </div>
       )}

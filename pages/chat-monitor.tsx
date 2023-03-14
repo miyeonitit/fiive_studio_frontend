@@ -12,7 +12,6 @@ import '../../node_modules/react-toastify/dist/ReactToastify.css'
 import { NextPageWithLayout } from '../types/NextPageWithLayout'
 
 import AxiosRequest from '../utils/AxiosRequest'
-import fiiveStudioUseStore from '../store/FiiveStudio'
 
 type ivsType = {
   channel: { arn: string; authorized: boolean; playbackUrl: string }
@@ -25,9 +24,8 @@ type sendbirdChatType = {
 }
 
 type props = {
-  emoji_data?: { emojis: Array<object>; id: number; name: string; url: string }
   classroom: { ivs: ivsType; sendbird: sendbirdChatType }
-  auth_token: string
+  authTokenValue: string
   sendbirdAccessToken: string
 }
 
@@ -40,7 +38,7 @@ const ChatMonitorPage: NextPageWithLayout = (props: props) => {
   const router = useRouter()
 
   // 1. auth-token을 query에서 받아와서 setState로 저장
-  const [authToken, setAuthToken] = useState(router.query.token)
+  const authToken = router.query.token
 
   // 2-1. user infomation을 저장하기 위한 state
   const [userInfomation, setUserInfomation] = useState({})
@@ -56,8 +54,6 @@ const ChatMonitorPage: NextPageWithLayout = (props: props) => {
     exit: 'animate__animated animate__fadeOut',
   })
 
-  console.log(props, 'chat monitor props')
-
   const getClassRoomData = async (authToken: string | string[]) => {
     const classId = router.query.classId
     const sessionIdx = router.query.sessionIdx
@@ -69,7 +65,7 @@ const ChatMonitorPage: NextPageWithLayout = (props: props) => {
       url: requestUrl,
       method: 'GET',
       body: '',
-      token: router.query.token,
+      token: authToken,
     })
 
     setCurrentChannelUrl(responseData?.sendbird?.channel_url)
@@ -88,7 +84,7 @@ const ChatMonitorPage: NextPageWithLayout = (props: props) => {
       url: requestUrl,
       method: 'POST',
       body: body,
-      token: router.query.token,
+      token: authToken,
     })
 
     const sendbirdAccessToken = await responseData.token
@@ -102,74 +98,60 @@ const ChatMonitorPage: NextPageWithLayout = (props: props) => {
       url: requestUrl,
       method: 'GET',
       body: '',
-      token: router.query.token,
+      token: authToken,
     })
 
     if (responseData.name !== 'AxiosError') {
       setUserInfomation(responseData)
     } else {
-      console.log('수강 권한 없음')
-      // [backlog] 유저 식별에 실패하면 수강권한 없다는 페이지로 이동되어야 함!
+      toast.error(
+        <div className='toast_error_box'>
+          <Image
+            src='/pages/Sendbird/toast_warning_icon.svg'
+            width={16}
+            height={16}
+            alt='toastWarningIcon'
+          />
+          <span className='toast_error_text'>
+            수강 권한을 다시 확인해 주세요!
+          </span>
+        </div>,
+        { transition: fadeUp }
+      )
     }
   }
 
   // 1. params query로 전해진 auth-token 검증
   useEffect(() => {
     // url 중 params query로 token이 전해지지 않았다면, 다시 url 복사 버튼 클릭 유도
-    // if (!router.query.token) {
-    //   toast.error(
-    //     <div className='toast_error_box'>
-    //       <Image
-    //         src='/pages/Sendbird/toast_warning_icon.svg'
-    //         width={16}
-    //         height={16}
-    //         alt='toastWarningIcon'
-    //       />
-    //       <span className='toast_error_text'>
-    //         채팅창 내보내기 버튼을 다시 클릭해 주세요.
-    //       </span>
-    //     </div>,
-    //     { transition: fadeUp }
-    //   )
-    // } else {
-    if (router.query.token) {
+    if (authToken) {
       // 토큰값이 저장되지 않았다면, 다시 params query로 정해진 token을 setState로 저장
-      setCookie('auth-token', router.query.token)
+      setCookie('auth-token', authToken)
 
       // 2-1. get user's classroom infomation API
-      getClassRoomData(router.query.token)
+      getClassRoomData(authToken)
 
       // 2-2. get user's id
-      getUserInfomation(router.query.token)
+      getUserInfomation(authToken)
 
       // 2-3. create user's sendbird access token
-      getSendbirdUserToken(router.query.token)
+      getSendbirdUserToken(authToken)
     }
-  }, [router.query.token])
-
-  // 2. sendbird chat을 로드하기 위해 필요한 data fetching
-  // useEffect(() => {
-  //   if (authToken) {
-  //     // 2-1. get user's classroom infomation API
-  //     getClassRoomData(authToken)
-
-  //     // 2-2. get user's id
-  //     getUserInfomation(authToken)
-
-  //     // 2-3. create user's sendbird access token
-  //     getSendbirdUserToken(authToken)
-  //   }
-  // }, [authToken])
+  }, [authToken])
 
   return (
     <div className='fiive chat-monitor page'>
-      <ChatMonitor
-        userId={
-          Object.keys('userInfomation').length > 0 && userInfomation?.userId
-        }
-        channelUrl={currentChannelUrl}
-        sendbirdAccessToken={accessToken}
-      ></ChatMonitor>
+      {typeof userInfomation !== 'undefined' &&
+        typeof currentChannelUrl !== 'undefined' &&
+        Object.keys(userInfomation).length > 0 &&
+        Object.keys(currentChannelUrl).length > 0 &&
+        accessToken && (
+          <ChatMonitor
+            userId={userInfomation?.userId}
+            channelUrl={currentChannelUrl}
+            sendbirdAccessToken={accessToken}
+          ></ChatMonitor>
+        )}
 
       <ToastContainer
         position='top-center'

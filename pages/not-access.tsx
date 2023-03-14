@@ -9,6 +9,10 @@ const not_access = () => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const router = useRouter()
 
+  const classId = router.query.classId
+
+  const redirectFiive = process.env.NEXT_PUBLIC_FIIVE_URL
+
   return (
     <div className='not_access'>
       <Head>
@@ -147,7 +151,7 @@ const not_access = () => {
           <button
             className='home_button'
             onClick={() => {
-              window.open('https://alpha.fiive.me/', '_self')
+              router.push(`${redirectFiive}`)
             }}
           >
             홈으로
@@ -155,10 +159,7 @@ const not_access = () => {
           <button
             className='apply_button'
             onClick={() => {
-              window.open(
-                `https://alpha.fiive.me/contents/${router.query.classId}`,
-                '_self'
-              )
+              router.push(`${redirectFiive}/${classId}`)
             }}
           >
             수강 신청하기

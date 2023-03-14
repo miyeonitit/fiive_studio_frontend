@@ -41,13 +41,6 @@
       display: flex;
       align-items: center;
 
-      .back_button_box {
-        display: flex;
-        align-items: center;
-        margin-right: 12px;
-        cursor: pointer;
-      }
-
       .fiive_logo_box {
         display: flex;
         align-items: center;
@@ -72,6 +65,13 @@
         .teacher_name_box {
           @include body-1-700;
           color: $bluegray-9;
+        }
+
+        .teacher_name_box.non_active {
+          width: 56px;
+          height: 20px;
+          border-radius: 2px;
+          background-color: $bluegray-2;
         }
       }
     }
@@ -154,7 +154,7 @@
         display: flex;
         align-items: center;
         flex-direction: column;
-        width: 75px;
+        min-width: 76px;
         padding: 10px;
       }
 
@@ -164,6 +164,70 @@
 
       span.non_active {
         color: $bluegray-4;
+      }
+
+      .live_waiting_reaction_popover {
+        position: absolute;
+        top: -95px;
+        left: -1%;
+        padding: 12px;
+        min-width: 230px;
+        border-radius: 3px;
+        color: white;
+        background-color: $bluegray-9;
+        z-index: 9999;
+
+        -webkit-animation: motion 1.3s linear 0s infinite alternate;
+        animation: motion 1.3s linear 0s infinite alternate;
+
+        @keyframes motion {
+          0% {
+            margin-top: 0px;
+          }
+          20% {
+            margin-top: 10px;
+          }
+          40% {
+            margin-top: 0px;
+          }
+          60% {
+            margin-top: 10px;
+          }
+          80% {
+            margin-top: 0px;
+          }
+          100% {
+            margin-top: 0px;
+          }
+        }
+
+        .popover_title_box {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 2px;
+        }
+
+        .popover_sub_text_box {
+          @include caption-1-400;
+        }
+      }
+
+      .live_waiting_reaction_popover:after {
+        content: '';
+        position: absolute;
+        border-style: solid;
+        border-width: 6px 6px 0;
+        border-color: $bluegray-9 transparent;
+        display: block;
+        width: 0;
+        z-index: 1;
+        bottom: -6px;
+        left: 115.5px;
+      }
+
+      .live_waiting_reaction_popover.non_active {
+        display: none;
       }
     }
 
@@ -190,17 +254,32 @@
       .help_button_wrapper {
         display: none;
       }
+
+      .live_waiting_reaction_popover {
+        left: 3%;
+        min-width: 230px;
+      }
     }
   }
 }
 
 @media screen and (max-width: 767px) {
   .fiive_layout.learner_layout {
+    // iphone safari에서 input or textarea 활성화시 height 여백이 생기는 이슈에 대한 대응 css 코드
+    @supports (-webkit-touch-callout: none) {
+      height: -webkit-fill-available;
+    }
+
     .layout-footer {
       justify-content: space-between;
 
       .help_button_wrapper {
         display: none;
+      }
+
+      .live_waiting_reaction_popover {
+        left: 3%;
+        min-width: 230px;
       }
     }
   }
