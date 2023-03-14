@@ -103,8 +103,16 @@ const FiiveLayout = (props: any) => {
     })
 
     if (responseData.name !== 'AxiosError') {
-      // teacher, learner page UI 비활성화
-      setIvsPlayStatus('end')
+      const liveStartDate = new Date(classData?.start_date)
+      const liveEndDateAfterTwoHours = new Date(classData?.end_date + 7200000)
+
+      // 현재 시간 기준으로 end_date + 2시간이 (총 4시간) 지나면, ivs 영역 비활성화 + chat 영역 비활성화
+      if (nowTime >= liveStartDate && nowTime > liveEndDateAfterTwoHours) {
+        setIvsPlayStatus('end')
+      } else {
+        // 현재 시간 기준으로 end_date + 2시간 전일 때, ivs 영역 비활성화 + chat 영역 freezing
+        setIvsPlayStatus('fast-end')
+      }
 
       // sendbird chat freezing
       controlFreezeChat()
@@ -133,6 +141,7 @@ const FiiveLayout = (props: any) => {
   // 라이브 종료 시간이 지나면 음수로 표현되는데, 음수일 때는 실행되지 않도록 방지
   useEffect(() => {
     if (
+      typeof classData !== 'undefined' &&
       Object.keys(classData).length !== 0 &&
       getBeforeMinutesEndTime(classData?.end_date) >= 0
     ) {
@@ -146,16 +155,7 @@ const FiiveLayout = (props: any) => {
     <div className='fiive_layout teacher_layout'>
       <header className='layout_header'>
         <div className='left_header_box'>
-          {offsetX < 1023 ? (
-            <div className='back_button_box'>
-              <Image
-                src='../layouts/fiive/arrow_back.svg'
-                width={20}
-                height={20}
-                alt='backButton'
-              />
-            </div>
-          ) : (
+          {offsetX > 1023 && (
             <>
               {/* fiive logo image 영역 */}
               <div className='fiive_logo_box'>
@@ -194,7 +194,12 @@ const FiiveLayout = (props: any) => {
               />
             </div>
 
-            <div className='teacher_name_box'>{classData?.teacher_name}</div>
+            {typeof classData !== 'undefined' &&
+            Object.keys(classData).length > 0 ? (
+              <div className='teacher_name_box'>{classData?.teacher_name}</div>
+            ) : (
+              <div className='teacher_name_box non_active'> </div>
+            )}
           </div>
         </div>
 
@@ -202,10 +207,10 @@ const FiiveLayout = (props: any) => {
           {/* LIVE 상태 정보 영역 */}
           <div
             className={`live_status ${
-              streamInfomation?.state === 'LIVE' && 'play'
+              streamInfomation === 'LIVE-ON' && 'play'
             }`}
           >
-            {streamInfomation?.state === 'LIVE' ? 'LIVE' : 'LIVE 중이 아님'}
+            {streamInfomation === 'LIVE-ON' ? 'LIVE' : 'LIVE 중이 아님'}
           </div>
 
           {/* 현재 라이브 참여자 수 영역 */}
@@ -216,7 +221,9 @@ const FiiveLayout = (props: any) => {
               height={12}
               alt='liveParticipant'
             />
-            <span className='live_participant_number'>{numberOfLiveUser}</span>
+            <span className='live_participant_number'>
+              {numberOfLiveUser ? numberOfLiveUser : '불러올 수 없음'}
+            </span>
           </div>
         </div>
 
@@ -284,16 +291,16 @@ const FiiveLayout = (props: any) => {
         {/* 라이브 나가기 버튼 영역 */}
         <div className='quit_button_wrapper'>
           {/* live endTime이 끝나기 전에 teacher에게 노출되는 툴팁 */}
-          {/* {isLiveEndPopOver && ( */}
-          <Popover
-            liveStatusObject={
-              getBeforeMinutesEndTime(classData?.end_date) <= 1
-                ? liveEndBefore1Minutes
-                : liveEndBefore10Minutes
-            }
-            setIsLiveEndPopOver={setIsLiveEndPopOver}
-          />
-          {/* )} */}
+          {isLiveEndPopOver && (
+            <Popover
+              liveStatusObject={
+                getBeforeMinutesEndTime(classData?.end_date) <= 1
+                  ? liveEndBefore1Minutes
+                  : liveEndBefore10Minutes
+              }
+              setIsLiveEndPopOver={setIsLiveEndPopOver}
+            />
+          )}
 
           <div className='quit_button_box' onClick={() => endLiveClass()}>
             <Image

@@ -41,13 +41,6 @@
       display: flex;
       align-items: center;
 
-      .back_button_box {
-        display: flex;
-        align-items: center;
-        margin-right: 12px;
-        cursor: pointer;
-      }
-
       .fiive_logo_box {
         display: flex;
         align-items: center;
@@ -72,6 +65,13 @@
         .teacher_name_box {
           @include body-1-700;
           color: $bluegray-9;
+        }
+
+        .teacher_name_box.non_active {
+          width: 56px;
+          height: 20px;
+          border-radius: 2px;
+          background-color: $bluegray-2;
         }
       }
     }
@@ -154,6 +154,7 @@
         display: flex;
         align-items: center;
         flex-direction: column;
+        min-width: 76px;
         padding: 10px;
       }
 
@@ -170,10 +171,11 @@
         top: -95px;
         left: -1%;
         padding: 12px;
-        min-width: 204px;
+        min-width: 230px;
         border-radius: 3px;
         color: white;
         background-color: $bluegray-9;
+        z-index: 9999;
 
         -webkit-animation: motion 1.3s linear 0s infinite alternate;
         animation: motion 1.3s linear 0s infinite alternate;
@@ -252,17 +254,32 @@
       .help_button_wrapper {
         display: none;
       }
+
+      .live_waiting_reaction_popover {
+        left: 3%;
+        min-width: 230px;
+      }
     }
   }
 }
 
 @media screen and (max-width: 767px) {
   .fiive_layout.learner_layout {
+    // iphone safari에서 input or textarea 활성화시 height 여백이 생기는 이슈에 대한 대응 css 코드
+    @supports (-webkit-touch-callout: none) {
+      height: -webkit-fill-available;
+    }
+
     .layout-footer {
       justify-content: space-between;
 
       .help_button_wrapper {
         display: none;
+      }
+
+      .live_waiting_reaction_popover {
+        left: 3%;
+        min-width: 230px;
       }
     }
   }

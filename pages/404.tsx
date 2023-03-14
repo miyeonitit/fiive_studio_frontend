@@ -1,13 +1,16 @@
 import React from 'react'
 import Head from 'next/head'
-import Router from 'next/router'
+import router from 'next/router'
 
 const not_found = () => {
+  const redirectFiive = process.env.NEXT_PUBLIC_FIIVE_URL
+
   return (
     <div className='not_found'>
       <Head>
         <title>404 error</title>
       </Head>
+
       <div className='title_box'>
         <div className='image_box'>
           <img
@@ -27,7 +30,7 @@ const not_found = () => {
         <button
           className='prev_button'
           onClick={() => {
-            Router.back()
+            router.back()
           }}
         >
           이전으로
@@ -35,7 +38,7 @@ const not_found = () => {
         <button
           className='home_button'
           onClick={() => {
-            window.open('https://alpha.fiive.me/', '_self')
+            router.push(`${redirectFiive}`)
           }}
         >
           홈으로

@@ -48,9 +48,6 @@ const FiiveLayout = (props: any) => {
   // class infomation 정보를 저장하는 state
   const classData = classRoomUseStore((state: any) => state.classData)
 
-  // now local time
-  const nowTime = fiiveStudioUseStore((state: any) => state.nowTime)
-
   const emojiListRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
 
   const responsiveZindexStyle: CSSProperties =
@@ -122,16 +119,7 @@ const FiiveLayout = (props: any) => {
     <div className='fiive_layout learner_layout'>
       <header className='layout_header'>
         <div className='left_header_box'>
-          {offsetX < 1023 ? (
-            <div className='back_button_box'>
-              <Image
-                src='../layouts/fiive/arrow_back.svg'
-                width={20}
-                height={20}
-                alt='backButton'
-              />
-            </div>
-          ) : (
+          {offsetX > 1023 && (
             <>
               {/* fiive logo image 영역 */}
               <div className='fiive_logo_box'>
@@ -170,7 +158,12 @@ const FiiveLayout = (props: any) => {
               />
             </div>
 
-            <div className='teacher_name_box'>{classData?.teacher_name}</div>
+            {typeof classData !== 'undefined' &&
+            Object.keys(classData).length > 0 ? (
+              <div className='teacher_name_box'>{classData?.teacher_name}</div>
+            ) : (
+              <div className='teacher_name_box non_active'> </div>
+            )}
           </div>
         </div>
 
@@ -178,10 +171,10 @@ const FiiveLayout = (props: any) => {
           {/* LIVE 상태 정보 영역 */}
           <div
             className={`live_status ${
-              streamInfomation?.state === 'LIVE' && 'play'
+              streamInfomation === 'LIVE-ON' && 'play'
             }`}
           >
-            {streamInfomation?.state === 'LIVE' ? 'LIVE' : 'LIVE 중이 아님'}
+            {streamInfomation === 'LIVE-ON' ? 'LIVE' : 'LIVE 중이 아님'}
           </div>
 
           {/* 현재 라이브 참여자 수 영역 */}
@@ -192,7 +185,9 @@ const FiiveLayout = (props: any) => {
               height={12}
               alt='liveParticipant'
             />
-            <span className='live_participant_number'>{numberOfLiveUser}</span>
+            <span className='live_participant_number'>
+              {numberOfLiveUser ? numberOfLiveUser : '불러올 수 없음'}
+            </span>
           </div>
         </div>
 
@@ -229,7 +224,6 @@ const FiiveLayout = (props: any) => {
         {offsetX >= 1023 && (
           <div
             className='help_button_wrapper'
-            id='test'
             onClick={() => clickChannelTalk()}
           >
             <Image
@@ -253,7 +247,7 @@ const FiiveLayout = (props: any) => {
           )}
 
           {/* live 방송 시작 전, 대기 중일 때 popover으로 emoji 전송이 되지 않음을 안내 */}
-          {nowTime < classData?.start_date &&
+          {ivsPlayStatus !== 'end' &&
             (ivsPlayStatus === 'waiting' || ivsPlayStatus === 'error') && (
               <div
                 className={`live_waiting_reaction_popover ${

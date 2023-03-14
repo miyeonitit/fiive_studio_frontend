@@ -30,7 +30,7 @@ const ResponsiveChatHeaderMenu = (props: props) => {
   const headerModalRef =
     React.useRef() as React.MutableRefObject<HTMLDivElement>
 
-  const studioUrl = process.env.NEXT_PUBLIC_TEST_STUDIO_URL
+  const studioUrl = process.env.NEXT_PUBLIC_STUDIO_URL
 
   const fadeUp = cssTransition({
     enter: 'animate__animated animate__customFadeInUp',
@@ -87,6 +87,7 @@ const ResponsiveChatHeaderMenu = (props: props) => {
     window.navigator.clipboard.writeText(chatUrl)
 
     props.setIsMoreMiniMenu(false)
+    closeModal()
     controlToastPopup(true, '채팅방 URL을 복사했어요.')
   }
 
@@ -105,6 +106,20 @@ const ResponsiveChatHeaderMenu = (props: props) => {
   const clearSetTimeOut = (countTimer: any) => {
     return () => {
       clearTimeout(countTimer)
+    }
+  }
+
+  const controlModalCloseAnimation = (status: string) => {
+    closeModal()
+
+    switch (status) {
+      case 'liveUserList':
+        props.controlMenuSetting()
+        break
+
+      case 'chatFreeze':
+        props.controlFreezeChat()
+        break
     }
   }
 
@@ -148,7 +163,7 @@ const ResponsiveChatHeaderMenu = (props: props) => {
         <div className='responsive_modal_container'>
           <div
             className='modal_line_menu'
-            onClick={() => props.controlMenuSetting()}
+            onClick={() => controlModalCloseAnimation('liveUserList')}
           >
             <div className='user_list_button_image_box'>
               <Image
@@ -165,7 +180,7 @@ const ResponsiveChatHeaderMenu = (props: props) => {
             <>
               <div
                 className='modal_line_menu'
-                onClick={() => props.controlFreezeChat()}
+                onClick={() => controlModalCloseAnimation('chatFreeze')}
               >
                 <div className='freeze_button_image_box'>
                   <Image

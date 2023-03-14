@@ -36,7 +36,7 @@ const MessageList = (props: props) => {
       }
     }, 1000)
 
-    if (Object.keys(sdk).length > 0) {
+    if (typeof sdk !== 'undefined' && Object.keys(sdk).length > 0) {
       if (sdk?.groupChannel?.addGroupChannelHandler) {
         const groupChannelHandler = new GroupChannelHandler({
           onMessageReceived: (channel: BaseChannel, message: BaseMessage) => {

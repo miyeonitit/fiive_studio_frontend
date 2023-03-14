@@ -9,6 +9,7 @@ import { CSSProperties } from 'styled-components'
 import sendbirdSelectors from '@sendbird/uikit-react/sendbirdSelectors'
 import { useChannelContext } from '@sendbird/uikit-react/Channel/context'
 import useSendbirdStateContext from '@sendbird/uikit-react/useSendbirdStateContext'
+import { SendBirdError } from 'sendbird'
 
 import 'animate.css'
 import '../../node_modules/react-toastify/dist/ReactToastify.css'
@@ -131,7 +132,7 @@ const CustomChatHeader = (props: props) => {
   const miniMenuRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
   const userFilterRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
 
-  const studioUrl = process.env.NEXT_PUBLIC_TEST_STUDIO_URL
+  const studioUrl = process.env.NEXT_PUBLIC_STUDIO_URL
 
   const fadeUp = cssTransition({
     enter: 'animate__animated animate__customFadeInUp',
@@ -366,7 +367,7 @@ const CustomChatHeader = (props: props) => {
       )
 
       // 2. members의 실시간 connectionStatus 판단 로직
-      if (Object.keys(sdk).length > 0) {
+      if (typeof sdk !== 'undefined' && Object.keys(sdk).length > 0) {
         let activedUserCount = setInterval(
           () => retrieveOnlineUser(membersIdArr, numberOfLiveUser),
           5000

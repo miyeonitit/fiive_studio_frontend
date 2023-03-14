@@ -11,6 +11,7 @@ const nextConfig = {
     loader: 'akamai',
     path: '/pages',
   },
+  output: 'export',
   // experimental: {
   //   allowMiddlewareResponseBody: true,
   // },

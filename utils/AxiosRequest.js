@@ -6,7 +6,6 @@ const AxiosRequest = async ({ url, method, body, token }) => {
   let errorData
 
   const ApiStudioProxy = process.env.NEXT_PUBLIC_API_BASE_URL
-  const ApiStudio = process.env.NEXT_PUBLIC_STUDIO_URL
 
   const headers = { Authorization: `Bearer ${token}` }
 
