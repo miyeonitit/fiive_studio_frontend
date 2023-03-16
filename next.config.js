@@ -3,7 +3,6 @@
 const nextConfig = {
   reactStrictMode: false,
   swcMinify: false,
-  // trailingSlash: true,
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -12,9 +11,6 @@ const nextConfig = {
     path: '/pages',
   },
   output: 'export',
-  // experimental: {
-  //   allowMiddlewareResponseBody: true,
-  // },
 }
 
 module.exports = nextConfig

@@ -6,18 +6,13 @@ import * as SendBird from 'sendbird'
 import SendbirdProvider from '@sendbird/uikit-react/SendbirdProvider'
 import { ChannelProvider } from '@sendbird/uikit-react/Channel/context'
 import ChannelUI from '@sendbird/uikit-react/Channel/components/ChannelUI'
-import withSendbird from '@sendbird/uikit-react/withSendbird'
 
-import { config } from '../utils/HeaderConfig'
 import AxiosRequest from '../utils/AxiosRequest'
 import useStore from '../store/Sendbird'
-import fiiveStudioUseStore from '../store/FiiveStudio'
-import classRoomUseStore from '../store/classRoom'
 
 import CustomChatHeader from './Sendbird/CustomChatHeader'
 import CustomChatRoom from './Sendbird/CustomChatRoom'
 import CustomMessageInput from './Sendbird/CustomMessageInput'
-import { MessageTypeFilter } from '@sendbird/chat/message'
 
 type props = {
   userId: string

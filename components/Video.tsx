@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react'
 
 import videoUseStore from '../store/video'
-import classRoomUseStore from '../store/classRoom'
+import ClassRoomUseStore from '../store/ClassRoom'
 import fiiveStudioUseStore from '../store/FiiveStudio'
 
 import AxiosRequest from '../utils/AxiosRequest'
@@ -55,11 +55,11 @@ const Video = (props: props) => {
   )
 
   // class infomation 정보를 저장하는 state
-  const classData = classRoomUseStore((state: any) => state.classData)
+  const classData = ClassRoomUseStore((state: any) => state.classData)
 
   // sendbird infomation 정보를 저장하는 state
-  const chatData = classRoomUseStore((state: any) => state.chatData)
-  const setChatData = classRoomUseStore((state: any) => state.setChatData)
+  const chatData = ClassRoomUseStore((state: any) => state.chatData)
+  const setChatData = ClassRoomUseStore((state: any) => state.setChatData)
 
   const [init, setInit] = useState(false)
 

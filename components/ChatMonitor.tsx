@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import kr from 'date-fns/locale/ko'
-import { v4 as uuidv4 } from 'uuid'
 
 import * as SendBird from 'sendbird'
 import { BaseChannel } from '@sendbird/chat'
@@ -11,9 +10,6 @@ import sendbirdSelectors from '@sendbird/uikit-react/sendbirdSelectors'
 import useSendbirdStateContext from '@sendbird/uikit-react/useSendbirdStateContext'
 import { ChannelProvider } from '@sendbird/uikit-react/Channel/context'
 import ChannelUI from '@sendbird/uikit-react/Channel/components/ChannelUI'
-
-import classRoomUseStore from '../store/classRoom'
-import fiiveStudioUseStore from '../store/FiiveStudio'
 
 import CustomTeacherPopupChat from './Sendbird/CustomTeacherPopupChat'
 

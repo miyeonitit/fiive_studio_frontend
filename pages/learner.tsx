@@ -78,9 +78,6 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
     (state: any) => state.setUserInfomation
   )
 
-  // user auth token for API
-  const setAuthToken = fiiveStudioUseStore((state: any) => state.setAuthToken)
-
   // save sendbird emoji list container
   const emojiContainer = sendbirdUseStore((state: any) => state.emojiContainer)
   const addEmojiContainer = sendbirdUseStore(
@@ -115,10 +112,9 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
   //   return question
   // }
 
+  // 1. get user infomation with user auth-token
   const getUserInfomation = async (token: string) => {
     const requestUrl = `/auth`
-    const classId = router.query.classId
-    const sessionIdx = router.query.sessionIdx
 
     const responseData = await AxiosRequest({
       url: requestUrl,
@@ -130,23 +126,18 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
     if (responseData.name !== 'AxiosError') {
       // 접속한 본인의 role이 teacher나 admin일 경우, 404 페이지로 이동
       if (responseData.userRole !== 'learner') {
-        router.push({
-          pathname: '/404',
-          query: { classId: classId, sessionIdx: sessionIdx },
-        })
+        router.push('/404')
       }
 
       // 유저의 접속 정보가 맞다면, userInfomation에 유저 정보 저장
       setUserInfomation(responseData)
     } else if (responseData.response.request.status === 401) {
       // 401 - user의 수강 권한이 없을 경우, not-access 페이지로 이동
-      router.push({
-        pathname: '/not-access',
-        query: { classId: classId, sessionIdx: sessionIdx },
-      })
+      router.push('/not-access')
     }
   }
 
+  // 2. get chat's emoji list container
   const getChatEmojiContainer = async (token: string) => {
     const emojiCategoryId = process.env.NEXT_PUBLIC_SENDBIRD_EMOJI_CATEGORY_ID
 
@@ -190,13 +181,10 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
     }
     // auth-token이 존재할 경우
     else if (props?.authTokenValue.length !== 0) {
-      // 1. get user auth-token
-      setAuthToken(props?.authTokenValue)
-
-      // 2. get user infomation with user auth-token
+      // 1. get user infomation with user auth-token
       getUserInfomation(props?.authTokenValue)
 
-      // 3. get chat's emoji list container
+      // 2. get chat's emoji list container
       getChatEmojiContainer(props?.authTokenValue)
     }
   }, [props?.authTokenValue])
@@ -210,9 +198,6 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
       <main>
         {/* ivs 영역 */}
         <section className='video-wrapper' ref={playerHeightRef}>
-          {/* <Announcements></Announcements>
-          <Timer></Timer> */}
-
           {/* metadata reaction emoji 컴포넌트 */}
           <Reactions />
 
@@ -310,26 +295,6 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
         className={`chat ${!isChatOpen && 'close'}`}
         style={chatHeightStyle}
       >
-        {/* <header>
-          <button type='button' className='arrow'>
-            <img src='/icons/move_right.svg' alt='Arrow' />
-          </button>
-          <h3>실시간 채팅</h3>
-          <button type='button' className='notifications'>
-            <img src='/icons/announce.svg' alt='Notifications' />
-          </button>
-        </header> */}
-        {/* 
-        <div className='questions'>
-          {question() && (
-            <div className='question-item'>
-              <h4>Q1</h4>
-              <p>{question()?.content}</p>
-              <span className='timestamp'>n분 전</span>
-            </div>
-          )} */}
-        {/* Swiper */}
-        {/* </div> */}
         <div className='chatroom'>
           {ivsPlayStatus !== 'end' ? (
             <Chat
@@ -348,14 +313,6 @@ const LearnerPage: NextPageWithLayout = (props: props) => {
           )}
         </div>
       </aside>
-
-      {/* {questionModal && (
-        <QuestionModal
-          toggle={() => {
-            toggleQuestionModal(false)
-          }}
-        ></QuestionModal>
-      )} */}
     </div>
   )
 }

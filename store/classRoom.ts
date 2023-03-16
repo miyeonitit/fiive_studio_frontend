@@ -1,7 +1,7 @@
 import create from 'zustand'
 import { subscribeWithSelector } from 'zustand/middleware'
 
-interface classRoomState {
+interface ClassRoomState {
   // ivs infomaion state
   ivsData: object
   setIvsData: (ivsData: object) => void
@@ -17,7 +17,7 @@ interface classRoomState {
 
 const useStore = create(
   subscribeWithSelector(
-    (set): classRoomState => ({
+    (set): ClassRoomState => ({
       ivsData: {},
       setIvsData: (ivsData: object) =>
         set(() => ({

@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react'
 import Image from 'next/image'
 import { CSSProperties } from 'styled-components'
 
-import classRoomUseStore from '../store/classRoom'
+import ClassRoomUseStore from '../store/ClassRoom'
 import fiiveStudioUseStore from '../store/FiiveStudio'
 import ChannelService from '../utils/ChannelService'
 
@@ -51,7 +51,7 @@ const FiiveLayout = (props: any) => {
   )
 
   // class infomation 정보를 저장하는 state
-  const classData = classRoomUseStore((state: any) => state.classData)
+  const classData = ClassRoomUseStore((state: any) => state.classData)
 
   const emojiListRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
 
