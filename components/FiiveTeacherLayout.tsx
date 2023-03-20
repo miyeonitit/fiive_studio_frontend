@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 import { CSSProperties } from 'styled-components'
 
 import AxiosRequest from '../utils/AxiosRequest'
-import classRoomUseStore from '../store/classRoom'
+import ClassRoomUseStore from '../store/ClassRoom'
 import fiiveStudioUseStore from '../store/FiiveStudio'
 
 import Popover from '../components/VideoComponents/PopOver'
@@ -57,11 +57,11 @@ const FiiveLayout = (props: any) => {
   )
 
   // class infomation 정보를 저장하는 state
-  const classData = classRoomUseStore((state: any) => state.classData)
+  const classData = ClassRoomUseStore((state: any) => state.classData)
 
   // sendbird infomation 정보를 저장하는 state
-  const chatData = classRoomUseStore((state: any) => state.chatData)
-  const setChatData = classRoomUseStore((state: any) => state.setChatData)
+  const chatData = ClassRoomUseStore((state: any) => state.chatData)
+  const setChatData = ClassRoomUseStore((state: any) => state.setChatData)
 
   // live endTime이 끝나기 전에 teacher에게 노출되는 말풍선 boolean state
   const [isLiveEndPopOver, setIsLiveEndPopOver] = useState(false)

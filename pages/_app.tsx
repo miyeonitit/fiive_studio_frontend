@@ -16,7 +16,7 @@ import '../styles/app.scss'
 import '../styles/globals.css'
 
 import AxiosRequest from '../utils/AxiosRequest'
-import classRoomUseStore from '../store/classRoom'
+import ClassRoomUseStore from '../store/ClassRoom'
 import fiiveStudioUseStore from '../store/FiiveStudio'
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
@@ -35,20 +35,20 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   const setAuthToken = fiiveStudioUseStore((state: any) => state.setAuthToken)
 
   // ivs infomation 정보를 저장하는 state
-  const setIvsData = classRoomUseStore((state: any) => state.setIvsData)
+  const setIvsData = ClassRoomUseStore((state: any) => state.setIvsData)
 
   // class infomation 정보를 저장하는 state
-  const setClassData = classRoomUseStore((state: any) => state.setClassData)
+  const setClassData = ClassRoomUseStore((state: any) => state.setClassData)
 
   // sendbird chat infomation 정보를 저장하는 state
-  const setChatData = classRoomUseStore((state: any) => state.setChatData)
+  const setChatData = ClassRoomUseStore((state: any) => state.setChatData)
 
   const [classroom, setClassroom] = useState({})
   const [sendbirdAccessToken, setSendbirdAccessToken] = useState('')
 
   const authTokenValue = getCookie('auth-token')
 
-  // 1. get user's classroom infomation API
+  // 2. get user's classroom infomation API
   const getClassRoomInfomation = async (authTokenValue: string) => {
     const classId = router.query.classId
     const sessionIdx = router.query.sessionIdx
@@ -77,7 +77,7 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     }
   }
 
-  // 2. create user's Sendbird access token
+  // 3. create user's Sendbird access token
   const getSendbirdAccessToken = async (authTokenValue: string) => {
     // Set default session token expiration period to 1 minute.
     const DEFAULT_SESSION_TOKEN_PERIOD = 1 * 60 * 1000
@@ -128,12 +128,13 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     reset()
 
     if (authTokenValue && Object.keys(router.query).length > 0) {
+      // 1. save user's auth-token
       setAuthToken(authTokenValue)
 
-      // 1. get user's classroom infomation API
+      // 2. get user's classroom infomation API
       getClassRoomInfomation(authTokenValue)
 
-      // 2. create user's Sendbird access token
+      // 3. create user's Sendbird access token
       getSendbirdAccessToken(authTokenValue)
     }
   }, [router])

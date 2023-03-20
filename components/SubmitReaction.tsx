@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 import AxiosRequest from '../utils/AxiosRequest'
 import useStore from '../store/video'
-import classRoomUseStore from '../store/classRoom'
+import ClassRoomUseStore from '../store/ClassRoom'
 import fiiveStudioUseStore from '../store/FiiveStudio'
 
 interface props {
@@ -16,7 +16,7 @@ const SubmitReaction = (props: props) => {
   const channel = useStore((state: any) => state.channel)
 
   // ivs, sendbird chat infomation 정보를 저장하는 state
-  const ivsData = classRoomUseStore((state: any) => state.ivsData)
+  const ivsData = ClassRoomUseStore((state: any) => state.ivsData)
 
   // user auth token for API
   const authToken = fiiveStudioUseStore((state: any) => state.authToken)

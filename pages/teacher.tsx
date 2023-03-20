@@ -13,7 +13,6 @@ import { CSSProperties } from 'styled-components'
 
 import AxiosRequest from '../utils/AxiosRequest'
 import sendbirdUseStore from '../store/Sendbird'
-import classRoomUseStore from '../store/classRoom'
 import fiiveStudioUseStore from '../store/FiiveStudio'
 
 import Layout from '../components/FiiveTeacherLayout'
@@ -110,10 +109,9 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
         }
       : {}
 
+  // 1. get user infomation with user auth-token
   const getUserInfomation = async (token: string) => {
     const requestUrl = `/auth`
-    const classId = router.query.classId
-    const sessionIdx = router.query.sessionIdx
 
     const responseData = await AxiosRequest({
       url: requestUrl,
@@ -125,23 +123,18 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
     if (responseData.name !== 'AxiosError') {
       // 접속한 본인의 role이 learner일 경우, 404 페이지로 이동
       if (responseData.userRole === 'learner') {
-        router.push({
-          pathname: '/404',
-          query: { classId: classId, sessionIdx: sessionIdx },
-        })
+        router.push('/404')
       }
 
       // 유저의 접속 정보가 맞다면, userInfomation에 유저 정보 저장
       setUserInfomation(responseData)
     } else if (responseData.response.request.status === 401) {
       // 401 - user의 수강 권한이 없을 경우, not-access 페이지로 이동
-      router.push({
-        pathname: '/not-access',
-        query: { classId: classId, sessionIdx: sessionIdx },
-      })
+      router.push('/not-access')
     }
   }
 
+  // 2. get chat's emoji list container
   const getChatEmojiContainer = async (token: string) => {
     const emojiCategoryId = process.env.NEXT_PUBLIC_SENDBIRD_EMOJI_CATEGORY_ID
 
@@ -185,13 +178,10 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
     }
     // auth-token이 존재할 경우
     else if (props?.authTokenValue.length !== 0) {
-      // 1. get user auth_token
-      setAuthToken(props?.authTokenValue)
-
-      // 2. get user infomation with user auth_token
+      // 1. get user infomation with user auth_token
       getUserInfomation(props?.authTokenValue)
 
-      // 3. get chat's emoji list container
+      // 2. get chat's emoji list container
       getChatEmojiContainer(props?.authTokenValue)
     }
   }, [props?.authTokenValue])
@@ -202,24 +192,9 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
         <title>fiive studio || teacher page</title>
       </Head>
 
-      {/* <aside className='utilities'>
-        <section className='tools'>
-          <LectureTools
-            openAnnouncementModal={() => {
-              toggleAnnouncementModal(true)
-            }}
-            openTimerModal={() => {
-              toggleTimerModal(true)
-            }}
-          />
-        </section>
-      </aside> */}
-
       <main>
         {/* ivs 영역 */}
         <section className='video-wrapper' ref={playerHeightRef}>
-          {/* <Timer></Timer> */}
-
           {/* metadata reaction emoji 컴포넌트 */}
           <Reactions />
 
@@ -333,30 +308,6 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
           )}
         </div>
       </aside>
-
-      {/* <aside className='chat'>
-        <section className='questions'>
-          <TeacherQuestionWidget></TeacherQuestionWidget>
-        </section>
-        <section className='chat'>
-          <TeacherChatWidget emojiContainer={emojiContainer} />
-        </section>
-      </aside> */}
-      {/* 
-      {announcementModal && (
-        <AnnouncementModal
-          toggle={() => {
-            toggleAnnouncementModal(!announcementModal)
-          }}
-        ></AnnouncementModal>
-      )}
-      {timerModal && (
-        <TimerModal
-          toggle={() => {
-            toggleTimerModal(!timerModal)
-          }}
-        ></TimerModal>
-      )} */}
     </div>
   )
 }

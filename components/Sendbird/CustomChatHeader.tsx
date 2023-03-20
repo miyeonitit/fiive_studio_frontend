@@ -16,7 +16,7 @@ import '../../node_modules/react-toastify/dist/ReactToastify.css'
 
 import AxiosRequest from '../../utils/AxiosRequest'
 import sendBirdUseStore from '../../store/Sendbird'
-import classRoomUseStore from '../../store/classRoom'
+import ClassRoomUseStore from '../../store/ClassRoom'
 import fiiveStudioUseStore from '../../store/FiiveStudio'
 
 import UserListProfileCard from './components/UserListProfileCard'
@@ -101,7 +101,7 @@ const CustomChatHeader = (props: props) => {
   const authToken = fiiveStudioUseStore((state: any) => state.authToken)
 
   // sendbird infomation 정보를 저장하는 state
-  const chatData = classRoomUseStore((state: any) => state.chatData)
+  const chatData = ClassRoomUseStore((state: any) => state.chatData)
 
   // 유저 리스트 전역 state
   const contextSetIsUserList = sendBirdUseStore(
