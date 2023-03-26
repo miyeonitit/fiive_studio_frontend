@@ -1,8 +1,7 @@
 # fiive studio
 
-<p>
-<img src="../test/public/dummy/fiive_studio_logo.png">
-</p>
+<img width="452" alt="image" src="https://user-images.githubusercontent.com/96506411/227880556-aec58566-db46-441c-a788-5ac652af4622.png">
+
 
 <p>
 <img src="https://img.shields.io/badge/Next.js-000000?style=flat-square&logo=Next.js&logoColor=white">
@@ -12,7 +11,7 @@
 
 > Next.js framework 기반의 fiive studio frontend repository입니다. <br />
 
-<br /><br />
+<br />
 
 # 1. Description
 
