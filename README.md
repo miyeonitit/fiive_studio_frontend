@@ -1,4 +1,8 @@
-# 1. Description
+# fiive studio
+
+<p>
+<img src="../test/public/dummy/fiive_studio_logo.png">
+</p>
 
 <p>
 <img src="https://img.shields.io/badge/Next.js-000000?style=flat-square&logo=Next.js&logoColor=white">
@@ -7,6 +11,10 @@
 </p>
 
 > Next.js framework 기반의 fiive studio frontend repository입니다. <br />
+
+<br /><br />
+
+# 1. Description
 
 ## 동작 순서
 
