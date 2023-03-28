@@ -12,7 +12,7 @@ import useSendbirdStateContext from '@sendbird/uikit-react/useSendbirdStateConte
 import { SendBirdError } from 'sendbird'
 
 import 'animate.css'
-import '../../node_modules/react-toastify/dist/ReactToastify.css'
+import 'react-toastify/dist/ReactToastify.css'
 
 import AxiosRequest from '../../utils/AxiosRequest'
 import sendBirdUseStore from '../../store/Sendbird'

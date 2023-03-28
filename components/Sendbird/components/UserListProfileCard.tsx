@@ -6,7 +6,7 @@ import { ToastContainer, toast, cssTransition } from 'react-toastify'
 import { useChannelContext } from '@sendbird/uikit-react/Channel/context'
 
 import 'animate.css'
-import '../../../node_modules/react-toastify/dist/ReactToastify.css'
+import 'react-toastify/dist/ReactToastify.css'
 
 import AxiosRequest from '../../../utils/AxiosRequest'
 import fiiveStudioUseStore from '../../../store/FiiveStudio'
