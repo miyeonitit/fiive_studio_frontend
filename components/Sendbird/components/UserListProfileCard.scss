@@ -32,6 +32,7 @@
         .user_infomations {
           display: flex;
           align-items: center;
+          flex-wrap: wrap;
 
           .user_nickname_box {
             @include body-2-700;

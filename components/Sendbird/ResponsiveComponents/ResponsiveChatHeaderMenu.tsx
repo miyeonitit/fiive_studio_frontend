@@ -5,7 +5,7 @@ import { getCookie, setCookie } from 'cookies-next'
 import { ToastContainer, toast, cssTransition } from 'react-toastify'
 
 import 'animate.css'
-import '../../../node_modules/react-toastify/dist/ReactToastify.css'
+import 'react-toastify/dist/ReactToastify.css'
 
 import fiiveStudioUseStore from '../../../store/FiiveStudio'
 
