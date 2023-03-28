@@ -70,7 +70,9 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       setIvsData(responseData?.ivs?.channel)
 
       // save class Data in classroom
-      setClassData(responseData?.class)
+      setClassData(
+        responseData?.class ? responseData?.class : { message: 'error' }
+      )
 
       // save chat Data
       setChatData(responseData?.sendbird)
