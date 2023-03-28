@@ -145,8 +145,16 @@ const Video = (props: props) => {
       const player = IVSPlayer.create()
 
       player.addEventListener(IVSPlayer.PlayerState.IDLE, () => {
-        setIvsPlayStatus('waiting')
-        setVideoStatusScreenHeight(ivsPlayer.current?.offsetHeight)
+        // user가 정지 버튼을 누르거나 재생바를 건드리면 ivs player가 멈추는 현상 때문에 조건문 분기 처리
+        if (player.isPaused()) {
+          player.load(playbackUrl)
+          player.play()
+          setIvsPlayStatus('play')
+        } else {
+          // user가 정지버튼을 누르지 않았음에도, 영상 송출 자체에 버퍼링이 걸렸을 때
+          setIvsPlayStatus('waiting')
+          setVideoStatusScreenHeight(ivsPlayer.current?.offsetHeight)
+        }
       })
 
       player.addEventListener(IVSPlayer.PlayerState.READY, () => {

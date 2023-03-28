@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  Dispatch,
-  SetStateAction,
-} from 'react'
+import React, { useState, useEffect, Dispatch, SetStateAction } from 'react'
 import Image from 'next/image'
 
 import AxiosRequest from '../../../utils/AxiosRequest'
