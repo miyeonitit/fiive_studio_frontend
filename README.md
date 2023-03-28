@@ -1,7 +1,6 @@
-# fiive studio
+# 🧑‍🏫 fiive studio 🧑‍🏫
 
-<img width="452" alt="image" src="https://user-images.githubusercontent.com/96506411/227880556-aec58566-db46-441c-a788-5ac652af4622.png">
-
+<img width="100%" alt="image" src="https://user-images.githubusercontent.com/96506411/228196401-fa891f61-1b10-41f1-954a-0787fc1a58e4.png">
 
 <p>
 <img src="https://img.shields.io/badge/Next.js-000000?style=flat-square&logo=Next.js&logoColor=white">
