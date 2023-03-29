@@ -80,9 +80,6 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
     (state: any) => state.setUserInfomation
   )
 
-  // user auth token for API
-  const setAuthToken = fiiveStudioUseStore((state: any) => state.setAuthToken)
-
   // save sendbird emoji list container
   const emojiContainer = sendbirdUseStore((state: any) => state.emojiContainer)
   const addEmojiContainer = sendbirdUseStore(

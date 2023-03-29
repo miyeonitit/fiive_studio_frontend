@@ -47,8 +47,6 @@ const UserListProfileCard = (props: props) => {
 
   const miniMenuRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
 
-  const redirectFiive = process.env.NEXT_PUBLIC_FIIVE_URL
-
   const fadeUp = cssTransition({
     enter: 'animate__animated animate__customFadeInUp',
     exit: 'animate__animated animate__fadeOut',
