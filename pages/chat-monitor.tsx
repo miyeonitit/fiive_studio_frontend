@@ -3,11 +3,11 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
 import dynamic from 'next/dynamic'
-import { getCookie, setCookie } from 'cookies-next'
+import { setCookie } from 'cookies-next'
 import { ToastContainer, toast, cssTransition } from 'react-toastify'
 
 import 'animate.css'
-import '../../node_modules/react-toastify/dist/ReactToastify.css'
+import 'react-toastify/dist/ReactToastify.css'
 
 import { NextPageWithLayout } from '../types/NextPageWithLayout'
 

@@ -6,7 +6,7 @@ import { ToastContainer, toast, cssTransition } from 'react-toastify'
 import { useChannelContext } from '@sendbird/uikit-react/Channel/context'
 
 import 'animate.css'
-import '../../../node_modules/react-toastify/dist/ReactToastify.css'
+import 'react-toastify/dist/ReactToastify.css'
 
 import AxiosRequest from '../../../utils/AxiosRequest'
 import fiiveStudioUseStore from '../../../store/FiiveStudio'
@@ -46,8 +46,6 @@ const UserListProfileCard = (props: props) => {
   const [isBlockedUserTooltip, setIsBlockedUserTooltip] = useState(false)
 
   const miniMenuRef = React.useRef() as React.MutableRefObject<HTMLDivElement>
-
-  const redirectFiive = process.env.NEXT_PUBLIC_FIIVE_URL
 
   const fadeUp = cssTransition({
     enter: 'animate__animated animate__customFadeInUp',

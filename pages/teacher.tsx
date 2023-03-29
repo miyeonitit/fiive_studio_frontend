@@ -80,9 +80,6 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
     (state: any) => state.setUserInfomation
   )
 
-  // user auth token for API
-  const setAuthToken = fiiveStudioUseStore((state: any) => state.setAuthToken)
-
   // save sendbird emoji list container
   const emojiContainer = sendbirdUseStore((state: any) => state.emojiContainer)
   const addEmojiContainer = sendbirdUseStore(
@@ -128,8 +125,11 @@ const TeacherPage: NextPageWithLayout = (props: props) => {
 
       // 유저의 접속 정보가 맞다면, userInfomation에 유저 정보 저장
       setUserInfomation(responseData)
-    } else if (responseData.response.request.status === 401) {
-      // 401 - user의 수강 권한이 없을 경우, not-access 페이지로 이동
+    } else if (
+      responseData.response.request.status === 401 ||
+      responseData.response.request.status === 403
+    ) {
+      // 401, 403 - user의 수강 권한이 없을 경우, not-access 페이지로 이동
       router.push('/not-access')
     }
   }
