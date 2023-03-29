@@ -1,19 +1,17 @@
-import Head from 'next/head'
-import { ReactElement } from 'react'
+import { ReactElement, useEffect } from 'react'
+import { useRouter } from 'next/router'
+
 import Layout from '../components/DemoLayout'
 import { NextPageWithLayout } from '../types/NextPageWithLayout'
 
 const Home: NextPageWithLayout = () => {
-  return (
-    <div className='main page'>
-      <Head>
-        <title>LSS Main</title>
-        <meta name='description' content='LSS frontend main' />
-      </Head>
+  const router = useRouter()
 
-      <h1>LSS Demo</h1>
-    </div>
-  )
+  useEffect(() => {
+    router.push('/404')
+  }, [])
+
+  return <div className='main page'></div>
 }
 
 Home.getLayout = (page: ReactElement) => {
